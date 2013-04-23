@@ -1,4 +1,4 @@
-# $Id: 055_mail-group.t,v 1.31.2.17 2013/04/08 08:45:25 ak Exp $
+# $Id: 055_mail-group.t,v 1.31.2.18 2013/04/18 10:57:08 ak Exp $
 #  ____ ____ ____ ____ ____ ____ ____ ____ ____ 
 # ||L |||i |||b |||r |||a |||r |||i |||e |||s ||
 # ||__|||__|||__|||__|||__|||__|||__|||__|||__||
@@ -47,17 +47,20 @@ my $Classes = {
 	'chcellphone'	=> q|Kanadzuchi::Mail::Group::CH::Cellphone|,
 	'chsmartphone'	=> q|Kanadzuchi::Mail::Group::CH::Smartphone|,
 	'clsmartphone'	=> q|Kanadzuchi::Mail::Group::CL::Smartphone|,
+	'cncellphone'	=> q|Kanadzuchi::Mail::Group::CN::Cellphone|,
 	'cnsmartphone'	=> q|Kanadzuchi::Mail::Group::CN::Smartphone|,
 	'cnwebmail'	=> q|Kanadzuchi::Mail::Group::CN::WebMail|,
 	'cocellphone'	=> q|Kanadzuchi::Mail::Group::CO::Cellphone|,
 	'cosmartphone'	=> q|Kanadzuchi::Mail::Group::CO::Smartphone|,
 	'crcellphone'	=> q|Kanadzuchi::Mail::Group::CR::Cellphone|,
+	'czcellphone'	=> q|Kanadzuchi::Mail::Group::CZ::Cellphone|,
 	'czsmartphone'	=> q|Kanadzuchi::Mail::Group::CZ::Smartphone|,
 	'czwebmail'	=> q|Kanadzuchi::Mail::Group::CZ::WebMail|,
 	'decellphone'	=> q|Kanadzuchi::Mail::Group::DE::Cellphone|,
 	'desmartphone'	=> q|Kanadzuchi::Mail::Group::DE::Smartphone|,
 	'dewebmail'	=> q|Kanadzuchi::Mail::Group::DE::WebMail|,
 	'dksmartphone'	=> q|Kanadzuchi::Mail::Group::DK::Smartphone|,
+	'docellphone'	=> q|Kanadzuchi::Mail::Group::DO::Cellphone|,
 	'dosmartphone'	=> q|Kanadzuchi::Mail::Group::DO::Smartphone|,
 	'ecsmartphone'	=> q|Kanadzuchi::Mail::Group::EC::Smartphone|,
 	'egsmartphone'	=> q|Kanadzuchi::Mail::Group::EG::Smartphone|,
@@ -70,6 +73,7 @@ my $Classes = {
 	'frwebmail'	=> q|Kanadzuchi::Mail::Group::FR::WebMail|,
 	'grsmartphone'	=> q|Kanadzuchi::Mail::Group::GR::Smartphone|,
 	'gtsmartphone'	=> q|Kanadzuchi::Mail::Group::GT::Smartphone|,
+	'hkcellphone'	=> q|Kanadzuchi::Mail::Group::HK::Cellphone|,
 	'hksmartphone'	=> q|Kanadzuchi::Mail::Group::HK::Smartphone|,
 	'hnsmartphone'	=> q|Kanadzuchi::Mail::Group::HN::Smartphone|,
 	'hrcellphone'	=> q|Kanadzuchi::Mail::Group::HR::Cellphone|,
@@ -114,6 +118,7 @@ my $Classes = {
 	'nismartphone'	=> q|Kanadzuchi::Mail::Group::NI::Smartphone|,
 	'nlcellphone'	=> q|Kanadzuchi::Mail::Group::NL::Cellphone|,
 	'nlsmartphone'	=> q|Kanadzuchi::Mail::Group::NL::Smartphone|,
+	'nocellphone'	=> q|Kanadzuchi::Mail::Group::NO::Cellphone|,
 	'nosmartphone'	=> q|Kanadzuchi::Mail::Group::NO::Smartphone|,
 	'nowebmail'	=> q|Kanadzuchi::Mail::Group::NO::WebMail|,
 	'npcellphone'	=> q|Kanadzuchi::Mail::Group::NP::Cellphone|,
@@ -122,6 +127,7 @@ my $Classes = {
 	'nzsmartphone'	=> q|Kanadzuchi::Mail::Group::NZ::Smartphone|,
 	'nzwebmail'	=> q|Kanadzuchi::Mail::Group::NZ::WebMail|,
 	'omsmartphone'	=> q|Kanadzuchi::Mail::Group::OM::Smartphone|,
+	'pacellphone'	=> q|Kanadzuchi::Mail::Group::PA::Cellphone|,
 	'pasmartphone'	=> q|Kanadzuchi::Mail::Group::PA::Smartphone|,
 	'pesmartphone'	=> q|Kanadzuchi::Mail::Group::PE::Smartphone|,
 	'phsmartphone'	=> q|Kanadzuchi::Mail::Group::PH::Smartphone|,
@@ -161,6 +167,7 @@ my $Classes = {
 	'uscellphone'	=> q|Kanadzuchi::Mail::Group::US::Cellphone|,
 	'ussmartphone'	=> q|Kanadzuchi::Mail::Group::US::Smartphone|,
 	'uswebmail'	=> q|Kanadzuchi::Mail::Group::US::WebMail|,
+	'uycellphone'	=> q|Kanadzuchi::Mail::Group::UY::Cellphone|,
 	'uysmartphone'	=> q|Kanadzuchi::Mail::Group::UY::Smartphone|,
 	'vesmartphone'	=> q|Kanadzuchi::Mail::Group::VE::Smartphone|,
 	'vnsmartphone'	=> q|Kanadzuchi::Mail::Group::VN::Smartphone|,
@@ -177,6 +184,8 @@ my $Domains = {
 				hotmail.com windowslive.com mac.com me.com excite.com
 				lycos.com lycosmail.com facebook.com groups.facebook.com myspace.com
 				love.com ygm.com latinmail.com myopera.com outlook.com) ],
+	'cellphone'	=> [ qw( msg.globalstarusa.com msg.iridium.com bulksms.net bulletinmessenger.net
+				email2sms.routomessaging.com ) ],
 	'smartphone'	=> [ qw( vertu.me mobileemail.vodafone.net 360.com ovi.com blackberry.orange.fr 
 				nokiamail.com ) ],
 	'aesmartphone'	=> [ qw( du.blackberry.com etisalat.blackberry.com ) ],
@@ -204,20 +213,23 @@ my $Domains = {
 	'cacellphone'	=> [ qw( txt.bellmobility.ca txt.bell.ca vmobile.ca msg.telus.com ) ],
 	'casmartphone'	=> [ qw( rogers.blackberry.net virginmobile.blackberry.com bell.blackberry.com ) ],
 	'cawebmail'	=> [ qw( hushmail.com hush.com zworg.com ) ],
-	'chcellphone'	=> [ qw( gsm.sunrise.ch ) ],
+	'chcellphone'	=> [ qw( sms.boxis.net gsm.sunrise.ch ) ],
 	'chsmartphone'	=> [ qw( mobileemail.swisscom.ch sunrise.blackberry.com ) ],
 	'clsmartphone'	=> [ qw( entelpcs.blackberry.net movistar.cl.blackberry.com clarochile.blackberry.com ) ],
+	'cncellphone'	=> [ qw( 139.com ) ],
 	'cnsmartphone'	=> [ qw( chinamobile.blackberry.com chinaunicom.blackberry.com ) ],
 	'cnwebmail'	=> [ qw( 163.com 188.com ) ],
 	'cocellphone'	=> [ qw( sms.tigo.com.co comcel.com.co movistar.com.co ) ],
 	'cosmartphone'	=> [ qw( comcel.blackberry.com movistar.co.blackberry.com ) ],
 	'crcellphone'	=> [ qw( ice.cr ) ],
+	'czcellphone'	=> [ qw( vodafonemail.cz ) ],
 	'czsmartphone'	=> [ qw( o2.blackberry.cz tmobilecz.blackberry.com ) ],
 	'czwebmail'	=> [ qw( seznam.cz email.cz ) ],
 	'decellphone'	=> [ qw( vodafone-sms.de o2online.de vodafone-sms.de smsmail.eplus.de ) ],
 	'desmartphone'	=> [ qw( instantemail.t-mobile.de o2.blackberry.de eplus.blackberry.com ) ],
 	'dewebmail'	=> [ qw( gmx.de ) ],
 	'dksmartphone'	=> [ qw( tre.blackberry.com telenor.dk.blackberry.com teliadk.blackberry.com ) ],
+	'docellphone'	=> [ qw( digitextdm.com ) ],
 	'dosmartphone'	=> [ qw( clarodr.blackberry.com vivard.blackberry.com ) ],
 	'ecsmartphone'	=> [ qw( movistar.ec.blackberry.com porta.blackberry.com ) ],
 	'egwebmail'	=> [ qw( gawab.com giza.cc ) ],
@@ -229,7 +241,8 @@ my $Domains = {
 	'frwebmail'	=> [ qw( cario.fr mageos.com voila.fr ) ],
 	'grsmartphone'	=> [ qw( windgr.blackberry.com cosmotegr.blackberry.com ) ],
 	'gtsmartphone'	=> [ qw( claroguatemala.blackberry.com movistar.gt.blackberry.com ) ],
-	'hksmartphone'	=> [ qw( threehk.blackberry.com csl.blackberry.com ) ],
+	'hkcellphone'	=> [ qw( messaging.accessyou.com mgw.mmsc1.hkcsl.com) ],
+	'hksmartphone'	=> [ qw( threehk.blackberry.com csl.blackberry.com) ],
 	'hnsmartphone'	=> [ qw( clarohn.blackberry.com ) ],
 	'hrcellphone'	=> [ qw( sms.t-mobile.hr ) ],
 	'hrsmartphone'	=> [ qw( instantemail.t-mobile.hr ) ],
@@ -244,7 +257,7 @@ my $Domains = {
 	'insmartphone'	=> [ qw( airtel.blackberry.com hutch.blackberry.com ) ],
 	'inwebmail'	=> [ qw( ibibo.com in.com rediffmail.com india.com) ],
 	'irwebmail'	=> [ qw( iran.ir ) ],
-	'iscellphone'	=> [ qw( sms.is ) ],
+	'iscellphone'	=> [ qw( box.is sms.is ) ],
 	'issmartphone'	=> [ qw( siminn.blackberry.com ) ],
 	'itcellphone'	=> [ qw( sms.vodafone.it ) ],
 	'itsmartphone'	=> [ qw( treitalia.blackberry.com tim.blackberry.com ) ],
@@ -278,6 +291,7 @@ my $Domains = {
 	'nismartphone'	=> [ qw( claronicaragua.blackberry.com movistar.ni.blackberry.com ) ],
 	'nlcellphone'	=> [ qw( gin.nl sms.orange.nl ) ],
 	'nlsmartphone'	=> [ qw( kpn.blackberry.com instantemail.t-mobile.nl uts.blackberry.com ) ],
+	'nocellphone'	=> [ qw( sendega.com ) ],
 	'nosmartphone'	=> [ qw( telenor.blackberry.com telenor.no.blackberry.com ) ],
 	'nowebmail'	=> [ qw( runbox.com ) ],
 	'npcellphone'	=> [ qw( sms.spicenepal.com ) ],
@@ -286,6 +300,7 @@ my $Domains = {
 	'nzsmartphone'	=> [ qw( tnz.blackberry.com ) ],
 	'nzwebmail'	=> [ qw( coolkiwi.com vodafone.co.nz wave.co.nz orcon.net.nz ) ],
 	'omsmartphone'	=> [ qw( omanmobile.blackberry.com nawras.blackberry.com ) ],
+	'pacellphone'	=> [ qw( cwmovil.com ) ],
 	'pasmartphone'	=> [ qw( digicel.blackberry.com movistar.pa.blackberry.com 
 				 claropanama.blackberry.com cwmovil.blackberry.com ) ],
 	'pesmartphone'	=> [ qw( movistar.pe.blackberry.com claroperu.blackberry.com ) ],
@@ -319,14 +334,15 @@ my $Domains = {
 	'twwebmail'	=> [ qw( seed.net.tw mars.seed.net.tw kingnet.com.tw ) ],
 	'uasmartphone'	=> [ qw( mtsua.blackberry.com ) ],
 	'ugsmartphone'	=> [ qw( utl.blackberry.com mtninternet.blackberry.com ) ],
-	'ukcellphone'	=> [ qw( text.aql.com orange.net vodafone.net ) ],
+	'ukcellphone'	=> [ qw( 24xgateway.com text.aql.com orange.net vodafone.net ) ],
 	'uksmartphone'	=> [ qw( o2.co.uk instantemail.t-mobile.co.uk o2email.co.uk bt.blackberry.com) ],
 	'ukwebmail'	=> [ qw( postmaster.co.uk yipple.com ) ],
-	'uscellphone'	=> [ qw( vtext.com mms.att.net pm.sprint.com ) ],
+	'uscellphone'	=> [ qw( sms.airfiremobile.com vtext.com mms.att.net pm.sprint.com ) ],
 	'ussmartphone'	=> [ qw( sprint.blackberry.net alltel.blackberry.com vzw.blackberry.net
 				 att.blackberry.com mycingular.blackberry.net ) ],
 	'uswebmail'	=> [ qw( bluetie.com lavabit.com luxsci.com inbox.com mail.com usa.com 
 				 pobox.com onepost.net mail2world.com myemail.com shtrudel.com ) ],
+	'uycellphone'	=> [ qw( sms.movistar.com.uy ) ],
 	'uysmartphone'	=> [ qw( movistar.uy.blackberry.com clarouy.blackberry.com ) ],
 	'vesmartphone'	=> [ qw( movistar.ve.blackberry.com ) ],
 	'vnsmartphone'	=> [ qw( viettel.blackberry.com ) ],
@@ -363,11 +379,13 @@ METHODS: {
 }
 
 # 3. Call class method
-CLASS_METHODS: foreach my $c ( keys(%$Domains) )
+CLASS_METHODS: foreach my $c ( keys %$Domains )
 {
+	next if $c eq 'cellphone';
+
 	my $detected = {};
 	my $thegroup = q();
-	MATCH: foreach my $s ( @{$Domains->{$c}} )
+	MATCH: foreach my $s ( @{ $Domains->{ $c } } )
 	{
 		$detected = $Classes->{ $c }->reperit($s);
 		$thegroup = lc $Classes->{ $c };

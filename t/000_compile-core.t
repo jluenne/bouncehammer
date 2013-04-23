@@ -1,4 +1,4 @@
-# $Id: 000_compile-core.t,v 1.50.2.12 2012/04/09 06:20:13 ak Exp $
+# $Id: 000_compile-core.t,v 1.50.2.13 2013/04/18 10:57:08 ak Exp $
 use strict;
 use warnings;
 use lib qw(./t/lib ./dist/lib ./src/lib);
@@ -38,6 +38,7 @@ my $Modules = [ qw{
 	Kanadzuchi::Mail::Group::AU::Smartphone
 	Kanadzuchi::Mail::Group::AU::WebMail
 	Kanadzuchi::Mail::Group::AW::Cellphone
+	Kanadzuchi::Mail::Group::AW::Smartphone
 	Kanadzuchi::Mail::Group::BE::Smartphone
 	Kanadzuchi::Mail::Group::BG::Cellphone
 	Kanadzuchi::Mail::Group::BG::Smartphone
@@ -52,17 +53,20 @@ my $Modules = [ qw{
 	Kanadzuchi::Mail::Group::CH::Cellphone
 	Kanadzuchi::Mail::Group::CH::Smartphone
 	Kanadzuchi::Mail::Group::CL::Smartphone
+	Kanadzuchi::Mail::Group::CN::Cellphone
 	Kanadzuchi::Mail::Group::CN::Smartphone
 	Kanadzuchi::Mail::Group::CN::WebMail
 	Kanadzuchi::Mail::Group::CO::Cellphone
 	Kanadzuchi::Mail::Group::CO::Smartphone
 	Kanadzuchi::Mail::Group::CR::Cellphone
-	Kanadzuchi::Mail::Group::CZ::WebMail
+	Kanadzuchi::Mail::Group::CZ::Cellphone
 	Kanadzuchi::Mail::Group::CZ::Smartphone
+	Kanadzuchi::Mail::Group::CZ::WebMail
 	Kanadzuchi::Mail::Group::DE::Cellphone
 	Kanadzuchi::Mail::Group::DE::Smartphone
 	Kanadzuchi::Mail::Group::DE::WebMail
 	Kanadzuchi::Mail::Group::DK::Smartphone
+	Kanadzuchi::Mail::Group::DO::Cellphone
 	Kanadzuchi::Mail::Group::DO::Smartphone
 	Kanadzuchi::Mail::Group::EC::Smartphone
 	Kanadzuchi::Mail::Group::EG::Smartphone
@@ -75,6 +79,7 @@ my $Modules = [ qw{
 	Kanadzuchi::Mail::Group::FR::WebMail
 	Kanadzuchi::Mail::Group::GR::Smartphone
 	Kanadzuchi::Mail::Group::GT::Smartphone
+	Kanadzuchi::Mail::Group::HK::Cellphone
 	Kanadzuchi::Mail::Group::HK::Smartphone
 	Kanadzuchi::Mail::Group::HN::Smartphone
 	Kanadzuchi::Mail::Group::HR::Cellphone
@@ -83,15 +88,15 @@ my $Modules = [ qw{
 	Kanadzuchi::Mail::Group::ID::Smartphone
 	Kanadzuchi::Mail::Group::IE::Cellphone
 	Kanadzuchi::Mail::Group::IE::Smartphone
-	Kanadzuchi::Mail::Group::IN::Cellphone
-	Kanadzuchi::Mail::Group::IN::Smartphone
-	Kanadzuchi::Mail::Group::IN::WebMail
 	Kanadzuchi::Mail::Group::IL::Cellphone
 	Kanadzuchi::Mail::Group::IL::Smartphone
 	Kanadzuchi::Mail::Group::IL::WebMail
+	Kanadzuchi::Mail::Group::IN::Cellphone
+	Kanadzuchi::Mail::Group::IN::Smartphone
+	Kanadzuchi::Mail::Group::IN::WebMail
 	Kanadzuchi::Mail::Group::IR::WebMail
 	Kanadzuchi::Mail::Group::IS::Cellphone
-	Kanadzuchi::Mail::Group::IS::Cellphone
+	Kanadzuchi::Mail::Group::IS::Smartphone
 	Kanadzuchi::Mail::Group::IT::Cellphone
 	Kanadzuchi::Mail::Group::IT::Smartphone
 	Kanadzuchi::Mail::Group::JM::Smartphone
@@ -119,6 +124,7 @@ my $Modules = [ qw{
 	Kanadzuchi::Mail::Group::NI::Smartphone
 	Kanadzuchi::Mail::Group::NL::Cellphone
 	Kanadzuchi::Mail::Group::NL::Smartphone
+	Kanadzuchi::Mail::Group::NO::Cellphone
 	Kanadzuchi::Mail::Group::NO::Smartphone
 	Kanadzuchi::Mail::Group::NO::WebMail
 	Kanadzuchi::Mail::Group::NP::Cellphone
@@ -127,6 +133,7 @@ my $Modules = [ qw{
 	Kanadzuchi::Mail::Group::NZ::Smartphone
 	Kanadzuchi::Mail::Group::NZ::WebMail
 	Kanadzuchi::Mail::Group::OM::Smartphone
+	Kanadzuchi::Mail::Group::PA::Cellphone
 	Kanadzuchi::Mail::Group::PA::Smartphone
 	Kanadzuchi::Mail::Group::PE::Smartphone
 	Kanadzuchi::Mail::Group::PH::Smartphone
@@ -166,6 +173,7 @@ my $Modules = [ qw{
 	Kanadzuchi::Mail::Group::US::Cellphone
 	Kanadzuchi::Mail::Group::US::Smartphone
 	Kanadzuchi::Mail::Group::US::WebMail
+	Kanadzuchi::Mail::Group::UY::Cellphone
 	Kanadzuchi::Mail::Group::UY::Smartphone
 	Kanadzuchi::Mail::Group::VE::Smartphone
 	Kanadzuchi::Mail::Group::VN::Smartphone
@@ -173,8 +181,8 @@ my $Modules = [ qw{
 	Kanadzuchi::Mail::Group::ZA::Cellphone
 	Kanadzuchi::Mail::Group::ZA::Smartphone
 	Kanadzuchi::Mail::Group::ZA::WebMail
-	Kanadzuchi::Mail::Group::Neighbor
 	Kanadzuchi::Mail::Group::Cellphone
+	Kanadzuchi::Mail::Group::Neighbor
 	Kanadzuchi::Mail::Group::Smartphone
 	Kanadzuchi::Mail::Group::WebMail
 	Kanadzuchi::Mail::Stored
@@ -205,6 +213,7 @@ my $Modules = [ qw{
 	Kanadzuchi::MTA::Exim
 	Kanadzuchi::MTA::Fallback
 	Kanadzuchi::MTA::FeedbackLoop
+	Kanadzuchi::MTA::OpenSMTPD
 	Kanadzuchi::MTA::Postfix
 	Kanadzuchi::MTA::qmail
 	Kanadzuchi::MTA::Sendmail
