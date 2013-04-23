@@ -1,4 +1,4 @@
-# $Id: Cellphone.pm,v 1.1.2.3 2013/04/16 09:07:09 ak Exp $
+# $Id: Cellphone.pm,v 1.1.2.4 2013/04/18 10:56:28 ak Exp $
 # Copyright (C) 2009-2013 Cubicroot Co. Ltd.
 # Kanadzuchi::Mail::Group::
 #                                                             
@@ -20,10 +20,19 @@ use warnings;
 # |/__\|/__\|/__\|/__\|/__\|/_______\|/__\|/__\|/__\|/__\|/__\|/__\|/__\|
 #
 # Major cellular phone provider's domains in The World
+# https://github.com/cubiclesoft/email_sms_mms_gateways
 sub nominisexemplaria
 {
 	my $class = shift;
 	return {
+		'bulksms' => [
+			# BulkSMS International; http://bulksms.net
+			qr{\Abulksms[.]net\z},
+		],
+		'bulletin' => [
+			# BULLETIN; bulletinmessenger.net
+			qr{\Abulletinmessenger[.]net\z},
+		],
 		'globalstar' => [
 			# Globalstar; http://globalstar.com/
 			qr{\Amsg[.]globalstarusa[.]com},
@@ -32,6 +41,14 @@ sub nominisexemplaria
 			# Iridium Communications Inc.; http://iridium.com/
 			qr{\Amsg[.]iridium[.]com\z},
 		],
+		'panaceamobile' => [
+			# Panacea Mobile; http://www.panaceamobile.com
+			qr{\Aapi[.]panaceamobile[.]com\z},
+		],
+		'routomessaging' => [
+			# RoutoMessaging; http://www.routomessaging.com
+			qr{\Aemail2sms[.]routomessaging[.]com\z},
+		],
 	};
 }
 
@@ -39,8 +56,12 @@ sub classisnomina
 {
 	my $class = shift;
 	return {
+		'bulksms'	=> 'Generic',
+		'bulletin'	=> 'Generic',
 		'globalstar'	=> 'Generic',
 		'iridium'	=> 'Generic',
+		'panaceamobile'	=> 'Generic',
+		'routomessaging'=> 'Generic',
 	};
 }
 
