@@ -1,4 +1,4 @@
-# $Id: Cellphone.pm,v 1.1.2.2 2013/04/15 04:20:53 ak Exp $
+# $Id: Cellphone.pm,v 1.1.2.3 2013/04/18 10:56:28 ak Exp $
 # Copyright (C) 2009,2010,2013 Cubicroot Co. Ltd.
 # Kanadzuchi::Mail::Group::ES::
                                                             
@@ -27,9 +27,18 @@ sub nominisexemplaria
 	# *** NOT TESTED YET ***
 	my $self = shift;
 	return {
+		#'altiria' => [
+		#	# Altiria | Plataforma SMS y Marketing Móvil; http://www.altiria.com
+		#	an email domain not checked
+		#],
+		'esendex' => [
+			# Esendex; http://esendex.es/
+			qr{\Aesendex[.]net\z},
+		],
 		'movistar' => [
 			# Telefonica Movistar; http://www.movistar.es/
 			qr{\Acorreo[.]movistar[.]net\z},	# ...?
+			qr{\Amovistar[.]net\z},
 		],
 		'vodafone' => [
 			# Vodafone; http://www.vodafone.es/ 
@@ -42,6 +51,7 @@ sub classisnomina
 {
 	my $class = shift;
 	return {
+		'esendex'	=> 'Generic',
 		'movistar'	=> 'Generic',
 		'vodafone'	=> 'Generic',
 	};

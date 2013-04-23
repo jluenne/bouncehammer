@@ -1,4 +1,4 @@
-# $Id: Cellphone.pm,v 1.1.2.2 2013/04/15 04:20:53 ak Exp $
+# $Id: Cellphone.pm,v 1.1.2.3 2013/04/18 10:56:28 ak Exp $
 # Copyright (C) 2009-2011,2013 Cubicroot Co. Ltd.
 # Kanadzuchi::Mail::Group::DE::
                                                             
@@ -38,6 +38,7 @@ sub nominisexemplaria
 		't-mobile' => [
 			# T-Mobile; http://www.t-mobile.net/
 			qr{\At-d1-sms[.]de\z},
+			qr{\At-mobile-sms[.]de\z},
 		],
 		'vodafone' => [
 			# Vodafone; http://www.vodafone.com/

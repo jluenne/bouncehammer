@@ -1,4 +1,4 @@
-# $Id: Cellphone.pm,v 1.1.2.2 2013/04/15 04:20:53 ak Exp $
+# $Id: Cellphone.pm,v 1.1.2.3 2013/04/18 10:56:28 ak Exp $
 # Copyright (C) 2009,2010,2013 Cubicroot Co. Ltd.
 # Kanadzuchi::Mail::Group::CO::
                                                             
@@ -27,6 +27,10 @@ sub nominisexemplaria
 	# *** NOT TESTED YET ***
 	my $self = shift;
 	return {
+		'claro' => [
+			# América Móvil; http://www.americamovil.com/
+			qr{\Aiclaro[.]com[.]co\z},
+		],
 		'comcel' => [
 			# Comcel Colombia; http://www.comcel.com/
 			qr{\Acomcel[.]com[.]co\z},
@@ -47,6 +51,7 @@ sub classisnomina
 {
 	my $class = shift;
 	return {
+		'claro'		=> 'Generic',
 		'comcel'	=> 'Generic',
 		'millicom'	=> 'Generic',
 		'movistar'	=> 'Generic',

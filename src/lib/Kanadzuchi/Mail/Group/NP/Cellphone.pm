@@ -1,4 +1,4 @@
-# $Id: Cellphone.pm,v 1.1.2.2 2013/04/15 04:20:53 ak Exp $
+# $Id: Cellphone.pm,v 1.1.2.3 2013/04/18 10:56:28 ak Exp $
 # Copyright (C) 2009-2010,2013 Cubicroot Co. Ltd.
 # Kanadzuchi::Mail::Group::NP::
                                                             
@@ -29,7 +29,9 @@ sub nominisexemplaria
 	return {
 		'ncell' => [
 			# Ncell Private Ltd.; http://www.ncell.com.np/
+			# Previously Mero Mobile
 			qr{\Asms[.]spicenepal[.]com\z},
+			qr{\Asms[.]ncell[.]com[.]np\z},
 		],
 		# Nepal Telecom ...?
 	};

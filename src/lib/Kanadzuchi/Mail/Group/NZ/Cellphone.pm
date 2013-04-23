@@ -1,4 +1,4 @@
-# $Id: Cellphone.pm,v 1.1.2.2 2013/04/15 04:20:53 ak Exp $
+# $Id: Cellphone.pm,v 1.1.2.3 2013/04/18 10:56:28 ak Exp $
 # Copyright (C) 2009-2010,2013 Cubicroot Co. Ltd.
 # Kanadzuchi::Mail::Group::NZ::
                                                             
@@ -27,9 +27,14 @@ sub nominisexemplaria
 	# *** NOT TESTED YET ***
 	my $self = shift;
 	return {
+		'telecomnz' => [
+			# Telecom New Zealand; http://www.telecom.co.nz/home/
+			qr{\Aetxt[.]co[.]nz\z},
+		],
 		'vodafone' => [
 			# Vodafone; http://www.vodafone.co.nz/
 			qr{\Asms[.]vodafone[.]net[.]nz\z},
+			qr{\Amtxt[.]co[.]nz\z},
 		],
 	};
 }
@@ -38,6 +43,7 @@ sub classisnomina
 {
 	my $class = shift;
 	return {
+		'telecomnz'	=> 'Generic',
 		'vodafone'	=> 'Generic',
 	};
 }
