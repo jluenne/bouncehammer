@@ -1,4 +1,4 @@
-# $Id: Google.pm,v 1.5.2.7 2013/04/15 04:20:53 ak Exp $
+# $Id: Google.pm,v 1.5.2.8 2013/05/21 11:41:07 ak Exp $
 # -Id: Google.pm,v 1.2 2010/07/04 23:45:49 ak Exp -
 # -Id: Google.pm,v 1.1 2009/08/29 08:50:36 ak Exp -
 # -Id: Google.pm,v 1.1 2009/07/31 09:04:38 ak Exp -
@@ -32,11 +32,18 @@ my $RxFromGmail = {
 };
 
 my $RxTempError = {
-	'expired' => qr{Delivery to the following recipient has been delayed},
+	'expired' => [
+		qr{DNS Error: Could not contact DNS servers},
+		qr{Delivery to the following recipient has been delayed},
+	],
 };
 
 my $RxPermError = {
 	'expired' => qr{The recipient server did not accept our requests to connect},
+	'hostunknown' => [
+		qr{DNS Error: Domain name not found},
+		qr{DNS Error: DNS server returned answer with no data},
+	],
 };
 
 my $StateCodeMap = {
@@ -300,7 +307,7 @@ sub reperit
 		}
 		else
 		{
-			if( $rhostsaid =~ $RxTempError->{'expired'} )
+			if( grep { $rhostsaid =~ $_ } @{ $RxTempError->{'expired'} } )
 			{
 				# Technical details of temporary failure: 
 				# The recipient server did not accept our requests to connect. 
@@ -316,6 +323,13 @@ sub reperit
 				# Learn more at http://mail.google.com/support/bin/answer.py?answer=7720 
 				# [test.example.jp (1): Connection timed out]
 				$causa = 'expired';
+				$error = 'p';
+			}
+			elsif( grep { $rhostsaid =~ $_ } @{ $RxPermError->{'hostunknown'} } )
+			{
+				# Technical details of permanent failure: 
+				# DNS Error: Domain name not found
+				$causa = 'hostunknown';
 				$error = 'p';
 			}
 			else
