@@ -1,4 +1,4 @@
-# $Id: 024_statistics-stored-bddr.t,v 1.7.2.1 2012/11/02 10:50:42 ak Exp $
+# $Id: 024_statistics-stored-bddr.t,v 1.7.2.2 2013/05/21 11:33:29 ak Exp $
 #  ____ ____ ____ ____ ____ ____ ____ ____ ____ 
 # ||L |||i |||b |||r |||a |||r |||i |||e |||s ||
 # ||__|||__|||__|||__|||__|||__|||__|||__|||__||
@@ -43,7 +43,7 @@ PREPROCESS: {
 # 5 tests
 
 SKIP: {
-	my $howmanyskips = 1164;
+	my $howmanyskips = 1158;
 	eval { require DBI; }; skip( 'Because no DBI for testing', $howmanyskips ) if( $@ );
 	eval { require DBD::SQLite; }; skip( 'Because no DBD::SQLite for testing', $howmanyskips ) if( $@ );
 
