@@ -28,10 +28,21 @@
   - http://www.facebook.com/bouncehammer
 -----------------------------------------------------------------------
 
-2.7.10p1/2.7.0	2013/05/01
+2.7.10p1/2.7.0	2013/05/26
 
   Assorted improvements and code cleanup:
     * Update cellular phone domains, such as SMS or MMS gateways.
+
+    * mailboxparser now can parse an bounced email from Gmail with DNS
+      error.
+
+  Fixed bugs:
+    * Fixed an issue that make test fails when there is no DBD::SQLite
+      module in @INC on t/024_statistics-stored-bddr.t.
+      Thanks to Tateyama.
+
+    * Fixed an issue that  Kanadzuchi::Time cannot parse the following
+      date format: 25 May 2013 1:2
 
 
 -----------------------------------------------------------------------
