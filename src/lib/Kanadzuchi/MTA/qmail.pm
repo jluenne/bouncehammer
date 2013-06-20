@@ -1,4 +1,4 @@
-# $Id: qmail.pm,v 1.7.2.7 2013/04/15 04:20:53 ak Exp $
+# $Id: qmail.pm,v 1.7.2.8 2013/06/20 11:38:11 ak Exp $
 # Copyright (C) 2009-2013 Cubicroot Co. Ltd.
 # Kanadzuchi::MTA::
                          ##  ###    
@@ -105,7 +105,7 @@ my $RxqmailError = {
 # ||__|||__|||__|||__|||__|||_______|||__|||__|||__|||__|||__|||__|||__||
 # |/__\|/__\|/__\|/__\|/__\|/_______\|/__\|/__\|/__\|/__\|/__\|/__\|/__\|
 #
-sub version { '2.1.5' };
+sub version { '2.1.6' };
 sub description { 'qmail' };
 sub xsmtpagent { 'X-SMTP-Agent: qmail'.qq(\n); }
 sub reperit
@@ -132,7 +132,7 @@ sub reperit
 	# by qmail, see http://cr.yp.to/qmail.html
 	#   e.g.) Received: (qmail 12345 invoked for bounce); 29 Apr 2009 12:34:56 -0000
 	#         Subject: failure notice
-	return q() unless lc($mhead->{'subject'}) =~ $RxQSBMF->{'subject'};
+	return q() unless lc( $mhead->{'subject'} ) =~ $RxQSBMF->{'subject'};
 	return q() unless grep { $_ =~ $RxQSBMF->{'received'} } @{ $mhead->{'received'} };
 
 	my $pstat = q();	# (String) Pseudo status value
@@ -184,11 +184,9 @@ sub reperit
 	DETECT: {
 		SMTP_ERROR: foreach my $e ( keys(%{ $RxSMTPError }) )
 		{
-			if( grep { $rhostsaid =~ $_ } @{ $RxSMTPError->{ $e } } )
-			{
-				$xsmtp = uc $e;
-				last;
-			}
+			next unless grep { $rhostsaid =~ $_ } @{ $RxSMTPError->{ $e } };
+			$xsmtp = uc $e;
+			last;
 		}
 
 		QMAIL_ERROR: foreach my $q ( keys(%{ $RxqmailError }) )
@@ -220,7 +218,8 @@ sub reperit
 	}
 
 	if( $rhostsaid =~ m{[ ][(][#]([[45][.]\d[.]\d+)[)]\z} ||
-		$rhostsaid =~ m{\b\d{3}[-\s]([45][.]\d[.]\d+)\b} ){
+	    $rhostsaid =~ m/\b\d{3}[-\s][#]?([45][.]\d[.]\d+)\b/ ||
+	    $rhostsaid =~ m/[ ][(][#]([45][.]\d[.]\d+)[)][ ]/ ){
 
 		# Remote host said: 550-5.1.1 The email account ...
 		# Remote host said: 550 5.7.1 <user@example.jp>... Access denied
@@ -228,11 +227,20 @@ sub reperit
 	}
 	else
 	{
-		$pstat = Kanadzuchi::RFC3463->status( ( $causa || 'undefined' ), 'p', 'i' );
+		# There is no D.S.N.
+		if( $xsmtp eq 'RCPT' || $xsmtp eq 'MAIL' )
+		{
+			$causa = $xsmtp eq 'RCPT' ? 'userunknown' : 'rejected';
+			$pstat = Kanadzuchi::RFC3463->status( $causa, 'p', 'i' );
+		}
+		else
+		{
+			$pstat = Kanadzuchi::RFC3463->status( ( $causa || 'undefined' ), 'p', 'i' );
+		}
 	}
 
 	# Detect a recipient address from $rhostsaid
-	$rcptintxt = $1 if( $rhostsaid =~ m{[<](.+[@].+)[>]:} );
+	$rcptintxt = $1 if $rhostsaid =~ m{[<](.+[@].+)[>]:};
 
 	# Add the pseudo Content-Type header if it does not exist.
 	$mhead->{'content-type'} ||= q(message/delivery-status);
@@ -253,11 +261,9 @@ sub reperit
 		$esmtpcomm = __PACKAGE__->SMTPCOMMAND();
 		foreach my $cmd ( keys %$esmtpcomm )
 		{
-			if( $rhostsaid =~ $esmtpcomm->{ $cmd } )
-			{
-				$xsmtp = uc $cmd;
-				last;
-			}
+			next unless $rhostsaid =~ $esmtpcomm->{ $cmd };
+			$xsmtp = uc $cmd;
+			last;
 		}
 	}
 

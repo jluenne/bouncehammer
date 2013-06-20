@@ -1,4 +1,4 @@
-# $Id: Postfix.pm,v 1.6.2.8 2013/04/15 04:20:52 ak Exp $
+# $Id: Postfix.pm,v 1.6.2.9 2013/06/20 11:38:11 ak Exp $
 # Copyright (C) 2009-2013 Cubicroot Co. Ltd.
 # Kanadzuchi::MTA::
                                                
@@ -153,13 +153,11 @@ sub reperit
 	}
 	else
 	{
-		foreach my $_er ( keys %$RxErrors )
+		foreach my $e ( keys %$RxErrors )
 		{
-			if( grep { $rhostsaid =~ $_ } @{ $RxErrors->{$_er} } )
-			{
-				$pstat = Kanadzuchi::RFC3463->status( $_er,'p','i' );
-				last;
-			}
+			next unless grep { $rhostsaid =~ $_ } @{ $RxErrors->{ $e } };
+			$pstat = Kanadzuchi::RFC3463->status( $e,'p','i' );
+			last;
 		}
 	}
 

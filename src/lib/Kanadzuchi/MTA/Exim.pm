@@ -1,4 +1,4 @@
-# $Id: Exim.pm,v 1.6.2.6 2013/04/15 04:20:52 ak Exp $
+# $Id: Exim.pm,v 1.6.2.7 2013/06/20 11:38:11 ak Exp $
 # Copyright (C) 2009-2013 Cubicroot Co. Ltd.
 # Kanadzuchi::MTA::
                               
@@ -47,7 +47,7 @@ my $RxEximMTA = {
 	'from' => qr/\AMail Delivery System/,
 	'begin' => qr/\AThis message was created automatically by mail delivery software[.]\z/,
 	'endof' => qr/\A------ This is a copy of the message.+headers[.] ------\z/,
-	'subject' => qr/\AMail delivery failed(:?: returning message to sender)?\z/,
+	'subject' => qr/Mail delivery failed(:?: returning message to sender)?/,
 	'message-id' => qr/\A[<]\w+[-]\w+[-]\w+[@].+\z/,
 	# Message-Id: <E1P1YNN-0003AD-Ga@example.org>
 };
@@ -96,7 +96,7 @@ my $RxTrError = {
 # ||__|||__|||__|||__|||__|||_______|||__|||__|||__|||__|||__|||__|||__||
 # |/__\|/__\|/__\|/__\|/__\|/_______\|/__\|/__\|/__\|/__\|/__\|/__\|/__\|
 #
-sub version { '2.1.6' };
+sub version { '2.1.7' };
 sub description { 'Exim' };
 sub xsmtpagent { 'X-SMTP-Agent: Exim'.qq(\n); }
 sub emailheaders
@@ -176,21 +176,17 @@ sub reperit
 	# SMTP Error
 	foreach my $s ( keys %$RxSMTPErr )
 	{
-		if( $rhostsaid =~ $RxSMTPErr->{ $s } )
-		{
-			$xsmtp = uc $s;
-			last;
-		}
+		next unless $rhostsaid =~ $RxSMTPErr->{ $s };
+		$xsmtp = uc $s;
+		last;
 	}
 
 	# Transport Error
 	foreach my $t ( keys %$RxTrError )
 	{
-		if( grep { $rhostsaid =~ $_ } @{ $RxTrError->{ $t } } )
-		{
-			$causa = $t;
-			last;
-		}
+		next unless grep { $rhostsaid =~ $_ } @{ $RxTrError->{ $t } };
+		$causa = $t;
+		last;
 	}
 
 	if( $rhostsaid =~ m{\b([45][.][0-9][.][0-9]+)\b} )
@@ -211,11 +207,9 @@ sub reperit
 		$esmtpcomm = __PACKAGE__->SMTPCOMMAND();
 		foreach my $cmd ( keys %$esmtpcomm )
 		{
-			if( $rhostsaid =~ $esmtpcomm->{ $cmd } )
-			{
-				$xsmtp = uc $cmd;
-				last;
-			}
+			next unless $rhostsaid =~ $esmtpcomm->{ $cmd };
+			$xsmtp = uc $cmd;
+			last;
 		}
 
 		unless( $xsmtp )

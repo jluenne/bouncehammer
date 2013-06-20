@@ -1,4 +1,4 @@
-# $Id: Sendmail.pm,v 1.6.2.5 2013/04/15 04:20:52 ak Exp $
+# $Id: Sendmail.pm,v 1.6.2.6 2013/06/20 11:38:11 ak Exp $
 # Copyright (C) 2009-2013 Cubicroot Co. Ltd.
 # Kanadzuchi::MTA::
                                                           
@@ -37,7 +37,7 @@ my $RxSendmail = {
 # ||__|||__|||__|||__|||__|||_______|||__|||__|||__|||__|||__|||__|||__||
 # |/__\|/__\|/__\|/__\|/__\|/_______\|/__\|/__\|/__\|/__\|/__\|/__\|/__\|
 #
-sub version { '2.1.5' }
+sub version { '2.1.6' }
 sub description { 'V8Sendmail: /usr/sbin/sendmail' };
 sub xsmtpagent { 'X-SMTP-Agent: Sendmail'.qq(\n); }
 sub reperit
@@ -67,7 +67,7 @@ sub reperit
 		if( ($el =~ $RxSendmail->{'begin'}) .. ($el =~ $RxSendmail->{'endof'}) )
 		{
 			next if( $xsmtp && $pstat );
-			if( ! length($xsmtp) & $el =~ m{\A[>]{3}[ ]([A-Z]{4})[ ]?} )
+			if( ! length($xsmtp) & $el =~ m/\A(?:[>]{3}[ ])+([A-Z]{4})[ ]?/ )
 			{
 				# ----- Transcript of session follows -----
 				# ... while talking to mta.example.org.:
@@ -82,11 +82,20 @@ sub reperit
 				next;
 			}
 
-			if( ! length($pstat) & $el =~ m{\A\d{3} ([45][.]\d[.]\d+)} )
+			unless( length $pstat )
 			{
-				# 554 5.0.0 Service unavailable
-				$pstat = $1;
-				$xrcpt = $1 if $el =~ m{\A.+[<](.+[@].+)[>].*\z};
+				if( $el =~ m/\A\d{3} ([45][.]\d[.]\d+)/ )
+				{
+					# 554 5.0.0 Service unavailable
+					$pstat = $1;
+					$xrcpt = $1 if $el =~ m{\A.+[<](.+[@].+)[>].*\z};
+				}
+				elsif( $el =~ m/\A[<]{3}[ ]\d{3}[ ]([45][.]\d[.]\d+)[ ]/ )
+				{
+					# <<< 552 5.2.2 Quota Exceeded
+					$pstat = $1;
+					$xrcpt = $1 if $el =~ m{\A.+[<](.+[@].+)[>].*\z};
+				}
 				next;
 			}
 
