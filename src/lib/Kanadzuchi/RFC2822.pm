@@ -1,4 +1,4 @@
-# $Id: RFC2822.pm,v 1.15.2.1 2013/04/15 04:20:52 ak Exp $
+# $Id: RFC2822.pm,v 1.15.2.2 2013/04/23 09:30:38 ak Exp $
 # -Id: RFC2822.pm,v 1.1 2009/08/29 08:52:03 ak Exp -
 # -Id: RFC2822.pm,v 1.6 2009/05/29 08:22:21 ak Exp -
 # Copyright (C) 2009,2010,2013 Cubicroot Co. Ltd.
@@ -98,7 +98,14 @@ sub is_mailerdaemon
 	#		(Integer) 0 = is not
 	my $class = shift;
 	my $email = shift || return 0;
-	return 1 if lc( $email ) =~ m{\bmailer-daemon\b};
+	my $rxmds = [
+		qr/mailer-daemon[@]/i,
+		qr/[<(]mailer-daemon[)>]/i,
+		qr/\Amailer-daemon\z/i,
+		qr/[ ]?mailer-daemon[ ]/i,
+	];
+
+	return 1 if grep { $email =~ $_ } @$rxmds;
 	return 0;
 }
 
