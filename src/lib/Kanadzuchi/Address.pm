@@ -1,4 +1,4 @@
-# $Id: Address.pm,v 1.10.2.8 2013/04/15 04:20:52 ak Exp $
+# $Id: Address.pm,v 1.10.2.9 2013/04/23 09:28:48 ak Exp $
 # Copyright (C) 2009,2010,2013 Cubicroot Co. Ltd.
 # Kanadzuchi::
                                                    
@@ -55,6 +55,7 @@ sub new
 		$argvs->{'user'} = lc $1;
 		$argvs->{'host'} = lc $2;
 
+		$argvs->{'user'} =~ s{\A=[?].+[?]b[?].+[?]=}{};
 		map { $_ =~ y{`'"<>}{}d } %$argvs;
 		$argvs->{'address'} = sprintf( "%s@%s", $argvs->{'user'}, $argvs->{'host'} );
 		return $class->SUPER::new($argvs);
