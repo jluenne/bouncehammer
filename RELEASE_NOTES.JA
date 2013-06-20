@@ -1,4 +1,4 @@
- $Id: RELEASE_NOTES.JA,v 1.52.2.26 2013/04/26 05:47:47 ak Exp $
+ $Id: RELEASE_NOTES.JA,v 1.52.2.27 2013/06/20 11:56:49 ak Exp $
 -----------------------------------------------------------------------
  ##                                      ##  ##                                     
  ##      ####  ##  ## #####   #### ####  ##  ##  ####  ##  ## ##  ##  ####  #####   
@@ -24,22 +24,28 @@
   - http://www.facebook.com/bouncehammer
 -----------------------------------------------------------------------
 
-2.7.10p1/2.7.0	2013/05/26
+2.7.10p2/2.7.0	2013/06/20
 
   細かな改善点:
     * SMS, MMSゲートウェイ等の携帯電話用ドメインをアップデート
-
     * DNS関係のエラーで Gmailから返ってくるバウンスメールを解析出来るよ
       うになりました。
+    * Gmail, Exim, Sendmail, qmailの解析精度が向上しました
+    * Verizonからのバウンスメール(@vtext.com,@vzwpix.com)を解析出来るよ
+      うになりました。解析モジュールはPull request #3のMTA::US::Vtextを
+      基準に作成したMTA::US::Verizonを使用します。
+      Thanks to Scott Gifford.
 
   修正されたバグ:
     * DBD::SQLiteモジュールが@INCに入っていない場合、次のテストにおいて
       make testが失敗するバグを修正。t/024_statistics-stored-bddr.t.
       Thanks to Tateyama.
-
     * Kanadzuchi::Timeが"25 May 2013 1:2"のようなDateヘッダを解析出来な
       い問題を修正しました。
-
+  
+  新しいファイル:
+    * lib/Kanadzuchi/MTA/US/Verizon.pm
+    * t/043_mta-us-verizon.t
 
 -----------------------------------------------------------------------
 2.7.10/2.7.0	2013/04/19
@@ -53,14 +59,10 @@
       て"listid"が追加されました。"listid"の値はバウンスが発生したメー
       リングリストの"List-Id"ヘッダの値を記録します。
       Thanks to @masaki_ipodrepo and @revsystem .
-
     * Nokia Mail & Nokia Chatのドメイン "@nokiamail.com"はプロバイダ名
       'nokia'に、ホストグループ名'smartphone'にそれぞれ分類されます。
-
     * 幾つかのoutlook.comのドメインを分類対象に追加しました。
-
     * 新たな形式のGmailからのバウンスメールに対応しました。
-
     * Reply-Toヘッダに複数のメールアドレスがある場合、先頭のアドレスを
       取り出します。
 
@@ -78,19 +80,15 @@
 
   細かな改善点:
     * @outlook.comはWebmail/microsoftに分類されます。
-
     * @india.com始めIndia.comのドメインはWebmail/india.comに分類されま
       す。
-
     * 幾つかの著名なWebメールとモバイルドメインの分類が改善されました。
       aol.*, mac.me, hotmail.*, yahoo.*, *.vodafone.*.
  
   修正されたバグ:
     * './configure'実行時に要求されるTime::Pieceのバージョンは1.20にな
       りました。Thanks to @memememomo .
-
     * ./Modules.PLでのPerlモジュールのバージョン確認が改善されました。
-
     * Internet ExplorerやGoogle Chromeでごく稀に発生するInternal Server
       Error(500)への暫定的な対処として"X-Content-Type-Options: nosniff"
       ヘッダをレスポンスに追加しました。Thanks to Donald DeWulf.
@@ -106,7 +104,6 @@
   修正されたバグ:
     * "make"コマンドを実行するとsrc/cgi/Makefileが"/"ディレクトリを一時
       ディレクトリとして使用する問題を修正しました。Thanks to Hasegawa.
-
     * メールアドレスが"=?ISO-2022-JP?B?.....?="<user@example.jp> のよう
       にスペースがない場合に Kanadzuchi::Address->canonify() が失敗する
       問題を修正しました。Thanks to Kanazawa.
