@@ -1,4 +1,4 @@
- $Id: RELEASE_NOTES,v 1.76.2.29 2013/06/20 12:06:39 ak Exp $
+ $Id: RELEASE_NOTES,v 1.76.2.30 2013/07/17 04:24:49 ak Exp $
  -Id: RELEASE_NOTES,v 1.12 2009/12/01 10:35:23 ak Exp -
  -Id: RELEASE_NOTES,v 1.34 2009/08/27 05:09:04 ak Exp -
 -----------------------------------------------------------------------
@@ -28,7 +28,7 @@
   - http://www.facebook.com/bouncehammer
 -----------------------------------------------------------------------
 
-2.7.10p2/2.7.0	2013/06/20
+2.7.10p3/2.7.0	2013/07/18
 
   Assorted improvements and code cleanup:
     * Update cellular phone domains, such as SMS or MMS gateways.
@@ -39,6 +39,7 @@
       @vzwpix.com ( Verizon Wireless ) by MTA::US::Verizon module based
       on MTA::US::Vtext at Pull request #3 from scottgifford.
       Thanks to Scott Gifford.
+    * Update error message patterns in Kanadzuchi/Mail/Why.
 
   Fixed bugs:
     * Fixed an issue that make test fails when there is no DBD::SQLite
@@ -49,6 +50,7 @@
 
   New files:
     * lib/Kanadzuchi/MTA/US/Verizon.pm
+    * lib/Kanadzuchi/Mail/Why/Suspend.pm
     * t/043_mta-us-verizon.t
 
 -----------------------------------------------------------------------
