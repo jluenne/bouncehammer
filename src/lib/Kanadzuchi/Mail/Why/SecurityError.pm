@@ -1,4 +1,4 @@
-# $Id: SecurityError.pm,v 1.2.2.4 2013/04/15 04:20:53 ak Exp $
+# $Id: SecurityError.pm,v 1.2.2.5 2013/07/16 21:33:47 ak Exp $
 # Copyright (C) 2009,2010,2013 Cubicroot Co. Ltd.
 # Kanadzuchi::Mail::Why::
                                                                                        
@@ -23,8 +23,10 @@ sub exemplaria
 	my $class = shift;
 	return [ 
 		qr{authentication turned on in your email client},
+		qr{email not accepted for policy reasons},
 		qr{sorry, that domain isn'?t in my list of allowed rcpthosts},
 		qr{sorry, your don'?t authenticate or the domain isn'?t in my list of allowed rcpthosts},
+		qr{your network is temporary blacklisted},
 	];
 }
 

@@ -1,4 +1,4 @@
-# $Id: UserUnknown.pm,v 1.12.2.1 2013/04/15 04:20:53 ak Exp $
+# $Id: UserUnknown.pm,v 1.12.2.2 2013/07/16 21:33:47 ak Exp $
 # -Id: UserUnknown.pm,v 1.1 2009/08/29 07:33:28 ak Exp -
 # -Id: UserUnknown.pm,v 1.2 2009/05/11 08:22:29 ak Exp -
 # Copyright (C) 2009,2010,2013 Cubicroot Co. Ltd.
@@ -25,14 +25,17 @@ sub exemplaria
 	return [
 		qr{[#]5[.]1[.]1 bad address},
 		qr{destination server rejected recipients},
+		qr{email address does not exist},
 		qr{invalid mailbox path},
 		qr{invalid recipient:},
 		qr{no such mailbox},
+		qr{no such recipient},
 		qr{no such user here},
 		qr{no such user},
 		qr{<.+> not found},
 		qr{mailbox not present},
 		qr{mailbox unavailable},
+		qr{no .+ in name directory},
 		qr{recipient address rejected: access denied},
 		qr{recipient address rejected: invalid user},
 		qr{recipient address rejected: user .+ does not exist},

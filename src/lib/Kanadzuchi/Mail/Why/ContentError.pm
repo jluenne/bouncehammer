@@ -1,4 +1,4 @@
-# $Id: ContentError.pm,v 1.2.2.5 2013/04/15 04:20:53 ak Exp $
+# $Id: ContentError.pm,v 1.2.2.6 2013/07/16 21:33:47 ak Exp $
 # Copyright (C) 2009,2010,2013 Cubicroot Co. Ltd.
 # Kanadzuchi::Mail::Why::
                                                                                     
@@ -22,16 +22,21 @@ sub exemplaria
 	my $class = shift;
 	return [ 
 		# Rejected due to message contents: spam, virus or header.
+		qr{\d+ denied \[[a-z]+\] .+[(]Mode: .+[)]},
 		qr{because the recipient is not accepting mail with attachments},	# AOL Phoenix
 		qr{because the recipient is not accepting mail with embedded images},	# AOL Phoenix
 		qr{blocked by policy: no spam please},
 		qr{blocked by spamAssassin},		# rejected by SpamAssassin
+		qr{domain .+ is a dead domain},
 		qr{mail appears to be unsolicited},	# rejected due to spam
 		qr{message filtered},
 		qr{message filtered[.] please see the faqs section on spam},
 		qr{message rejected due to suspected spam content},
 		qr{message header size, or recipient list, exceeds policy limit},
 		qr{message mime complexity exceeds the policy maximum},
+		qr{message refused by mailmarshal spamprofiler},
+		qr{our filters rate at and above .+ percent probability of being spam},
+		qr{rejected: spamassassin score },
 		qr{rejected due to spam content},	# rejected due to spam
 		qr{routing loop detected -- too many received: headers},
 		qr{spambouncer identified spam},	# SpamBouncer identified SPAM
@@ -41,6 +46,7 @@ sub exemplaria
 		qr{this message contains improperly-formatted binary content},
 		qr{this message contains text that uses unnecessary base64 encoding},
 		qr{we dont accept spam},
+		qr{your message has been temporarily blocked by our filter},
 	];
 }
 

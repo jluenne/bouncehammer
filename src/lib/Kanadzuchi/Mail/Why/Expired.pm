@@ -1,4 +1,4 @@
-# $Id: Expired.pm,v 1.1.2.3 2013/04/15 04:20:53 ak Exp $
+# $Id: Expired.pm,v 1.1.2.4 2013/07/16 21:33:47 ak Exp $
 # Copyright (C) 2009,2010,2013 Cubicroot Co. Ltd.
 # Kanadzuchi::Mail::Why::
                                                                                     
@@ -21,6 +21,7 @@ sub exemplaria
 {
 	my $class = shift;
 	return [ 
+		qr{connection timed out in connect},
 		qr{delivery time expired},
 		qr{retry time not reached for any host after a long failure period},
 	];

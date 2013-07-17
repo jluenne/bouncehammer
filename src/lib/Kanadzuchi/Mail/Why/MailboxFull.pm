@@ -1,4 +1,4 @@
-# $Id: MailboxFull.pm,v 1.8.2.2 2013/04/15 04:20:53 ak Exp $
+# $Id: MailboxFull.pm,v 1.8.2.3 2013/07/16 21:33:47 ak Exp $
 # -Id: MailboxFull.pm,v 1.1 2009/08/29 07:33:28 ak Exp -
 # -Id: MailboxFull.pm,v 1.2 2009/05/11 08:22:29 ak Exp -
 # Copyright (C) 2009,2010,2013 Cubicroot Co. Ltd.
@@ -44,6 +44,7 @@ sub exemplaria
 		qr{too much mail data},	# @docomo.ne.jp
 		qr{user has exceeded quota, bouncing mail},
 		qr{user is over quota},
+		qr{user is over the quota},
 		qr{user over quota[.] [(][#]5[.]1[.]1[)]\z},	# qmail-toaster
 		qr{user over quota},
 		qr{was automatically rejected: quota exceeded},
