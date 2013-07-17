@@ -1,4 +1,4 @@
-# $Id: Why.pm,v 1.10.2.2 2013/04/15 04:20:53 ak Exp $
+# $Id: Why.pm,v 1.10.2.3 2013/07/17 04:12:24 ak Exp $
 # -Id: Pattern.pm,v 1.1 2009/08/29 07:33:13 ak Exp -
 # -Id: Pattern.pm,v 1.3 2009/05/29 08:22:25 ak Exp -
 # Copyright (C) 2009,2010,2013 Cubicroot Co. Ltd.
@@ -15,21 +15,22 @@ package Kanadzuchi::Mail::Why;
 
 # Cache for error text patterns
 my $Exemplaria = {
-	'ContentError'	=> [],
-	'ExceedLimit'	=> [],
-	'Expired'	=> [],
-	'Filtered'	=> [],
-	'HostUnknown'	=> [],
-	'MailboxFull'	=> [],
-	'MailerError'	=> [],
-	'MesgTooBig'	=> [],
-	'NotAccept'	=> [],
-	'Rejected'	=> [],
-	'RelayingDenied' => [],
-	'SecurityError'	=> [],
-	'SystemError'	=> [],
-	'SystemFull'	=> [],
-	'UserUnknown'	=> [],
+    'ContentError'  => [],
+    'ExceedLimit'   => [],
+    'Expired'       => [],
+    'Filtered'      => [],
+    'HostUnknown'   => [],
+    'MailboxFull'   => [],
+    'MailerError'   => [],
+    'MesgTooBig'    => [],
+    'NotAccept'     => [],
+    'Rejected'      => [],
+    'RelayingDenied' => [],
+    'SecurityError' => [],
+    'Suspend'       => [],
+    'SystemError'   => [],
+    'SystemFull'    => [],
+    'UserUnknown'   => [],
 };
 
 #  ____ ____ ____ ____ ____ _________ ____ ____ ____ ____ ____ ____ ____ 
@@ -39,25 +40,25 @@ my $Exemplaria = {
 #
 sub textumhabet
 {
-	# +-+-+-+-+-+-+-+-+-+-+-+
-	# |t|e|x|t|u|m|h|a|b|e|t|
-	# +-+-+-+-+-+-+-+-+-+-+-+
-	#
-	# @Description	Argument text is included in the patterns or not.
-	# @Param <str>	(String)
-	# @Return	(Integer) 1 = included
-	# @Return	(Integer) 0 = not
-	my $class = shift;
-	my $etext = shift || return 0;
-	my $klass = $class; $klass =~ s{\A.+::}{};
+    # +-+-+-+-+-+-+-+-+-+-+-+
+    # |t|e|x|t|u|m|h|a|b|e|t|
+    # +-+-+-+-+-+-+-+-+-+-+-+
+    #
+    # @Description  Argument text is included in the patterns or not.
+    # @Param <str>  (String)
+    # @Return   (Integer) 1 = included
+    # @Return   (Integer) 0 = not
+    my $class = shift;
+    my $etext = shift || return 0;
+    my $klass = $class; $klass =~ s{\A.+::}{};
 
-	unless( scalar @{ $Exemplaria->{ $klass } } )
-	{
-		$Exemplaria->{ $klass } = $class->exemplaria();
-	}
+    unless( scalar @{ $Exemplaria->{ $klass } } )
+    {
+        $Exemplaria->{ $klass } = $class->exemplaria();
+    }
 
-	return 1 if( grep { lc($etext) =~ $_ } @{ $Exemplaria->{$klass} } );
-	return 0;
+    return 1 if( grep { lc($etext) =~ $_ } @{ $Exemplaria->{$klass} } );
+    return 0;
 }
 
 1;

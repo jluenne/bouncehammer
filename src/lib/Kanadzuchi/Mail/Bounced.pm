@@ -1,4 +1,4 @@
-# $Id: Bounced.pm,v 1.30.2.8 2013/04/15 04:20:53 ak Exp $
+# $Id: Bounced.pm,v 1.30.2.10 2013/07/17 04:12:36 ak Exp $
 # -Id: Returned.pm,v 1.10 2010/02/17 15:32:18 ak Exp -
 # -Id: Returned.pm,v 1.2 2009/08/29 19:01:18 ak Exp -
 # -Id: Returned.pm,v 1.15 2009/08/21 02:44:15 ak Exp -
@@ -773,8 +773,10 @@ sub is_somethingelse
 	if( $else eq 'undefined' || $else eq 'userunknown' || ! $else )
 	{
 		eval { 
+			use Kanadzuchi::Mail::Why::MailboxFull;
 			use Kanadzuchi::Mail::Why::ContentError;
 			use Kanadzuchi::Mail::Why::SecurityError;
+			use Kanadzuchi::Mail::Why::Suspend;
 			use Kanadzuchi::Mail::Why::Expired;
 			use Kanadzuchi::Mail::Why::SystemError;
 			use Kanadzuchi::Mail::Why::NotAccept;
@@ -784,11 +786,13 @@ sub is_somethingelse
 		my $dicode = $self->{'diagnosticcode'};
 		my $eclass = q();
 		my $wclass = { 
+			'mailboxfull' => 'MailboxFull', 
 			'securityerr' => 'SecurityError', 
 			'systemerror' => 'SystemError', 
-			'expired' => 'Expired', 
-			'contenterr' => 'ContentError', 
-			'notaccept' => 'NotAccept',
+			'suspend'     => 'Suspned', 
+			'expired'     => 'Expired', 
+			'contenterr'  => 'ContentError', 
+			'notaccept'   => 'NotAccept',
 			'mailererror' => 'MailerError',
 		};
 
