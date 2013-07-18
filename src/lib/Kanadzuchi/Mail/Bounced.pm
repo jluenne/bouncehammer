@@ -1,4 +1,4 @@
-# $Id: Bounced.pm,v 1.30.2.10 2013/07/17 04:12:36 ak Exp $
+# $Id: Bounced.pm,v 1.30.2.11 2013/07/18 04:10:49 ak Exp $
 # -Id: Returned.pm,v 1.10 2010/02/17 15:32:18 ak Exp -
 # -Id: Returned.pm,v 1.2 2009/08/29 19:01:18 ak Exp -
 # -Id: Returned.pm,v 1.15 2009/08/21 02:44:15 ak Exp -
@@ -789,7 +789,7 @@ sub is_somethingelse
 			'mailboxfull' => 'MailboxFull', 
 			'securityerr' => 'SecurityError', 
 			'systemerror' => 'SystemError', 
-			'suspend'     => 'Suspned', 
+			'suspend'     => 'Suspend', 
 			'expired'     => 'Expired', 
 			'contenterr'  => 'ContentError', 
 			'notaccept'   => 'NotAccept',
