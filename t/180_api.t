@@ -1,4 +1,4 @@
-# $Id: 180_api.t,v 1.2 2009/12/17 20:45:05 ak Exp $
+# $Id: 180_api.t,v 1.2.2.1 2013/08/30 23:05:12 ak Exp $
 #  ____ ____ ____ ____ ____ ____ ____ ____ ____ 
 # ||L |||i |||b |||r |||a |||r |||i |||e |||s ||
 # ||__|||__|||__|||__|||__|||__|||__|||__|||__||
@@ -9,7 +9,7 @@ use strict;
 use warnings;
 use Kanadzuchi::Test;
 use Kanadzuchi::API;
-use Test::More ( tests => 1 );
+use Test::More;
 
 #  ____ ____ ____ ____ ____ ____ _________ ____ ____ ____ ____ 
 # ||G |||l |||o |||b |||a |||l |||       |||v |||a |||r |||s ||
@@ -17,9 +17,9 @@ use Test::More ( tests => 1 );
 # |/__\|/__\|/__\|/__\|/__\|/__\|/_______\|/__\|/__\|/__\|/__\|
 #
 my $T = new Kanadzuchi::Test(
-	'class' => q|Kanadzuchi::API|,
-	'methods' => [], 
-	'instance' => undef(),
+    'class' => 'Kanadzuchi::API',
+    'methods' => [], 
+    'instance' => undef,
 );
 
 #  ____ ____ ____ ____ _________ ____ ____ ____ ____ ____ 
@@ -28,7 +28,8 @@ my $T = new Kanadzuchi::Test(
 # |/__\|/__\|/__\|/__\|/_______\|/__\|/__\|/__\|/__\|/__\|
 #
 PREPROCESS: {
-	use_ok($T->class());
+    use_ok( $T->class );
 }
 
+done_testing();
 __END__

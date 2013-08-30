@@ -1,4 +1,4 @@
-# $Id: 036_mta-exim.t,v 1.3.2.2 2011/10/11 03:02:51 ak Exp $
+# $Id: 036_mta-exim.t,v 1.3.2.3 2013/08/30 23:05:12 ak Exp $
 #  ____ ____ ____ ____ ____ ____ ____ ____ ____ 
 # ||L |||i |||b |||r |||a |||r |||i |||e |||s ||
 # ||__|||__|||__|||__|||__|||__|||__|||__|||__||
@@ -9,7 +9,7 @@ use strict;
 use warnings;
 use Kanadzuchi::Test;
 use Kanadzuchi::MTA::Exim;
-use Test::More ( tests => 12 );
+use Test::More;
 
 #  ____ ____ ____ ____ ____ ____ _________ ____ ____ ____ ____ 
 # ||G |||l |||o |||b |||a |||l |||       |||v |||a |||r |||s ||
@@ -17,16 +17,18 @@ use Test::More ( tests => 12 );
 # |/__\|/__\|/__\|/__\|/__\|/__\|/_______\|/__\|/__\|/__\|/__\|
 #
 my $Test = new Kanadzuchi::Test(
-		'class' => q|Kanadzuchi::MTA::Exim|,
-		'methods' => [ 'xsmtpagent', 'xsmtpcommand', 'xsmtpdiagnosis',
-				'xsmtprecipient', 'xsmtpcharset', 'xsmtpstatus', 
-				'emailheaders', 'reperit', 'SMTPCOMMAND' ],
-		'instance' => undef(),
+        'class' => 'Kanadzuchi::MTA::Exim',
+        'methods' => [ 
+            'xsmtpagent', 'xsmtpcommand', 'xsmtpdiagnosis', 'xsmtprecipient', 
+            'xsmtpcharset', 'xsmtpstatus', 'emailheaders', 'reperit',
+            'SMTPCOMMAND',
+        ],
+        'instance' => undef,
 );
 my $Head = {
-	'subject' => 'Mail delivery failed: returning message to sender',
-	'from' => 'Mail Delivery System <MAILER-DAEMON@example.jp>',
-	'x-failed-recipients' => 'useruknown@example.jp',
+    'subject' => 'Mail delivery failed: returning message to sender',
+    'from' => 'Mail Delivery System <MAILER-DAEMON@example.jp>',
+    'x-failed-recipients' => 'useruknown@example.jp',
 };
 
 #  ____ ____ ____ ____ _________ ____ ____ ____ ____ ____ 
@@ -35,40 +37,40 @@ my $Head = {
 # |/__\|/__\|/__\|/__\|/_______\|/__\|/__\|/__\|/__\|/__\|
 #
 PREPROCESS: {
-	can_ok( $Test->class(), @{ $Test->methods } );
-	is( $Test->class->xsmtpagent(), 'X-SMTP-Agent: Exim'.qq(\n),
-		'->xsmtpagent() = X-SMTP-Agent: Exim' );
-	is( $Test->class->xsmtpcommand(), 'X-SMTP-Command: CONN'.qq(\n),
-		'->xsmtpcommand() = X-SMTP-Command: CONN' );
-	is( $Test->class->xsmtpdiagnosis('Test'), 'X-SMTP-Diagnosis: Test'.qq(\n),
-		'->xsmtpdiagnosis() = X-SMTP-Diagnosis: Test' );
-	is( $Test->class->xsmtpstatus('5.1.1'), 'X-SMTP-Status: 5.1.1'.qq(\n),
-		'->xsmtpstatus() = X-SMTP-Status: 5.1.1' );
-	is( $Test->class->xsmtprecipient('user@example.jp'), 'X-SMTP-Recipient: user@example.jp'.qq(\n),
-		'->xsmtprecipient() = X-SMTP-Recipient: user@example.jp' );
-	isa_ok( $Test->class->emailheaders(), q|ARRAY|, '->emailheaders = []' );
-	isa_ok( $Test->class->SMTPCOMMAND(), q|HASH|, '->SMTPCOMMAND = {}' );
+    can_ok( $Test->class, @{ $Test->methods } );
+    is( $Test->class->xsmtpagent, 'X-SMTP-Agent: Exim'.qq(\n),
+        '->xsmtpagent = X-SMTP-Agent: Exim' );
+    is( $Test->class->xsmtpcommand, 'X-SMTP-Command: CONN'.qq(\n),
+        '->xsmtpcommand = X-SMTP-Command: CONN' );
+    is( $Test->class->xsmtpdiagnosis('Test'), 'X-SMTP-Diagnosis: Test'.qq(\n),
+        '->xsmtpdiagnosis = X-SMTP-Diagnosis: Test' );
+    is( $Test->class->xsmtpstatus('5.1.1'), 'X-SMTP-Status: 5.1.1'.qq(\n),
+        '->xsmtpstatus = X-SMTP-Status: 5.1.1' );
+    is( $Test->class->xsmtprecipient('user@example.jp'), 'X-SMTP-Recipient: user@example.jp'.qq(\n),
+        '->xsmtprecipient = X-SMTP-Recipient: user@example.jp' );
+    isa_ok( $Test->class->emailheaders, 'ARRAY', '->emailheaders = []' );
+    isa_ok( $Test->class->SMTPCOMMAND, 'HASH', '->SMTPCOMMAND = {}' );
 
 }
 
 REPERIT: {
-	my $mesgbodypart = q();
-	my $pseudoheader = q();
+    my $mesgbodypart = q();
+    my $pseudoheader = q();
 
-	$mesgbodypart .= $_ while( <DATA> );
-	$pseudoheader = $Test->class->reperit( $Head, \$mesgbodypart );
-	ok( $pseudoheader );
-	
-	foreach my $el ( split("\n", $pseudoheader) )
-	{
-		next() if( $el =~ m{\A\z} );
-		ok( $el, $el ) if( $el =~ m{X-SMTP-Command: [A-Z]{4}} );
-		ok( $el, $el ) if( $el =~ m{Final-Recipient: } );
-		ok( $el, $el ) if( $el =~ m{X-SMTP-Status: } );
-		ok( $el, $el ) if( $el =~ m{X-SMTP-Diagnosis: } );
-	}
+    $mesgbodypart .= $_ while( <DATA> );
+    $pseudoheader = $Test->class->reperit( $Head, \$mesgbodypart );
+    ok( $pseudoheader );
+    
+    foreach my $el ( split("\n", $pseudoheader) ) {
+        next if $el =~ m{\A\z};
+        ok( $el, $el ) if $el =~ m{X-SMTP-Command: [A-Z]{4}};
+        ok( $el, $el ) if $el =~ m{Final-Recipient: };
+        ok( $el, $el ) if $el =~ m{X-SMTP-Status: };
+        ok( $el, $el ) if $el =~ m{X-SMTP-Diagnosis: };
+    }
 }
 
+done_testing();
 __DATA__
 This message was created automatically by mail delivery software.
 
@@ -83,10 +85,10 @@ recipients. This is a permanent error. The following address(es) failed:
 
 Return-path: <hoge@example.org>
 Received: from localhost ([127.0.0.1])
-	by fuga.example.org with smtp (Exim 4.72)
-	(envelope-from <hoge@example.org>)
-	id 1P1YNN-0003AD-Ga
-	for userunknown@example.jp; Fri, 01 Oct 2010 14:42:09 +0900
+    by fuga.example.org with smtp (Exim 4.72)
+    (envelope-from <hoge@example.org>)
+    id 1P1YNN-0003AD-Ga
+    for userunknown@example.jp; Fri, 01 Oct 2010 14:42:09 +0900
 Date: Fri, 01 Oct 2010 14:42:07 +0900
 Message-Id: <E1P1YNN-0003AD-Ga@fuga.example.org>
 Sujbect: test2

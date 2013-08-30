@@ -1,4 +1,4 @@
-# $Id: 016_address.t,v 1.6.2.1 2011/02/02 00:45:11 ak Exp $
+# $Id: 016_address.t,v 1.6.2.2 2013/08/30 23:05:12 ak Exp $
 #  ____ ____ ____ ____ ____ ____ ____ ____ ____ 
 # ||L |||i |||b |||r |||a |||r |||i |||e |||s ||
 # ||__|||__|||__|||__|||__|||__|||__|||__|||__||
@@ -11,7 +11,7 @@ use Kanadzuchi::Test;
 use Kanadzuchi::Address;
 use Kanadzuchi::RFC2822;
 use Path::Class;
-use Test::More ( tests => 1193 );
+use Test::More;
 
 #  ____ ____ ____ ____ ____ ____ _________ ____ ____ ____ ____ 
 # ||G |||l |||o |||b |||a |||l |||       |||v |||a |||r |||s ||
@@ -19,12 +19,10 @@ use Test::More ( tests => 1193 );
 # |/__\|/__\|/__\|/__\|/__\|/__\|/_______\|/__\|/__\|/__\|/__\|
 #
 my $T = new Kanadzuchi::Test(
-	'class' => q|Kanadzuchi::Address|,
-	'methods' => [ 'new', 'parse', 'canonify' ],
-	'instance' => new Kanadzuchi::Address(
-			'address' => 'user@example.jp' ),
+    'class' => 'Kanadzuchi::Address',
+    'methods' => [ 'new', 'parse', 'canonify' ],
+    'instance' => new Kanadzuchi::Address( 'address' => 'user@example.jp' ),
 );
-
 
 #  ____ ____ ____ ____ _________ ____ ____ ____ ____ ____ 
 # ||T |||e |||s |||t |||       |||c |||o |||d |||e |||s ||
@@ -32,129 +30,123 @@ my $T = new Kanadzuchi::Test(
 # |/__\|/__\|/__\|/__\|/_______\|/__\|/__\|/__\|/__\|/__\|
 #
 PREPROCESS: {
-	isa_ok( $T->instance(), $T->class() );
-	can_ok( $T->class(), @{$T->methods()} );
+    isa_ok( $T->instance, $T->class );
+    can_ok( $T->class, @{ $T->methods } );
 }
 
 CLASS_METHODS: {
-	my $class = $T->class();
-	my $email = q(POSTMASTER@BOUNCEHAMMER.JP);
-	my $user = 'POSTMASTER';
-	my $host = 'BOUNCEHAMMER.JP';
-	my $heads = [
-		'X-Actual-Recipient',
-		'Final-Recipient',
-		'Original-Recipient',
-		'To',
-		'Delivered-To',
-		'From',
-		'Return-Path',
-		'Reply-To',
-		'Errors-To',
-		'X-Postfix-Sender',
-		'Envelope-From',
-		'X-Envelope-From',
-		'Resent-From',
-		'Sender',
-		'Resent-Reply-To',
-		'Apparently-From',
-		'Envelope-To',
-		'X-Envelope-To',
-		'Resent-To',
-		'Apparently-To',
-	];
-	my $froms = [
-		q{"hoge" <hoge@example.jp>},
-		q{"=?ISO-2022-JP?B?dummy?=" <fuga@example.jp>},
-		q{"T E S T" <test@exampe.jp>},
-		q{"Nanashi no gombe" <gombe@example.jp>},
-		q{<root@example.jp>},
-		q{<root@example.jp> root@example.jp},
-		q{User name <user@example.jp>},
-		q{User name <user@example.jp> USER@EXAMPLE.JP},
-		q{dummy@host <dummy@example.jp>},
-		q{dummy@host.int <dummy@example.jp>},
-		q{dummy <dummy@example.jp> dummy@host.int},
-		q{test@example.gov (The President)},
-		q{Vice President. (U.S.A.) vp@example.gov},
-		q{address@example.jp},
-		q{<user@example.com>:},
-		q{"<user@example.org>"},
-		q{"user@example.net"},
-		q{'user@example.edu'},
-		q{`user@example.cat`},
-		q{(user@example.mil)},
-		q{[user@example.gov]},
-		q|{user@example.int}|,
-		q{&lt;user@example.gl&gt;},
-	];
+    my $class = $T->class;
+    my $email = 'POSTMASTER@BOUNCEHAMMER.JP';
+    my $user = 'POSTMASTER';
+    my $host = 'BOUNCEHAMMER.JP';
+    my $heads = [
+        'X-Actual-Recipient',
+        'Final-Recipient',
+        'Original-Recipient',
+        'To',
+        'Delivered-To',
+        'From',
+        'Return-Path',
+        'Reply-To',
+        'Errors-To',
+        'X-Postfix-Sender',
+        'Envelope-From',
+        'X-Envelope-From',
+        'Resent-From',
+        'Sender',
+        'Resent-Reply-To',
+        'Apparently-From',
+        'Envelope-To',
+        'X-Envelope-To',
+        'Resent-To',
+        'Apparently-To',
+    ];
+    my $froms = [
+        q{"hoge" <hoge@example.jp>},
+        q{"=?ISO-2022-JP?B?dummy?=" <fuga@example.jp>},
+        q{"T E S T" <test@exampe.jp>},
+        q{"Nanashi no gombe" <gombe@example.jp>},
+        q{<root@example.jp>},
+        q{<root@example.jp> root@example.jp},
+        q{User name <user@example.jp>},
+        q{User name <user@example.jp> USER@EXAMPLE.JP},
+        q{dummy@host <dummy@example.jp>},
+        q{dummy@host.int <dummy@example.jp>},
+        q{dummy <dummy@example.jp> dummy@host.int},
+        q{test@example.gov (The President)},
+        q{Vice President. (U.S.A.) vp@example.gov},
+        q{address@example.jp},
+        q{<user@example.com>:},
+        q{"<user@example.org>"},
+        q{"user@example.net"},
+        q{'user@example.edu'},
+        q{`user@example.cat`},
+        q{(user@example.mil)},
+        q{[user@example.gov]},
+        q|{user@example.int}|,
+        q{&lt;user@example.gl&gt;},
+    ];
 
-	CONSTRUCTOR: {
-		my $object = new Kanadzuchi::Address( 'address' => $email );
+    CONSTRUCTOR: {
+        my $object = new Kanadzuchi::Address( 'address' => $email );
 
-		isa_ok( $object, $class );
-		is( $object->address(), lc($email), q{->address() = }.$object->address() );
-		is( $object->user(), lc($user), q{->user() = }.$object->user() );
-		is( $object->host(), lc($host), q{->host() = }.$object->host() );
+        isa_ok( $object, $class );
+        is( $object->address, lc $email, '->address() = '.$object->address );
+        is( $object->user, lc $user, '->user() = '.$object->user );
+        is( $object->host, lc $host, '->host() = '.$object->host );
 
-		ZERO_VALUES: foreach my $z ( @{$Kanadzuchi::Test::ExceptionalValues} )
-		{
-			my $argv = defined($z) ? sprintf("%#x", ord($z)) : 'undef()';
-			$object = new Kanadzuchi::Address( 'address' => $z );
-			is( $object, undef(), q{->new(}.$argv.q{) = undef()} );
-		}
-	}
+        ZERO_VALUES: foreach my $z ( @{ $Kanadzuchi::Test::ExceptionalValues } ) {
+            my $argv = defined $z ? sprintf( "%#x", ord $z ) : 'undef';
+            $object = new Kanadzuchi::Address( 'address' => $z );
+            is( $object, undef, '->new('.$argv.') = undef' );
+        }
+    }
 
-	PARSER: {
-		my $mailbox = new Path::Class::File( $T->example().q{/17-messages.eml} );
-		my $objects = undef();
+    PARSER: {
+        my $mailbox = new Path::Class::File( $T->example.'/17-messages.eml' );
+        my $objects = undef;
 
-		foreach my $l ( $mailbox->slurp( chomp => 1 ) )
-		{
-			next() unless($l);
-			next() unless(length($l));
-			next() unless( grep { $l =~ m{\A$_[:]\s+} } @$heads );
+        foreach my $l ( $mailbox->slurp( 'chomp' => 1 ) ) {
+            next unless $l;
+            next unless length $l;
+            next unless grep { $l =~ m{\A$_[:]\s+} } @$heads;
 
-			map { $l =~ s{\A$_[:]\s+(RFC822;\s*)?}{}i; } @$heads;
-			$l =~ y{[`'"()<>\r\n$]}{}d;
-			$l =~ s{\s}{,}g;
-			$l =~ s{\A[,;\s]}{}g;
+            map { $l =~ s{\A$_[:]\s+(RFC822;\s*)?}{}i; } @$heads;
+            $l =~ y{[`'"()<>\r\n$]}{}d;
+            $l =~ s{\s}{,}g;
+            $l =~ s{\A[,;\s]}{}g;
 
-			$objects = Kanadzuchi::Address->parse( [ $l ] );
-			isa_ok( $objects, q|ARRAY| );
+            $objects = Kanadzuchi::Address->parse( [ $l ] );
+            isa_ok( $objects, 'ARRAY' );
 
-			foreach my $o ( @$objects )
-			{
-				isa_ok( $o, $class );
-				ok( Kanadzuchi::RFC2822->is_emailaddress($o->address), q{->address() = }.$o->address() );
-				ok( length($o->user), q{->user() = }.$o->user() );
-				ok( Kanadzuchi::RFC2822->is_domainpart($o->host), q{->host() = }.$o->host() );
-			}
-		}
+            foreach my $o ( @$objects ) {
+                isa_ok( $o, $class );
+                ok( Kanadzuchi::RFC2822->is_emailaddress( $o->address ), '->address() = '.$o->address );
+                ok( length $o->user, '->user() = '.$o->user() );
+                ok( Kanadzuchi::RFC2822->is_domainpart( $o->host ), '->host() = '.$o->host() );
+            }
+        }
 
-		ZERO_VALUES: foreach my $z ( @{$Kanadzuchi::Test::ExceptionalValues} )
-		{
-			my $argv = defined($z) ? sprintf("%#x", ord($z)) : 'undef()';
-			$objects = Kanadzuchi::Address->parse( [$z] );
-			isa_ok( $objects, q|ARRAY| );
-			is( scalar(@$objects), 0, q{->parser(}.$argv.q{) = Empty array} );
-		}
-	}
+        ZERO_VALUES: foreach my $z ( @{ $Kanadzuchi::Test::ExceptionalValues } ) {
+            my $argv = defined $z ? sprintf( "%#x", ord $z ) : 'undef';
+            $objects = Kanadzuchi::Address->parse( [ $z ] );
+            isa_ok( $objects, 'ARRAY' );
+            is( scalar @$objects, 0, '->parser('.$argv.') = Empty array' );
+        }
+    }
 
-	CANONIFY: {
-		foreach my $e ( @$froms )
-		{
-			my $c = Kanadzuchi::Address->canonify($e);
-			ok( Kanadzuchi::RFC2822->is_emailaddress($c), '->canonify('.$e.') => '.$c );
-		}
+    CANONIFY: {
+        foreach my $e ( @$froms ) {
+            my $c = Kanadzuchi::Address->canonify( $e );
+            ok( Kanadzuchi::RFC2822->is_emailaddress( $c ), '->canonify('.$e.') => '.$c );
+        }
 
-		is( Kanadzuchi::Address->canonify(), q(), '->canonify() = Empty' );
-		is( Kanadzuchi::Address->canonify([]), q(), '->canonify([]) = Empty' );
-		is( Kanadzuchi::Address->canonify({}), q(), '->canonify([]) = Empty' );
-		is( Kanadzuchi::Address->canonify(0), 0, '->canonify(0) = 0' );
-	}
+        is( Kanadzuchi::Address->canonify(), q(), '->canonify() = Empty' );
+        is( Kanadzuchi::Address->canonify([]), q(), '->canonify([]) = Empty' );
+        is( Kanadzuchi::Address->canonify({}), q(), '->canonify([]) = Empty' );
+        is( Kanadzuchi::Address->canonify(0), 0, '->canonify(0) = 0' );
+    }
 }
 
-
+done_testing();
 __END__
-

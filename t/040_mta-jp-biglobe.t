@@ -1,4 +1,4 @@
-# $Id: 040_mta-jp-biglobe.t,v 1.1.2.3 2011/10/11 03:02:52 ak Exp $
+# $Id: 040_mta-jp-biglobe.t,v 1.1.2.4 2013/08/30 23:05:12 ak Exp $
 #  ____ ____ ____ ____ ____ ____ ____ ____ ____ 
 # ||L |||i |||b |||r |||a |||r |||i |||e |||s ||
 # ||__|||__|||__|||__|||__|||__|||__|||__|||__||
@@ -9,7 +9,7 @@ use strict;
 use warnings;
 use Kanadzuchi::Test;
 use Kanadzuchi::MTA::JP::Biglobe;
-use Test::More ( tests => 12 );
+use Test::More;
 
 #  ____ ____ ____ ____ ____ ____ _________ ____ ____ ____ ____ 
 # ||G |||l |||o |||b |||a |||l |||       |||v |||a |||r |||s ||
@@ -17,16 +17,18 @@ use Test::More ( tests => 12 );
 # |/__\|/__\|/__\|/__\|/__\|/__\|/_______\|/__\|/__\|/__\|/__\|
 #
 my $Test = new Kanadzuchi::Test(
-		'class' => q|Kanadzuchi::MTA::JP::Biglobe|,
-		'methods' => [ 'xsmtpagent', 'xsmtpcommand', 'xsmtpdiagnosis', 
-				'xsmtprecipient', 'xsmtpcharset', 'xsmtpstatus', 
-				'emailheaders', 'reperit', 'SMTPCOMMAND' ],
-		'instance' => undef(),
+        'class' => 'Kanadzuchi::MTA::JP::Biglobe',
+        'methods' => [ 
+            'xsmtpagent', 'xsmtpcommand', 'xsmtpdiagnosis', 'xsmtprecipient', 
+            'xsmtpcharset', 'xsmtpstatus', 'emailheaders', 'reperit', 
+            'SMTPCOMMAND',
+        ],
+        'instance' => undef,
 );
 my $Head = {
-	'subject' => 'Returned mail: Service unavailable',
-	'from' => 'postmaster@biglobe.ne.jp',
-	'content-type' => 'text/plain',
+    'subject' => 'Returned mail: Service unavailable',
+    'from' => 'postmaster@biglobe.ne.jp',
+    'content-type' => 'text/plain',
 };
 
 #  ____ ____ ____ ____ _________ ____ ____ ____ ____ ____ 
@@ -35,40 +37,40 @@ my $Head = {
 # |/__\|/__\|/__\|/__\|/_______\|/__\|/__\|/__\|/__\|/__\|
 #
 PREPROCESS: {
-	can_ok( $Test->class(), @{ $Test->methods } );
-	is( $Test->class->xsmtpagent(), 'X-SMTP-Agent: JP::Biglobe'.qq(\n),
-		'->xsmtpagent() = X-SMTP-Agent: JP::Biglobe' );
-	is( $Test->class->xsmtpcommand(), 'X-SMTP-Command: CONN'.qq(\n),
-		'->xsmtpcommand() = X-SMTP-Command: CONN' );
-	is( $Test->class->xsmtpdiagnosis('Test'), 'X-SMTP-Diagnosis: Test'.qq(\n),
-		'->xsmtpdiagnosis() = X-SMTP-Diagnosis: Test' );
-	is( $Test->class->xsmtpstatus('5.1.1'), 'X-SMTP-Status: 5.1.1'.qq(\n),
-		'->xsmtpstatus() = X-SMTP-Status: 5.1.1' );
-	is( $Test->class->xsmtprecipient('user@example.jp'), 'X-SMTP-Recipient: user@example.jp'.qq(\n),
-		'->xsmtprecipient() = X-SMTP-Recipient: user@example.jp' );
-	isa_ok( $Test->class->emailheaders(), q|ARRAY|, '->emailheaders = []' );
-	isa_ok( $Test->class->SMTPCOMMAND(), q|HASH|, '->SMTPCOMMAND = {}' );
+    can_ok( $Test->class, @{ $Test->methods } );
+    is( $Test->class->xsmtpagent, 'X-SMTP-Agent: JP::Biglobe'.qq(\n),
+        '->xsmtpagent = X-SMTP-Agent: JP::Biglobe' );
+    is( $Test->class->xsmtpcommand, 'X-SMTP-Command: CONN'.qq(\n),
+        '->xsmtpcommand = X-SMTP-Command: CONN' );
+    is( $Test->class->xsmtpdiagnosis('Test'), 'X-SMTP-Diagnosis: Test'.qq(\n),
+        '->xsmtpdiagnosis = X-SMTP-Diagnosis: Test' );
+    is( $Test->class->xsmtpstatus('5.1.1'), 'X-SMTP-Status: 5.1.1'.qq(\n),
+        '->xsmtpstatus = X-SMTP-Status: 5.1.1' );
+    is( $Test->class->xsmtprecipient('user@example.jp'), 'X-SMTP-Recipient: user@example.jp'.qq(\n),
+        '->xsmtprecipient = X-SMTP-Recipient: user@example.jp' );
+    isa_ok( $Test->class->emailheaders, 'ARRAY', '->emailheaders = []' );
+    isa_ok( $Test->class->SMTPCOMMAND, 'HASH', '->SMTPCOMMAND = {}' );
 
 }
 
 REPERIT: {
-	my $mesgbodypart = q();
-	my $pseudoheader = q();
+    my $mesgbodypart = q();
+    my $pseudoheader = q();
 
-	$mesgbodypart .= $_ while( <DATA> );
-	$pseudoheader = $Test->class->reperit( $Head, \$mesgbodypart );
-	ok( $pseudoheader );
+    $mesgbodypart .= $_ while( <DATA> );
+    $pseudoheader = $Test->class->reperit( $Head, \$mesgbodypart );
+    ok( $pseudoheader );
 
-	foreach my $el ( split("\n", $pseudoheader) )
-	{
-		next() if( $el =~ m{\A\z} );
-		ok( $el, $el ) if( $el =~ m{X-SMTP-Command: [A-Z]{4}} );
-		ok( $el, $el ) if( $el =~ m{Final-Recipient: } );
-		ok( $el, $el ) if( $el =~ m{X-SMTP-Status: } );
-		ok( $el, $el ) if( $el =~ m{X-SMTP-Diagnosis: } );
-	}
+    foreach my $el ( split("\n", $pseudoheader) ) {
+        next if $el =~ m{\A\z};
+        ok( $el, $el ) if $el =~ m{X-SMTP-Command: [A-Z]{4}};
+        ok( $el, $el ) if $el =~ m{Final-Recipient: };
+        ok( $el, $el ) if $el =~ m{X-SMTP-Status: };
+        ok( $el, $el ) if $el =~ m{X-SMTP-Diagnosis: };
+    }
 }
 
+done_testing();
 __DATA__
 
 This is a MIME-encapsulated message.
@@ -86,7 +88,7 @@ The number of messages in recipient's mailbox exceeded the local limit.
 Content-Type: message/rfc822
 
 Received: from rcpt-impgw.biglobe.ne.jp by biglobe.ne.jp (RCPT_GW)
-	id MAA30594; Mon, 07 Jan 2008 12:44:53 +0900 (JST)
+    id MAA30594; Mon, 07 Jan 2008 12:44:53 +0900 (JST)
 Message-ID: <44444441111111114ddddddddiiiix@aaaaa.bbbbb>
 From: "bounce@example.net" <bounce@example.net>
 To: "satb" <user@aaa.biglobe.ne.jp>

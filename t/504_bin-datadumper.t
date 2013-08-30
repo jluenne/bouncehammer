@@ -1,4 +1,4 @@
-# $Id: 504_bin-datadumper.t,v 1.20.2.3 2012/11/02 10:50:42 ak Exp $
+# $Id: 504_bin-datadumper.t,v 1.20.2.4 2013/08/30 23:05:12 ak Exp $
 #  ____ ____ ____ ____ ____ ____ ____ ____ ____ 
 # ||L |||i |||b |||r |||a |||r |||i |||e |||s ||
 # ||__|||__|||__|||__|||__|||__|||__|||__|||__||
@@ -7,312 +7,307 @@
 use lib qw(./t/lib ./dist/lib ./src/lib);
 use strict;
 use warnings;
-use Test::More ( tests => 500 );
+use Test::More ( 'tests' => 500 );
 
 
 SKIP: {
-	my $Skip = 500;	# How many skips
-	eval{ require IPC::Cmd; }; 
-	skip('Because no IPC::Cmd for testing',$Skip) if($@);
+    my $Skip = 500; # How many skips
+    eval{ require IPC::Cmd; }; 
+    skip('Because no IPC::Cmd for testing',$Skip) if $@;
 
-	eval { require DBI; }; skip( 'Because no DBI for testing', $Skip ) if( $@ );
-	eval { require DBD::SQLite; }; skip( 'Because no DBD::SQLite for testing', $Skip ) if( $@ );
+    eval { require DBI; }; skip( 'Because no DBI for testing', $Skip ) if $@;
+    eval { require DBD::SQLite; }; skip( 'Because no DBD::SQLite for testing', $Skip ) if $@;
 
-	require Kanadzuchi::Test::CLI;
-	require Kanadzuchi::Test::DBI;
-	require Kanadzuchi;
-	require Kanadzuchi::BdDR;
-	require Kanadzuchi::BdDR::Cache;
-	require Kanadzuchi::BdDR::BounceLogs;
-	require Kanadzuchi::BdDR::BounceLogs::Masters;
-	require Kanadzuchi::Mail::Stored::YAML;
-	require Kanadzuchi::Mail::Stored::BdDR;
+    require Kanadzuchi::Test::CLI;
+    require Kanadzuchi::Test::DBI;
+    require Kanadzuchi;
+    require Kanadzuchi::BdDR;
+    require Kanadzuchi::BdDR::Cache;
+    require Kanadzuchi::BdDR::BounceLogs;
+    require Kanadzuchi::BdDR::BounceLogs::Masters;
+    require Kanadzuchi::Mail::Stored::YAML;
+    require Kanadzuchi::Mail::Stored::BdDR;
 
-	#  ____ ____ ____ ____ ____ ____ _________ ____ ____ ____ ____ 
-	# ||G |||l |||o |||b |||a |||l |||       |||v |||a |||r |||s ||
-	# ||__|||__|||__|||__|||__|||__|||_______|||__|||__|||__|||__||
-	# |/__\|/__\|/__\|/__\|/__\|/__\|/_______\|/__\|/__\|/__\|/__\|
-	#
-	my $Kana = new Kanadzuchi();
-	my $BdDR = new Kanadzuchi::BdDR();
-	my $Btab = undef();
-	my $Mtab = {};
-	my $Cdat = new Kanadzuchi::BdDR::Cache();
-	my $Test = new Kanadzuchi::Test::CLI(
-			'command' => -x q(./dist/bin/datadumper) ? q(./dist/bin/datadumper) : q(./src/bin/datadumper.PL),
-			'config' => q(./src/etc/prove.cf),
-			'input' => q(./examples/17-messages.eml),
-			'output' => q(./.test/hammer.1970-01-01.ffffffff.000000.tmp),
-			'database' => q(/tmp/bouncehammer-test.db),
-			'tempdir' => q(./.test),
-	);
-	my $File = './examples/hammer.1970-01-01.ffffffff.000000.tmp';
-	my $Yaml = undef();
-	my $Yobj = [];
-	my $Recs = 37;
-	my $Opts = q| -C|.$Test->config();
+    #  ____ ____ ____ ____ ____ ____ _________ ____ ____ ____ ____ 
+    # ||G |||l |||o |||b |||a |||l |||       |||v |||a |||r |||s ||
+    # ||__|||__|||__|||__|||__|||__|||_______|||__|||__|||__|||__||
+    # |/__\|/__\|/__\|/__\|/__\|/__\|/_______\|/__\|/__\|/__\|/__\|
+    #
+    my $Kana = new Kanadzuchi;
+    my $BdDR = new Kanadzuchi::BdDR;
+    my $Btab = undef;
+    my $Mtab = {};
+    my $Cdat = new Kanadzuchi::BdDR::Cache;
+    my $Test = new Kanadzuchi::Test::CLI(
+            'command' => -x './dist/bin/datadumper' ? './dist/bin/datadumper' : './src/bin/datadumper.PL',
+            'config' => './src/etc/prove.cf',
+            'input' => './examples/17-messages.eml',
+            'output' => './.test/hammer.1970-01-01.ffffffff.000000.tmp',
+            'database' => '/tmp/bouncehammer-test.db',
+            'tempdir' => './.test',
+    );
+    my $File = './examples/hammer.1970-01-01.ffffffff.000000.tmp';
+    my $Yaml = undef;
+    my $Yobj = [];
+    my $Recs = 37;
+    my $Opts = ' -C'.$Test->config;
 
-	my $Tset = [
-		{
-			'name' => 'Dump All data',
-			'option' => ' --alldata',
-			'count' => 36,
-		},
-		{
-			'name' => 'Dump by Addresser(sender address)',
-			'option' => ' --addresser user1@example.jp',
-			'count' => 1,
-		},
-		{
-			'name' => 'Dump by Recipient address',
-			'option' => ' --recipient domain-does-not-exist@example.gov',
-			'count' => 1,
-		},
-		{
-			'name' => 'Dump by Senderdomain name',
-			'option' => ' --senderdomain example.gr.jp',
-			'count' => 4,
-		},
-		{
-			'name' => 'Dump by Destination domain name',
-			'option' => ' --destination gmail.com',
-			'count' => 2,
-		},
-		{
-			'name' => 'Dump by HostGroup',
-			'option' => ' --hostgroup cellphone',
-			'count' => 12,
-		},
-		{
-			'name' => 'Dump by Provider',
-			'option' => ' --provider various',
-			'count' => 4,
-		},
-		{
-			'name' => 'Dump by Reason',
-			'option' => ' --reason filtered',
-			'count' => 4,
-		},
-		{
-			'name' => 'Dump by Reason',
-			'option' => ' --reason mailboxfull',
-			'count' => 3,
-		},
-		{
-			'name' => 'Dump by Message Token',
-			'option' => ' --token 0f9085b0dce9bf7d107eb36cd5c65195',
-			'count' => 1,
-		},
-		{
-			'name' => 'Dump Recent(25 years)',
-			'option' => ' --howrecent 25y',
-			'count' => 36,
-		},
-		{
-			'name' => 'Dump by Frequency',
-			'option' => ' --frequency 2',
-			'count' => 4,
-		},
-	];
-	my $Comm = { 'y' => 74, 'c' => 68 };
+    my $Tset = [
+        {
+            'name' => 'Dump All data',
+            'option' => ' --alldata',
+            'count' => 36,
+        },
+        {
+            'name' => 'Dump by Addresser(sender address)',
+            'option' => ' --addresser user1@example.jp',
+            'count' => 1,
+        },
+        {
+            'name' => 'Dump by Recipient address',
+            'option' => ' --recipient domain-does-not-exist@example.gov',
+            'count' => 1,
+        },
+        {
+            'name' => 'Dump by Senderdomain name',
+            'option' => ' --senderdomain example.gr.jp',
+            'count' => 4,
+        },
+        {
+            'name' => 'Dump by Destination domain name',
+            'option' => ' --destination gmail.com',
+            'count' => 2,
+        },
+        {
+            'name' => 'Dump by HostGroup',
+            'option' => ' --hostgroup cellphone',
+            'count' => 12,
+        },
+        {
+            'name' => 'Dump by Provider',
+            'option' => ' --provider various',
+            'count' => 4,
+        },
+        {
+            'name' => 'Dump by Reason',
+            'option' => ' --reason filtered',
+            'count' => 4,
+        },
+        {
+            'name' => 'Dump by Reason',
+            'option' => ' --reason mailboxfull',
+            'count' => 3,
+        },
+        {
+            'name' => 'Dump by Message Token',
+            'option' => ' --token 0f9085b0dce9bf7d107eb36cd5c65195',
+            'count' => 1,
+        },
+        {
+            'name' => 'Dump Recent(25 years)',
+            'option' => ' --howrecent 25y',
+            'count' => 36,
+        },
+        {
+            'name' => 'Dump by Frequency',
+            'option' => ' --frequency 2',
+            'count' => 4,
+        },
+    ];
+    my $Comm = { 'y' => 74, 'c' => 68 };
 
-	#  ____ ____ ____ ____ _________ ____ ____ ____ ____ ____ 
-	# ||T |||e |||s |||t |||       |||c |||o |||d |||e |||s ||
-	# ||__|||__|||__|||__|||_______|||__|||__|||__|||__|||__||
-	# |/__\|/__\|/__\|/__\|/_______\|/__\|/__\|/__\|/__\|/__\|
-	#
-	CONNECT: {
-		$BdDR = Kanadzuchi::BdDR->new();
-		$BdDR->setup( { 'dbname' => $Test->database(), 'dbtype' => 'SQLite' } );
-		$BdDR->printerror(1);
-		$BdDR->connect();
+    #  ____ ____ ____ ____ _________ ____ ____ ____ ____ ____ 
+    # ||T |||e |||s |||t |||       |||c |||o |||d |||e |||s ||
+    # ||__|||__|||__|||__|||_______|||__|||__|||__|||__|||__||
+    # |/__\|/__\|/__\|/__\|/_______\|/__\|/__\|/__\|/__\|/__\|
+    #
+    CONNECT: {
+        $BdDR = Kanadzuchi::BdDR->new;
+        $BdDR->setup( { 'dbname' => $Test->database, 'dbtype' => 'SQLite' } );
+        $BdDR->printerror(1);
+        $BdDR->connect;
 
-		isa_ok( $BdDR, q|Kanadzuchi::BdDR| );
-		isa_ok( $BdDR->handle(), q|DBI::db| );
-	}
+        isa_ok( $BdDR, 'Kanadzuchi::BdDR' );
+        isa_ok( $BdDR->handle, 'DBI::db' );
+    }
 
-	BUILD_DATABASE: {
-		truncate($Test->database(),0) if( -f $Test->database() );
-		ok( Kanadzuchi::Test::DBI->buildtable($BdDR->handle()), '->DBI->buildtable()' );
-	}
+    BUILD_DATABASE: {
+        truncate( $Test->database, 0 ) if -f $Test->database;
+        ok( Kanadzuchi::Test::DBI->buildtable( $BdDR->handle ), '->DBI->buildtable' );
+    }
 
-	TABLEOBJECTS: {
-		$Btab = Kanadzuchi::BdDR::BounceLogs::Table->new('handle'=>$BdDR->handle());
-		$Mtab = Kanadzuchi::BdDR::BounceLogs::Masters::Table->mastertables($BdDR->handle());
-	}
+    TABLEOBJECTS: {
+        $Btab = Kanadzuchi::BdDR::BounceLogs::Table->new( 'handle' => $BdDR->handle );
+        $Mtab = Kanadzuchi::BdDR::BounceLogs::Masters::Table->mastertables( $BdDR->handle );
+    }
 
-	LOAD_THE_LOG: {
-		$Yaml = JSON::Syck::LoadFile($Test->output());
+    LOAD_THE_LOG: {
+        $Yaml = JSON::Syck::LoadFile( $Test->output );
 
-		isa_ok( $Yaml, q|ARRAY|, $Test->output.q{: load ok} );
-		is( scalar(@$Yaml), $Recs , $Test->output.q{ have }.$Recs.q{ records} );
-	}
+        isa_ok( $Yaml, 'ARRAY', $Test->output.': load ok' );
+        is( scalar @$Yaml, $Recs, $Test->output.' have '.$Recs.' records' );
+    }
 
-	PREPROCESS: {
-		ok( $Test->environment(), q{->environment()} );
-		ok( $Test->syntax(), q{->syntax()} );
-		ok( $Test->version(), q{->version()} );
-		ok( $Test->help(), q{->help()} );
-		ok( $Test->error(), q{->error()} );
+    PREPROCESS: {
+        ok( $Test->environment, '->environment' );
+        ok( $Test->syntax, '->syntax' );
+        ok( $Test->version, '->version' );
+        ok( $Test->help, '->help' );
+        ok( $Test->error, '->error' );
 
-		REMOVE_RECORDS: {
-			my $xstatus = 0;
-			$xstatus = $Btab->object->delete( 't_bouncelogs', {} );
-			ok( $xstatus, '->delete() = '.$xstatus.' records' );
+        REMOVE_RECORDS: {
+            my $xstatus = 0;
+            $xstatus = $Btab->object->delete( 't_bouncelogs', {} );
+            ok( $xstatus, '->delete = '.$xstatus.' records' );
 
-			$xstatus = $Btab->object->delete( 't_destinations', {} );
-			ok( $xstatus, '->delete() = '.$xstatus.' records' );
+            $xstatus = $Btab->object->delete( 't_destinations', {} );
+            ok( $xstatus, '->delete = '.$xstatus.' records' );
 
-			$xstatus = $Btab->object->delete( 't_providers', {} );
-			ok( $xstatus, '->delete() = '.$xstatus.' records' );
-		}
+            $xstatus = $Btab->object->delete( 't_providers', {} );
+            ok( $xstatus, '->delete = '.$xstatus.' records' );
+        }
 
-		REGISTER_RECORDS: {
-			DATA_OBJECT: {
-				$Yobj = Kanadzuchi::Mail::Stored::YAML->loadandnew($File);
-				isa_ok( $Yobj, q|Kanadzuchi::Iterator| );
-				is( $Yobj->count(), 37, '->count() = 37' );
-			}
+        REGISTER_RECORDS: {
+            DATA_OBJECT: {
+                $Yobj = Kanadzuchi::Mail::Stored::YAML->loadandnew( $File );
+                isa_ok( $Yobj, q|Kanadzuchi::Iterator| );
+                is( $Yobj->count, 37, '->count = 37' );
+            }
 
-			INSERT: {
-				while( my $_e = $Yobj->next() )
-				{
-					my $newid = $_e->insert( $Btab, $Mtab, $Cdat );
-					my $array = [];
-					if( $_e->senderdomain eq 'example.org' )
-					{
-						# The senderdomain 'example.org' does not exist in src/sql/*.sql
-						is( $newid, 0, '->insert(), ID = 0(No senderdomain), FROM = '.$_e->addresser->address() );
-					}
-					else
-					{
-						ok( $newid, '->insert(), ID = '.$newid.', FROM = '.$_e->addresser->address() );
+            INSERT: {
+                while( my $_e = $Yobj->next )
+                {
+                    my $newid = $_e->insert( $Btab, $Mtab, $Cdat );
+                    my $array = [];
+                    if( $_e->senderdomain eq 'example.org' ) {
+                        # The senderdomain 'example.org' does not exist in src/sql/*.sql
+                        is( $newid, 0, '->insert, ID = 0(No senderdomain), FROM = '.$_e->addresser->address );
 
-						$array = $Btab->search( { 'id' => $newid } );
-						isa_ok( $array, q|ARRAY| );
-						ok( scalar(@$array), '->search(id) returns '.scalar(@$array) );
-					}
-				}
-			}
+                    } else {
+                        ok( $newid, '->insert, ID = '.$newid.', FROM = '.$_e->addresser->address );
 
-			UPDATE: {
-				my $cond = { 'senderdomain' => 'example.gr.jp' };
-				my $page = Kanadzuchi::BdDR::Page->new();
-				my $data = undef();
-				my $stat = 0;
+                        $array = $Btab->search( { 'id' => $newid } );
+                        isa_ok( $array, 'ARRAY' );
+                        ok( scalar @$array, '->search(id) returns '.scalar( @$array ) );
+                    }
+                }
+            }
 
-				$page->reset();
-				$page->set( $Btab->count( $cond ) );
-				is( $page->count(), 4, '->count() = 1 by senderdomain example.gr.jp' );
+            UPDATE: {
+                my $cond = { 'senderdomain' => 'example.gr.jp' };
+                my $page = Kanadzuchi::BdDR::Page->new;
+                my $data = undef;
+                my $stat = 0;
 
-				while(1)
-				{
-					$data = Kanadzuchi::Mail::Stored::BdDR->searchandnew($BdDR->handle(),$cond,$page);
-					isa_ok( $data, q|Kanadzuchi::Iterator| );
+                $page->reset;
+                $page->set( $Btab->count( $cond ) );
+                is( $page->count, 4, '->count = 1 by senderdomain example.gr.jp' );
 
-					while( my $_e = $data->next() )
-					{
-						ok( $_e->id(), '->id() = '.$_e->id() );
-						is( $_e->senderdomain(), 'example.gr.jp', '->senderdomain() = example.gr.jp' );
+                while(1) {
+                    $data = Kanadzuchi::Mail::Stored::BdDR->searchandnew( $BdDR->handle, $cond, $page );
+                    isa_ok( $data, 'Kanadzuchi::Iterator' );
 
-						$_e->bounced( $_e->bounced + 1 );
+                    while( my $_e = $data->next ) {
+                        ok( $_e->id, '->id = '.$_e->id );
+                        is( $_e->senderdomain, 'example.gr.jp', '->senderdomain = example.gr.jp' );
 
-						$stat = $_e->update( $Btab, $Cdat );
-						ok( $stat, '->update()' );
-					}
-					last() unless($page->next());
-				}
-			}
-		}
-	}
+                        $_e->bounced( $_e->bounced + 1 );
 
-	DATADUMPER: {
-		ERROR_MESSAGES: {
-			my $command = q();
-			my $xresult = [];
+                        $stat = $_e->update( $Btab, $Cdat );
+                        ok( $stat, '->update' );
+                    }
+                    last unless $page->next;
+                }
+            }
+        }
+    }
 
-			UNKNOWN_HOSTGROUP: {
-				$command = $Test->perl().$Test->command().$Opts.q{ -gx};
-				$xresult = [ IPC::Cmd::run( 'command' => $command ) ];
-				like( $xresult->[4]->[0], qr{Unknown host group:}, q{Unknown host group} );
-			}
+    DATADUMPER: {
+        ERROR_MESSAGES: {
+            my $command = q();
+            my $xresult = [];
 
-			UNKNOWN_REASON: {
-				$command = $Test->perl().$Test->command().$Opts.q{ -wx};
-				$xresult = [ IPC::Cmd::run( 'command' => $command ) ];
-				like( $xresult->[4]->[0], qr{Unknown reason:}, q{Unknown reason} );
-			}
-		}
+            UNKNOWN_HOSTGROUP: {
+                $command = $Test->perl.$Test->command.$Opts.' -gx';
+                $xresult = [ IPC::Cmd::run( 'command' => $command ) ];
+                like( $xresult->[4]->[0], qr/Unknown host group:/, 'Unknown host group' );
+            }
 
-		DUMP: {
-			foreach my $f ( 'yaml', 'json', 'csv' )
-			{
-				my $command = q();
-				my $xresult = q();
-				my $xstatus = 0;
-				my $yamlobj = undef();
-				my $comment = 1;
+            UNKNOWN_REASON: {
+                $command = $Test->perl.$Test->command.$Opts.' -wx';
+                $xresult = [ IPC::Cmd::run( 'command' => $command ) ];
+                like( $xresult->[4]->[0], qr/Unknown reason:/, 'Unknown reason' );
+            }
+        }
 
-				foreach my $_t ( @$Tset )
-				{
-					NORMAL_SELECT: {
-						$command = $Test->perl().$Test->command().$Opts.$_t->{'option'}.' --format '.$f;
-						$xresult = qx($command);
-						ok( length($xresult), $_t->{'name'}.' length() = '.length($xresult) );
+        DUMP: {
+            foreach my $f ( 'yaml', 'json', 'csv' ) {
 
-						next() if( $f eq 'csv' );
-						$yamlobj = JSON::Syck::Load( $xresult );
-						is( scalar(@$yamlobj), $_t->{'count'}, $_t->{'name'}.' '.$_t->{'option'} );
-					}
+                my $command = q();
+                my $xresult = q();
+                my $xstatus = 0;
+                my $yamlobj = undef;
+                my $comment = 1;
 
-					ORDERBY: {
-						$command = $Test->perl().$Test->command().$Opts.$_t->{'option'}.' --orderby bounced --format '.$f;
-						$xresult = qx($command);
-						ok( length($xresult), $_t->{'name'}.' length() = '.length($xresult) );
+                foreach my $_t ( @$Tset ) {
 
-						next() if( $f eq 'csv' );
-						$yamlobj = JSON::Syck::Load( $xresult );
-						is( scalar(@$yamlobj), $_t->{'count'}, $_t->{'name'}.' '.$_t->{'option'}.' --orderby bounced' );
-					}
+                    NORMAL_SELECT: {
+                        $command = $Test->perl.$Test->command.$Opts.$_t->{'option'}.' --format '.$f;
+                        $xresult = qx|$command|;
+                        ok( length $xresult, $_t->{'name'}.' length = '.length( $xresult ) );
 
-					ORDERBY_DESC: {
-						$command = $Test->perl().$Test->command().$Opts.$_t->{'option'}.' --orderbydesc bounced --format '.$f;
-						$xresult = qx($command);
-						ok( length($xresult), $_t->{'name'}.' length() = '.length($xresult) );
+                        next if $f eq 'csv';
+                        $yamlobj = JSON::Syck::Load( $xresult );
+                        is( scalar @$yamlobj, $_t->{'count'}, $_t->{'name'}.' '.$_t->{'option'} );
+                    }
 
-						next() if( $f eq 'csv' );
-						$yamlobj = JSON::Syck::Load( $xresult );
-						is( scalar(@$yamlobj), $_t->{'count'}, $_t->{'name'}.' '.$_t->{'option'}.' --orderbydesc bounced' );
-					}
+                    ORDERBY: {
+                        $command = $Test->perl.$Test->command.$Opts.$_t->{'option'}.' --orderby bounced --format '.$f;
+                        $xresult = qx|$command|;
+                        ok( length $xresult, $_t->{'name'}.' length = '.length( $xresult ) );
 
-					WITH_COMMENT: {
-						$command = $Test->perl().$Test->command().$Opts.$_t->{'option'}.' --comment --format '.$f;
-						$xresult = qx($command);
+                        next if $f eq 'csv';
+                        $yamlobj = JSON::Syck::Load( $xresult );
+                        is( scalar @$yamlobj, $_t->{'count'}, $_t->{'name'}.' '.$_t->{'option'}.' --orderby bounced' );
+                    }
 
-						next() unless( length($xresult) );
-						ok( ( length($xresult) - $Comm->{'y'} ), $_t->{'name'}.' with comment' );
-					}
+                    ORDERBY_DESC: {
+                        $command = $Test->perl.$Test->command.$Opts.$_t->{'option'}.' --orderbydesc bounced --format '.$f;
+                        $xresult = qx|$command|;
+                        ok( length $xresult, $_t->{'name'}.' length = '.length( $xresult ) );
 
-					COUNT_ONLY: {
-						$command = $Test->perl().$Test->command().$Opts.$_t->{'option'}.' --count --format '.$f;
-						$xresult = qx($command);
-						chomp($xresult);
+                        next if $f eq 'csv';
+                        $yamlobj = JSON::Syck::Load( $xresult );
+                        is( scalar @$yamlobj, $_t->{'count'}, $_t->{'name'}.' '.$_t->{'option'}.' --orderbydesc bounced' );
+                    }
 
-						is( $xresult, $_t->{'count'}, $_t->{'name'}.' '.$_t->{'option'}.' --count' );
-					}
+                    WITH_COMMENT: {
+                        $command = $Test->perl.$Test->command.$Opts.$_t->{'option'}.' --comment --format '.$f;
+                        $xresult = qx|$command|;
 
-					OTHER_INVALID_FORMAT_CHARACTER: {
-						foreach my $i ( 'x', 's', 'p' )
-						{
-							$command = $Test->perl().$Test->command().$Opts.$_t->{'option'}.' -F'.$i;
-							$xstatus = scalar(IPC::Cmd::run( 'command' => $command ));
-							ok( $xstatus, $_t->{'name'}.' '.$_t->{'option'}.' -F'.$i );
-						}
-					}
-				}
-			}
-		}
-	} # End of SKIP
+                        next unless length $xresult;
+                        ok( ( length( $xresult ) - $Comm->{'y'} ), $_t->{'name'}.' with comment' );
+                    }
+
+                    COUNT_ONLY: {
+                        $command = $Test->perl.$Test->command.$Opts.$_t->{'option'}.' --count --format '.$f;
+                        $xresult = qx|$command|;
+                        chomp $xresult;
+
+                        is( $xresult, $_t->{'count'}, $_t->{'name'}.' '.$_t->{'option'}.' --count' );
+                    }
+
+                    OTHER_INVALID_FORMAT_CHARACTER: {
+                        foreach my $i ( 'x', 's', 'p' ) {
+                            $command = $Test->perl.$Test->command.$Opts.$_t->{'option'}.' -F'.$i;
+                            $xstatus = scalar(IPC::Cmd::run( 'command' => $command ));
+                            ok( $xstatus, $_t->{'name'}.' '.$_t->{'option'}.' -F'.$i );
+                        }
+                    }
+                }
+            }
+        }
+    } # End of SKIP
 }
 
 __END__

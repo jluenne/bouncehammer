@@ -1,4 +1,4 @@
-# $Id: 063_mail-stored-bddr.t,v 1.8.2.1 2012/11/02 10:50:42 ak Exp $
+# $Id: 063_mail-stored-bddr.t,v 1.8.2.2 2013/08/30 23:05:12 ak Exp $
 #  ____ ____ ____ ____ ____ ____ ____ ____ ____ 
 # ||L |||i |||b |||r |||a |||r |||i |||e |||s ||
 # ||__|||__|||__|||__|||__|||__|||__|||__|||__||
@@ -12,33 +12,35 @@ use Kanadzuchi::Test::Mail;
 use Kanadzuchi::Mail::Stored::BdDR;
 use Kanadzuchi::Metadata;
 use Time::Piece;
-use Test::More ( tests => 710 );
+use Test::More ( 'tests' => 710 );
 
 #  ____ ____ ____ ____ ____ ____ _________ ____ ____ ____ ____ 
 # ||G |||l |||o |||b |||a |||l |||       |||v |||a |||r |||s ||
 # ||__|||__|||__|||__|||__|||__|||_______|||__|||__|||__|||__||
 # |/__\|/__\|/__\|/__\|/__\|/__\|/_______\|/__\|/__\|/__\|/__\|
 #
-my $Y = undef();
+my $Y = undef;
 my $T = new Kanadzuchi::Test(
-	'class' => q|Kanadzuchi::Mail::Stored::BdDR|,
-	'methods' => [ @{$Kanadzuchi::Test::Mail::MethodList->{'BaseClass'}},
-		@{$Kanadzuchi::Test::Mail::MethodList->{'Stored::BdDR'}}, ],
-	'instance' => new Kanadzuchi::Mail::Stored::BdDR(
-		'id' => 1,
-		'addresser' => q(POSTMASTER@EXAMPLE.JP),
-		'recipient' => 'USER01@EXAMPLE.ORG',
-		'bounced' => bless( localtime(time()-90000), 'Time::Piece' ),
-		'updated' => bless( localtime(), 'Time::Piece' ),
-		'timezoneoffset' => q(+0900),
-		'diagnosticcode' => q(Test),
-		'deliverystatus' => '5.1.2',
-		'smtpagent' => 'Sendmail',
-		'listid' => '',
-		'hostgroup' => 'rfc2606',
-		'provider' => 'rfc2606',
-		'reason' => 'hostunknown',
-		'disabled' => 0, ),
+    'class' => 'Kanadzuchi::Mail::Stored::BdDR',
+    'methods' => [
+        @{ $Kanadzuchi::Test::Mail::MethodList->{'BaseClass'} },
+        @{ $Kanadzuchi::Test::Mail::MethodList->{'Stored::BdDR'} },
+    ],
+    'instance' => new Kanadzuchi::Mail::Stored::BdDR(
+        'id' => 1,
+        'addresser' => 'POSTMASTER@EXAMPLE.JP',
+        'recipient' => 'USER01@EXAMPLE.ORG',
+        'bounced' => bless( localtime( time - 90000 ), 'Time::Piece' ),
+        'updated' => bless( localtime, 'Time::Piece' ),
+        'timezoneoffset' => '+0900',
+        'diagnosticcode' => 'Test',
+        'deliverystatus' => '5.1.2',
+        'smtpagent' => 'Sendmail',
+        'listid' => '',
+        'hostgroup' => 'rfc2606',
+        'provider' => 'rfc2606',
+        'reason' => 'hostunknown',
+        'disabled' => 0, ),
 );
 
 #  ____ ____ ____ ____ _________ ____ ____ ____ ____ ____ 
@@ -47,361 +49,340 @@ my $T = new Kanadzuchi::Test(
 # |/__\|/__\|/__\|/__\|/_______\|/__\|/__\|/__\|/__\|/__\|
 #
 PREPROCESS: {
-	my $object = $T->instance();
+    my $object = $T->instance;
 
-	isa_ok( $object, $T->class() );
-	isa_ok( $object->bounced(), q|Time::Piece| );
-	isa_ok( $object->updated(), q|Time::Piece| );
-	isa_ok( $object->addresser(), q|Kanadzuchi::Address| );
-	isa_ok( $object->recipient(), q|Kanadzuchi::Address| );
-	isa_ok( $object->description(), q|HASH| );
-	can_ok( $T->class(), @{$T->methods()} );
+    isa_ok( $object, $T->class );
+    isa_ok( $object->bounced, 'Time::Piece' );
+    isa_ok( $object->updated, 'Time::Piece' );
+    isa_ok( $object->addresser, 'Kanadzuchi::Address' );
+    isa_ok( $object->recipient, 'Kanadzuchi::Address' );
+    isa_ok( $object->description, 'HASH' );
+    can_ok( $T->class, @{ $T->methods } );
 
-	is( $object->senderdomain(), $object->addresser->host(), q{senderdomain == addresser->host} );
-	is( $object->destination(), $object->recipient->host(), q{senderdomain == addresser->host} );
-	# 9 Tests
+    is( $object->senderdomain, $object->addresser->host, 'senderdomain == addresser->host' );
+    is( $object->destination, $object->recipient->host, 'senderdomain == addresser->host' );
+    # 9 Tests
 }
 
 
 SKIP: {
-	my $howmanyskips = 701;
-	eval { require DBI; }; skip( 'Because no DBI for testing', $howmanyskips ) if( $@ );
-	eval { require DBD::SQLite; }; skip( 'Because no DBD::SQLite for testing', $howmanyskips ) if( $@ );
+    my $howmanyskips = 701;
+    eval { require DBI; }; skip( 'Because no DBI for testing', $howmanyskips ) if $@;
+    eval { require DBD::SQLite; }; skip( 'Because no DBD::SQLite for testing', $howmanyskips ) if $@;
 
-	require Kanadzuchi::BdDR;
-	require Kanadzuchi::BdDR::Page;
-	require Kanadzuchi::BdDR::Cache;
-	require Kanadzuchi::BdDR::BounceLogs;
-	require Kanadzuchi::BdDR::BounceLogs::Masters;
-	require Kanadzuchi::Mail;
-	require Kanadzuchi::Test::DBI;
-	require Kanadzuchi::Mail::Stored::YAML;
+    require Kanadzuchi::BdDR;
+    require Kanadzuchi::BdDR::Page;
+    require Kanadzuchi::BdDR::Cache;
+    require Kanadzuchi::BdDR::BounceLogs;
+    require Kanadzuchi::BdDR::BounceLogs::Masters;
+    require Kanadzuchi::Mail;
+    require Kanadzuchi::Test::DBI;
+    require Kanadzuchi::Mail::Stored::YAML;
 
-	my $BdDR = undef();
-	my $Btab = undef();
-	my $Mtab = undef();
-	my $Page = undef();
-	my $Data = undef();
-	my $File = './examples/hammer.1970-01-01.ffffffff.000000.tmp';
-	my $Yaml = undef();
-	my $Cdat = undef();
-	my $Stat = 0;
-	my $nRec = 39;
-	my $pNum = 1;
-	my $Cond = {};
-	my $Damn = {};
+    my $BdDR = undef;
+    my $Btab = undef;
+    my $Mtab = undef;
+    my $Page = undef;
+    my $Data = undef;
+    my $File = './examples/hammer.1970-01-01.ffffffff.000000.tmp';
+    my $Yaml = undef;
+    my $Cdat = undef;
+    my $Stat = 0;
+    my $nRec = 39;
+    my $pNum = 1;
+    my $Cond = {};
+    my $Damn = {};
 
-	CONNECT: {
-		$BdDR = Kanadzuchi::BdDR->new();
-		$BdDR->setup( { 'dbname' => ':memory:', 'dbtype' => 'SQLite' } );
-		$BdDR->printerror(1);
-		$BdDR->connect();
+    CONNECT: {
+        $BdDR = Kanadzuchi::BdDR->new;
+        $BdDR->setup( { 'dbname' => ':memory:', 'dbtype' => 'SQLite' } );
+        $BdDR->printerror(1);
+        $BdDR->connect;
 
-		isa_ok( $BdDR, q|Kanadzuchi::BdDR| );
-		isa_ok( $BdDR->handle(), q|DBI::db| );
-	}
+        isa_ok( $BdDR, q|Kanadzuchi::BdDR| );
+        isa_ok( $BdDR->handle, 'DBI::db' );
+    }
 
-	BUILD_DATABASE: {
-		ok( Kanadzuchi::Test::DBI->buildtable($BdDR->handle()), '->DBI->buildtable()' );
-	}
+    BUILD_DATABASE: {
+        ok( Kanadzuchi::Test::DBI->buildtable( $BdDR->handle ), '->DBI->buildtable' );
+    }
 
-	TABLE_OBJECTS: {
-		$Page = Kanadzuchi::BdDR::Page->new();
-		$Cdat = Kanadzuchi::BdDR::Cache->new();
-		$Btab = Kanadzuchi::BdDR::BounceLogs::Table->new( 'handle' => $BdDR->handle() );
-		$Mtab = Kanadzuchi::BdDR::BounceLogs::Masters::Table->mastertables($BdDR->handle());
+    TABLE_OBJECTS: {
+        $Page = Kanadzuchi::BdDR::Page->new;
+        $Cdat = Kanadzuchi::BdDR::Cache->new;
+        $Btab = Kanadzuchi::BdDR::BounceLogs::Table->new( 'handle' => $BdDR->handle );
+        $Mtab = Kanadzuchi::BdDR::BounceLogs::Masters::Table->mastertables( $BdDR->handle );
 
-		isa_ok( $Page, q|Kanadzuchi::BdDR::Page| );
-		isa_ok( $Cdat, q|Kanadzuchi::BdDR::Cache| );
-		isa_ok( $Btab, q|Kanadzuchi::BdDR::BounceLogs::Table| );
+        isa_ok( $Page, 'Kanadzuchi::BdDR::Page' );
+        isa_ok( $Cdat, 'Kanadzuchi::BdDR::Cache' );
+        isa_ok( $Btab, 'Kanadzuchi::BdDR::BounceLogs::Table' );
 
-		foreach my $_mt ( keys(%$Mtab) )
-		{
-			isa_ok( $Mtab->{$_mt}, q|Kanadzuchi::BdDR::BounceLogs::Masters::Table| );
-		}
-	}
+        foreach my $_mt ( keys %$Mtab ) {
 
-	INSERT: {
-		$Yaml = Kanadzuchi::Mail::Stored::YAML->loadandnew($File);
-		isa_ok( $Yaml, q|Kanadzuchi::Iterator| );
-		while( my $_y = $Yaml->next() )
-		{
-			$Stat = $_y->insert( $Btab, $Mtab, $Cdat );
-			$Stat = $_y->update( $Btab, $Cdat ) unless( $Stat );
-			if( $_y->senderdomain ne 'example.org' )
-			{
-				ok( $Stat, '->insert() or ->update() test data = '.$_y->recipient->address() );
-			}
-			else
-			{
-				is( $Stat, 0, '->insert() or ->update() = 0; test data = '.$_y->recipient->address() );
-			}
-		}
-	}
+            isa_ok( $Mtab->{ $_mt }, 'Kanadzuchi::BdDR::BounceLogs::Masters::Table' );
+        }
+    }
 
-	SEARCH_AND_NEW1: {
+    INSERT: {
+        $Yaml = Kanadzuchi::Mail::Stored::YAML->loadandnew( $File );
+        isa_ok( $Yaml, 'Kanadzuchi::Iterator' );
 
-		$Page->set( $Btab->count() );
-		is( $Page->count(), $nRec - 1, '->count() = '.($nRec - 1) );
+        while( my $_y = $Yaml->next ) {
+            $Stat = $_y->insert( $Btab, $Mtab, $Cdat );
+            $Stat = $_y->update( $Btab, $Cdat ) unless $Stat;
 
-		while(1)
-		{
-			$Data = $T->class->searchandnew($BdDR->handle(),{},$Page);
-			isa_ok( $Data, q|Kanadzuchi::Iterator| );
-			is( $pNum, $Page->currentpagenum(), '->currentpagenum() = '.$pNum );
+            if( $_y->senderdomain ne 'example.org' ) {
+                ok( $Stat, '->insert or ->update test data = '.$_y->recipient->address );
 
-			while( my $_e = $Data->next() )
-			{
-				ok( $_e->id(), '->id() = '.$_e->id() );
-				isa_ok( $_e->addresser(), q|Kanadzuchi::Address| );
-				isa_ok( $_e->recipient(), q|Kanadzuchi::Address| );
-				isa_ok( $_e->bounced(), q|Time::Piece| );
-				isa_ok( $_e->updated(), q|Time::Piece| );
-				isa_ok( $_e->description(), q|HASH| );
+            } else {
+                is( $Stat, 0, '->insert or ->update = 0; test data = '.$_y->recipient->address );
+            }
+        }
+    }
 
-				is( $_e->senderdomain(), $_e->addresser->host(), '->senderdomain() = '.$_e->senderdomain() );
-				is( $_e->destination(), $_e->recipient->host(), '->destination() = '.$_e->destination() );
-				ok( Kanadzuchi::Mail->gname2id($_e->hostgroup()), '->hostgroup() = '.$_e->hostgroup() );
-				ok( Kanadzuchi::Mail->rname2id($_e->reason()), '->reason() = '.$_e->reason() );
-				like( $_e->provider(), qr{\A\w+\z}, '->provider() = '.$_e->provider() );
-				is( length($_e->token()), 32, '->token() = '.$_e->token() );
-			}
+    SEARCH_AND_NEW1: {
 
-			last() unless($Page->hasnext());
-			$Page->next();
-			$pNum++;
-		}
-	}
+        $Page->set( $Btab->count );
+        is( $Page->count, $nRec - 1, '->count = '.($nRec - 1) );
 
-	SEARCH_AND_NEW2: {
-		$Cond = {'token' => '8dbb1b9ce9cc47eb6bb1316096c858cd' };
-		$Page->reset();
-		$Page->set( $Btab->count( $Cond ) );
-		is( $Page->count(), 1, '->count() = 1 by token 8dbb1b9ce9cc47eb6bb1316096c858cd' );
+        while(1) {
 
-		while(1)
-		{
-			$Data = $T->class->searchandnew($BdDR->handle(),$Cond,$Page);
-			isa_ok( $Data, q|Kanadzuchi::Iterator| );
-			is( $Data->count(), 1, '->count() = 1' );
+            $Data = $T->class->searchandnew( $BdDR->handle, {}, $Page );
+            isa_ok( $Data, 'Kanadzuchi::Iterator' );
+            is( $pNum, $Page->currentpagenum, '->currentpagenum = '.$pNum );
 
-			while( my $_e = $Data->next() )
-			{
-				ok( $_e->id(), '->id() = '.$_e->id() );
-			}
-			last() unless($Page->next());
-		}
+            while( my $_e = $Data->next ) {
+                ok( $_e->id, '->id = '.$_e->id );
+                isa_ok( $_e->addresser, 'Kanadzuchi::Address' );
+                isa_ok( $_e->recipient, 'Kanadzuchi::Address' );
+                isa_ok( $_e->bounced, 'Time::Piece' );
+                isa_ok( $_e->updated, 'Time::Piece' );
+                isa_ok( $_e->description, 'HASH' );
 
-	}
+                is( $_e->senderdomain, $_e->addresser->host, '->senderdomain = '.$_e->senderdomain );
+                is( $_e->destination, $_e->recipient->host, '->destination = '.$_e->destination );
+                ok( Kanadzuchi::Mail->gname2id( $_e->hostgroup ), '->hostgroup = '.$_e->hostgroup );
+                ok( Kanadzuchi::Mail->rname2id( $_e->reason ), '->reason = '.$_e->reason );
+                like( $_e->provider, qr{\A\w+\z}, '->provider = '.$_e->provider );
+                is( length $_e->token, 32, '->token = '.$_e->token );
+            }
 
-	SEARCH_AND_NEW3: {
-		$Cond = { 'reason' => 'userunknown', 'hostgroup' => 'cellphone' };
-		$Page->reset();
-		$Page->set( $Btab->count( $Cond ) );
-		is( $Page->count(), 4, '->count() = 4 by reason=userunknown, hostgroup=cellphone' );
+            last unless $Page->hasnext;
+            $Page->next;
+            $pNum++;
+        }
+    }
 
-		while(1)
-		{
-			$Data = $T->class->searchandnew($BdDR->handle(),$Cond,$Page);
-			isa_ok( $Data, q|Kanadzuchi::Iterator| );
-			is( $Data->count(), 4, '->count() = 4' );
+    SEARCH_AND_NEW2: {
+        $Cond = { 'token' => '8dbb1b9ce9cc47eb6bb1316096c858cd' };
+        $Page->reset;
+        $Page->set( $Btab->count( $Cond ) );
+        is( $Page->count, 1, '->count = 1 by token 8dbb1b9ce9cc47eb6bb1316096c858cd' );
 
-			while( my $_e = $Data->next() )
-			{
-				ok( $_e->id(), '->id() = '.$_e->id() );
-				is( $_e->hostgroup(), 'cellphone', '->hostgroup() = cellphone' );
-				is( $_e->reason(), 'userunknown', '->reason() = userunknown' );
-			}
-			last() unless($Page->next());
-		}
-	}
+        while(1) {
+            $Data = $T->class->searchandnew( $BdDR->handle, $Cond, $Page );
+            isa_ok( $Data, 'Kanadzuchi::Iterator' );
+            is( $Data->count, 1, '->count = 1' );
 
-	SEARCH_AND_NEW4: {
-		$Cond = { 'bounced' => { '>' => 1234568000 } };
-		$Page->reset();
-		$Page->set( $Btab->count( $Cond ) );
-		is( $Page->count(), 25, '->count() = 25 by bounced > 1234568000' );
+            while( my $_e = $Data->next ) {
+                ok( $_e->id, '->id = '.$_e->id );
+            }
+            last unless $Page->next;
+        }
 
-		while(1)
-		{
-			$Data = $T->class->searchandnew($BdDR->handle(),$Cond,$Page);
-			isa_ok( $Data, q|Kanadzuchi::Iterator| );
+    }
 
-			while( my $_e = $Data->next() )
-			{
-				ok( $_e->id(), '->id() = '.$_e->id() );
-				ok( $_e->bounced->epoch() > 1234568000, '->bounced() = '.$_e->bounced->ymd() );
-			}
-			last() unless($Page->next());
-		}
-	}
+    SEARCH_AND_NEW3: {
+        $Cond = { 'reason' => 'userunknown', 'hostgroup' => 'cellphone' };
+        $Page->reset;
+        $Page->set( $Btab->count( $Cond ) );
+        is( $Page->count, 4, '->count = 4 by reason=userunknown, hostgroup=cellphone' );
 
-	SEARCH_AND_NEW5: {
-		$Cond = { 'frequency' => { '>=' => 1 } };
-		$Page->reset();
-		$Page->set( $Btab->count( $Cond ) );
-		is( $Page->count(), $nRec - 1, '->count() = '.( $nRec - 1 ).' by frequency >= 1 ' );
+        while(1) {
+            $Data = $T->class->searchandnew( $BdDR->handle, $Cond, $Page );
+            isa_ok( $Data, 'Kanadzuchi::Iterator' );
+            is( $Data->count, 4, '->count = 4' );
 
-		while(1)
-		{
-			$Data = $T->class->searchandnew($BdDR->handle(),$Cond,$Page);
-			isa_ok( $Data, q|Kanadzuchi::Iterator| );
+            while( my $_e = $Data->next ) {
+                ok( $_e->id, '->id = '.$_e->id );
+                is( $_e->hostgroup, 'cellphone', '->hostgroup = cellphone' );
+                is( $_e->reason, 'userunknown', '->reason = userunknown' );
+            }
+            last unless $Page->next;
+        }
+    }
 
-			while( my $_e = $Data->next() )
-			{
-				ok( $_e->id(), '->id() = '.$_e->id() );
-				ok( $_e->frequency() >= 1, '->frequency() >= 1' );
-			}
-			last() unless($Page->next());
-		}
-	}
+    SEARCH_AND_NEW4: {
+        $Cond = { 'bounced' => { '>' => 1234568000 } };
+        $Page->reset;
+        $Page->set( $Btab->count( $Cond ) );
+        is( $Page->count, 25, '->count = 25 by bounced > 1234568000' );
 
-	DAMNED: {
-		$Cond = { 'id' => 1 };
-		$Page->reset();
-		$Page->set( $Btab->count( $Cond ) );
-		is( $Page->count(), 1, '->count() = 1 by id = 1 ' );
+        while(1) {
+            $Data = $T->class->searchandnew( $BdDR->handle, $Cond, $Page );
+            isa_ok( $Data, 'Kanadzuchi::Iterator' );
 
-		while(1)
-		{
-			$Data = $T->class->searchandnew($BdDR->handle(),$Cond,$Page);
-			isa_ok( $Data, q|Kanadzuchi::Iterator| );
+            while( my $_e = $Data->next ) {
+                ok( $_e->id, '->id = '.$_e->id );
+                ok( $_e->bounced->epoch > 1234568000, '->bounced = '.$_e->bounced->ymd );
+            }
+            last unless $Page->next;
+        }
+    }
 
-			while( my $_e = $Data->next() )
-			{
-				ok( $_e->id(), '->id() = '.$_e->id() );
+    SEARCH_AND_NEW5: {
+        $Cond = { 'frequency' => { '>=' => 1 } };
+        $Page->reset;
+        $Page->set( $Btab->count( $Cond ) );
+        is( $Page->count, $nRec - 1, '->count = '.( $nRec - 1 ).' by frequency >= 1 ' );
 
-				$Damn = $_e->damn();
-				isa_ok( $Damn, q|HASH|, '->damn()' );
-			}
-			last() unless($Page->next());
-		}
-	}
+        while(1) {
+            $Data = $T->class->searchandnew( $BdDR->handle, $Cond, $Page );
+            isa_ok( $Data, 'Kanadzuchi::Iterator' );
 
-	EACH_METHODS: {
-		UPDATE: {
-			$Cond = {'token' => '5bcd3527c45ffe1893dcd3f4270e0c19' };
-			$Page->reset();
-			$Page->set( $Btab->count( $Cond ) );
-			is( $Page->count(), 1, '->count() = 1 by token 5bcd3527c45ffe1893dcd3f4270e0c19' );
+            while( my $_e = $Data->next ) {
+                ok( $_e->id, '->id = '.$_e->id );
+                ok( $_e->frequency >= 1, '->frequency >= 1' );
+            }
+            last unless $Page->next;
+        }
+    }
 
-			while(1)
-			{
-				$Data = $T->class->searchandnew($BdDR->handle(),$Cond,$Page);
-				isa_ok( $Data, q|Kanadzuchi::Iterator| );
+    DAMNED: {
+        $Cond = { 'id' => 1 };
+        $Page->reset;
+        $Page->set( $Btab->count( $Cond ) );
+        is( $Page->count, 1, '->count = 1 by id = 1 ' );
 
-				while( my $_e = $Data->next() )
-				{
-					ok( $_e->id(), '->id() = '.$_e->id() );
-					is( $_e->hostgroup(), 'reserved', '->hostgroup() = reserved' );
-					is( $_e->reason(), 'mailererror', '->reason() = mailererror' );
+        while(1) {
+            $Data = $T->class->searchandnew( $BdDR->handle, $Cond, $Page );
+            isa_ok( $Data, 'Kanadzuchi::Iterator' );
 
-					$_e->hostgroup('neighbor');
-					$_e->reason('onhold');
+            while( my $_e = $Data->next ) {
+                ok( $_e->id, '->id = '.$_e->id );
 
-					$Stat = $_e->update( $Btab, $Cdat );
-					ok( $Stat, '->update()' );
-				}
-				last() unless($Page->next());
-			}
+                $Damn = $_e->damn;
+                isa_ok( $Damn, 'HASH', '->damn' );
+            }
+            last unless $Page->next;
+        }
+    }
 
-			# Search Again
-			$Page->reset();
-			$Page->set( $Btab->count( $Cond ) );
-			is( $Page->count(), 1, '->count() = 1 by token 5bcd3527c45ffe1893dcd3f4270e0c19' );
+    EACH_METHODS: {
+        UPDATE: {
+            $Cond = { 'token' => '5bcd3527c45ffe1893dcd3f4270e0c19' };
+            $Page->reset;
+            $Page->set( $Btab->count( $Cond ) );
+            is( $Page->count, 1, '->count = 1 by token 5bcd3527c45ffe1893dcd3f4270e0c19' );
 
-			while(1)
-			{
-				$Data = $T->class->searchandnew($BdDR->handle(),$Cond,$Page);
-				isa_ok( $Data, q|Kanadzuchi::Iterator| );
+            while(1)
+            {
+                $Data = $T->class->searchandnew( $BdDR->handle, $Cond, $Page );
+                isa_ok( $Data, 'Kanadzuchi::Iterator' );
 
-				while( my $_e = $Data->next() )
-				{
-					ok( $_e->id(), '->id() = '.$_e->id() );
-					is( $_e->hostgroup(), 'neighbor', '->update->hostgroup() = neighbor' );
-					is( $_e->reason(), 'onhold', '->update->reason() = onhold' );
-				}
-				last() unless($Page->next());
-			}
-		}
+                while( my $_e = $Data->next ) {
+                    ok( $_e->id, '->id = '.$_e->id );
+                    is( $_e->hostgroup, 'reserved', '->hostgroup = reserved' );
+                    is( $_e->reason, 'mailererror', '->reason = mailererror' );
 
-		DISABLE: {
-			$Cond = {'token' => '5bcd3527c45ffe1893dcd3f4270e0c19' };
-			$Page->reset();
-			$Page->set( $Btab->count( $Cond ) );
-			is( $Page->count(), 1, '->count() = 1 by token 5bcd3527c45ffe1893dcd3f4270e0c19' );
+                    $_e->hostgroup('neighbor');
+                    $_e->reason('onhold');
 
-			while(1)
-			{
-				$Data = $T->class->searchandnew($BdDR->handle(),$Cond,$Page);
-				isa_ok( $Data, q|Kanadzuchi::Iterator| );
+                    $Stat = $_e->update( $Btab, $Cdat );
+                    ok( $Stat, '->update' );
+                }
+                last unless $Page->next;
+            }
 
-				while( my $_e = $Data->next() )
-				{
-					ok( $_e->id(), '->id() = '.$_e->id() );
-					is( $_e->disabled(), 0, '->disabled() = 0' );
-					$_e->disabled(1);
-					$Stat = $_e->disable( $Btab, $Cdat );
-					ok( $Stat, '->disable()' );
-				}
-				last() unless($Page->next());
-			}
+            # Search Again
+            $Page->reset;
+            $Page->set( $Btab->count( $Cond ) );
+            is( $Page->count, 1, '->count = 1 by token 5bcd3527c45ffe1893dcd3f4270e0c19' );
 
-			# Search Again
-			$Page->reset();
-			$Page->set( $Btab->count( $Cond ) );
-			is( $Page->count(), 1, '->count() = 1 by token 5bcd3527c45ffe1893dcd3f4270e0c19' );
+            while(1) {
+                $Data = $T->class->searchandnew( $BdDR->handle, $Cond, $Page );
+                isa_ok( $Data, 'Kanadzuchi::Iterator' );
 
-			while(1)
-			{
-				$Data = $T->class->searchandnew($BdDR->handle(),$Cond,$Page);
-				isa_ok( $Data, q|Kanadzuchi::Iterator| );
+                while( my $_e = $Data->next ) {
+                    ok( $_e->id, '->id = '.$_e->id );
+                    is( $_e->hostgroup, 'neighbor', '->update->hostgroup = neighbor' );
+                    is( $_e->reason, 'onhold', '->update->reason = onhold' );
+                }
+                last unless $Page->next;
+            }
+        }
 
-				while( my $_e = $Data->next() )
-				{
-					ok( $_e->id(), '->id() = '.$_e->id() );
-					is( $_e->disabled(), 1, '->disabled() = 1' );
-				}
-				last() unless($Page->next());
-			}
-		}
+        DISABLE: {
+            $Cond = { 'token' => '5bcd3527c45ffe1893dcd3f4270e0c19' };
+            $Page->reset;
+            $Page->set( $Btab->count( $Cond ) );
+            is( $Page->count, 1, '->count = 1 by token 5bcd3527c45ffe1893dcd3f4270e0c19' );
 
-		DELETE: {
-			$Cond = {'token' => '5bcd3527c45ffe1893dcd3f4270e0c19' };
-			$Page->reset();
-			$Page->set( $Btab->count( $Cond ) );
-			is( $Page->count(), 1, '->count() = 1 by token 5bcd3527c45ffe1893dcd3f4270e0c19' );
+            while(1) {
+                $Data = $T->class->searchandnew( $BdDR->handle, $Cond, $Page );
+                isa_ok( $Data, 'Kanadzuchi::Iterator' );
 
-			while(1)
-			{
-				$Data = $T->class->searchandnew($BdDR->handle(),$Cond,$Page);
-				isa_ok( $Data, q|Kanadzuchi::Iterator| );
+                while( my $_e = $Data->next ) {
+                    ok( $_e->id, '->id = '.$_e->id );
+                    is( $_e->disabled, 0, '->disabled = 0' );
+                    $_e->disabled(1);
+                    $Stat = $_e->disable( $Btab, $Cdat );
+                    ok( $Stat, '->disable' );
+                }
+                last unless $Page->next;
+            }
 
-				while( my $_e = $Data->next() )
-				{
-					ok( $_e->id(), '->id() = '.$_e->id() );
-					ok( $_e->token(), '->token() = '.$_e->token() );
+            # Search Again
+            $Page->reset;
+            $Page->set( $Btab->count( $Cond ) );
+            is( $Page->count, 1, '->count = 1 by token 5bcd3527c45ffe1893dcd3f4270e0c19' );
 
-					$Stat = $_e->remove( $Btab, $Cdat );
-					ok( $Stat, '->remove()' );
-				}
-				last() unless($Page->next());
-			}
+            while(1) {
+                $Data = $T->class->searchandnew( $BdDR->handle, $Cond, $Page );
+                isa_ok( $Data, 'Kanadzuchi::Iterator' );
 
-			# Search Again
-			$Page->reset();
-			$Page->set( $Btab->count( $Cond ) );
-			is( $Page->count(), 0, '->count() = 1 by token 5bcd3527c45ffe1893dcd3f4270e0c19' );
+                while( my $_e = $Data->next )
+                {
+                    ok( $_e->id, '->id = '.$_e->id );
+                    is( $_e->disabled, 1, '->disabled = 1' );
+                }
+                last unless $Page->next;
+            }
+        }
 
-			while(1)
-			{
-				$Data = $T->class->searchandnew($BdDR->handle(),$Cond,$Page);
-				isa_ok( $Data, q|Kanadzuchi::Iterator| );
-				is( $Data->count(), 0, '->remove->count() = 0' );
-				last() unless($Page->next());
-			}
-		}
-	}
+        DELETE: {
+            $Cond = {'token' => '5bcd3527c45ffe1893dcd3f4270e0c19' };
+            $Page->reset;
+            $Page->set( $Btab->count( $Cond ) );
+            is( $Page->count, 1, '->count = 1 by token 5bcd3527c45ffe1893dcd3f4270e0c19' );
+
+            while(1) {
+                $Data = $T->class->searchandnew( $BdDR->handle, $Cond, $Page );
+                isa_ok( $Data, 'Kanadzuchi::Iterator' );
+
+                while( my $_e = $Data->next ) {
+                    ok( $_e->id, '->id = '.$_e->id );
+                    ok( $_e->token, '->token = '.$_e->token );
+
+                    $Stat = $_e->remove( $Btab, $Cdat );
+                    ok( $Stat, '->remove' );
+                }
+                last unless $Page->next;
+            }
+
+            # Search Again
+            $Page->reset;
+            $Page->set( $Btab->count( $Cond ) );
+            is( $Page->count, 0, '->count = 1 by token 5bcd3527c45ffe1893dcd3f4270e0c19' );
+
+            while(1) {
+                $Data = $T->class->searchandnew( $BdDR->handle, $Cond, $Page );
+                isa_ok( $Data, 'Kanadzuchi::Iterator' );
+                is( $Data->count, 0, '->remove->count = 0' );
+                last unless $Page->next;
+            }
+        }
+    }
 
 }
 

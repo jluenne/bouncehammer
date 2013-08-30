@@ -3,26 +3,27 @@ use warnings;
 use lib qw(./t/lib ./dist/lib ./src/lib);
 use Test::More;
 
-my $Modules = [
-	q(Kanadzuchi::API),
-	q(Kanadzuchi::API::HTTP),
-	q(Kanadzuchi::API::HTTP::Dispatch),
-	q(Kanadzuchi::API::HTTP::Search),
-	q(Kanadzuchi::API::HTTP::Select),
-];
+my $Modules = [ qw/
+    Kanadzuchi::API
+    Kanadzuchi::API::HTTP
+    Kanadzuchi::API::HTTP::Dispatch
+    Kanadzuchi::API::HTTP::Search
+    Kanadzuchi::API::HTTP::Select
+/ ];
 
-plan( tests => scalar @$Modules );
 SKIP: {
-	eval {
-		require CGI::Application;
-		require CGI::Application::Dispatch;
-		require CGI::Application::Plugin::TT;
-		require CGI::Application::Plugin::Session;
-		require CGI::Application::Plugin::HTMLPrototype;
-	};
+    eval {
+        require CGI::Application;
+        require CGI::Application::Dispatch;
+        require CGI::Application::Plugin::TT;
+        require CGI::Application::Plugin::Session;
+        require CGI::Application::Plugin::HTMLPrototype;
+    };
 
-	skip( 'CGI::Application::* is not installed', scalar @$Modules ) if( $@ );
-	foreach my $module ( @$Modules ){ use_ok($module); }
+    skip( 'CGI::Application::* is not installed', scalar @$Modules ) if $@;
+    foreach my $module ( @$Modules ){ use_ok $module; }
 }
+
+done_testing();
 
 __END__

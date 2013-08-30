@@ -1,4 +1,4 @@
-# $Id: 501_bin-logger.t,v 1.11 2010/07/11 09:20:39 ak Exp $
+# $Id: 501_bin-logger.t,v 1.11.2.1 2013/08/30 23:05:12 ak Exp $
 #  ____ ____ ____ ____ ____ ____ ____ ____ ____ 
 # ||L |||i |||b |||r |||a |||r |||i |||e |||s ||
 # ||__|||__|||__|||__|||__|||__|||__|||__|||__||
@@ -7,205 +7,201 @@
 use lib qw(./t/lib ./dist/lib ./src/lib);
 use strict;
 use warnings;
-use Test::More ( tests => 354 );
+use Test::More ( 'tests' => 354 );
 
 SKIP: {
-	my $howmanyskips = 354;
-	eval{ require IPC::Cmd; }; 
-	skip( 'Because no IPC::Cmd for testing', $howmanyskips ) if($@);
+    my $howmanyskips = 354;
+    eval{ require IPC::Cmd; }; 
+    skip( 'Because no IPC::Cmd for testing', $howmanyskips ) if($@);
 
-	require Kanadzuchi::Test::CLI;
-	require Kanadzuchi;
-	require File::Copy;
+    require Kanadzuchi::Test::CLI;
+    require Kanadzuchi;
+    require File::Copy;
 
-	#  ____ ____ ____ ____ ____ ____ _________ ____ ____ ____ ____ 
-	# ||G |||l |||o |||b |||a |||l |||       |||v |||a |||r |||s ||
-	# ||__|||__|||__|||__|||__|||__|||_______|||__|||__|||__|||__||
-	# |/__\|/__\|/__\|/__\|/__\|/__\|/_______\|/__\|/__\|/__\|/__\|
-	#
-	my $K = new Kanadzuchi();
-	my $E = new Kanadzuchi::Test::CLI(
-			'command' => -x q(./dist/bin/logger) ? q(./dist/bin/logger) : q(./src/bin/logger.PL),
-			'config' => q(./src/etc/prove.cf),
-			'input' => q(./examples/17-messages.eml),
-			'output' => q(./.test/hammer.1970-01-01.ffffffff.000000.tmp),
-			'tempdir' => q(./.test),
-	);
+    #  ____ ____ ____ ____ ____ ____ _________ ____ ____ ____ ____ 
+    # ||G |||l |||o |||b |||a |||l |||       |||v |||a |||r |||s ||
+    # ||__|||__|||__|||__|||__|||__|||_______|||__|||__|||__|||__||
+    # |/__\|/__\|/__\|/__\|/__\|/__\|/_______\|/__\|/__\|/__\|/__\|
+    #
+    my $K = new Kanadzuchi;
+    my $E = new Kanadzuchi::Test::CLI(
+            'command' => -x './dist/bin/logger' ? './dist/bin/logger' : './src/bin/logger.PL',
+            'config' => './src/etc/prove.cf',
+            'input' => './examples/17-messages.eml',
+            'output' => './.test/hammer.1970-01-01.ffffffff.000000.tmp',
+            'tempdir' => './.test',
+    );
 
-	my $O = q| -C|.$E->config();
-	my $LogFiles = Kanadzuchi::Test::CLI->logfiles();
-	my $X = q(./.test/hammer.1970-01-01.11111111.111111.tmp);
-	my $Y = q(./.test/hammer.2008-09-18.log);
+    my $O = ' -C'.$E->config;
+    my $LogFiles = Kanadzuchi::Test::CLI->logfiles;
+    my $X = './.test/hammer.1970-01-01.11111111.111111.tmp';
+    my $Y = './.test/hammer.2008-09-18.log';
 
-	my $Suite = [
-		{
-			'name' => 'List of log files',
-			'option' => $O.q( --list),
-			'expect' => 1,
-			'wantresult' => 1,
-		},
-		{
-			'name' => 'Specify a file/Concatenate',
-			'option' => $O.q( -c ).$E->output(),
-		},
-		{
-			'name' => 'Specify a directory/Concatenate',
-			'option' => $O.q( -c ).$E->tempdir(),
-		},
-		{
-			'name' => 'Specify a directory and remove temp logs/Concatenate',
-			'option' => $O.q( -c ).$E->tempdir().q( --remove ),
-		},
-		{
-			'name' => 'Specify a directory and truncate temp logs/Concatenate',
-			'option' => $O.q( -c ).$E->tempdir().q( --truncate ),
-		},
-		{
-			'name' => 'Specify a directory and backup temp logs/Concatenate',
-			'option' => $O.q( -c ).$E->tempdir().q( --backup /tmp ),
-		},
-		{
-			'name' => 'Specify a file/Merge',
-			'option' => $O.q( -m ).$X,
-		},
-		{
-			'name' => 'Specify a file and remove temp logs/Merge',
-			'option' => $O.q( -m ).$X.q( --remove ),
-		},
-		{
-			'name' => 'Specify a file and truncate temp logs/Merge',
-			'option' => $O.q( -m ).$X.q( --truncate ),
-		},
-		{
-			'name' => 'Specify a file and backup temp logs/Merge',
-			'option' => $O.q( -m ).$X.q( --backup /tmp ),
-		},
-	];
+    my $Suite = [
+        {
+            'name' => 'List of log files',
+            'option' => $O.' --list',
+            'expect' => 1,
+            'wantresult' => 1,
+        },
+        {
+            'name' => 'Specify a file/Concatenate',
+            'option' => $O.' -c '.$E->output,
+        },
+        {
+            'name' => 'Specify a directory/Concatenate',
+            'option' => $O.' -c '.$E->tempdir,
+        },
+        {
+            'name' => 'Specify a directory and remove temp logs/Concatenate',
+            'option' => $O.' -c '.$E->tempdir.' --remove ',
+        },
+        {
+            'name' => 'Specify a directory and truncate temp logs/Concatenate',
+            'option' => $O.' -c '.$E->tempdir.' --truncate ',
+        },
+        {
+            'name' => 'Specify a directory and backup temp logs/Concatenate',
+            'option' => $O.' -c '.$E->tempdir.' --backup /tmp ',
+        },
+        {
+            'name' => 'Specify a file/Merge',
+            'option' => $O.' -m '.$X,
+        },
+        {
+            'name' => 'Specify a file and remove temp logs/Merge',
+            'option' => $O.' -m '.$X.' --remove ',
+        },
+        {
+            'name' => 'Specify a file and truncate temp logs/Merge',
+            'option' => $O.' -m '.$X.' --truncate ',
+        },
+        {
+            'name' => 'Specify a file and backup temp logs/Merge',
+            'option' => $O.' -m '.$X.' --backup /tmp ',
+        },
+    ];
 
-	#  ____ ____ ____ ____ _________ ____ ____ ____ ____ ____ 
-	# ||T |||e |||s |||t |||       |||c |||o |||d |||e |||s ||
-	# ||__|||__|||__|||__|||_______|||__|||__|||__|||__|||__||
-	# |/__\|/__\|/__\|/__\|/_______\|/__\|/__\|/__\|/__\|/__\|
-	#
-	PREPROCESS: {
-		$K->load($E->config());
-		File::Copy::copy( q{../examples/}.File::Basename::basename($E->output()),
-					$E->tempdir().q{/}.File::Basename::basename($E->output()) );
-		File::Copy::copy( $E->output(), $E->output.q{.bak} ) if( -s $E->output() );
-		File::Copy::copy( $E->output().q{.bak}, $E->output() ) if( -s $E->output().q{.bak} );
+    #  ____ ____ ____ ____ _________ ____ ____ ____ ____ ____ 
+    # ||T |||e |||s |||t |||       |||c |||o |||d |||e |||s ||
+    # ||__|||__|||__|||__|||_______|||__|||__|||__|||__|||__||
+    # |/__\|/__\|/__\|/__\|/_______\|/__\|/__\|/__\|/__\|/__\|
+    #
+    PREPROCESS: {
+        $K->load( $E->config );
+        File::Copy::copy( '../examples/'.File::Basename::basename( $E->output ),
+                    $E->tempdir.'/'.File::Basename::basename( $E->output ) );
+        File::Copy::copy( $E->output, $E->output.'.bak' ) if -s $E->output;
+        File::Copy::copy( $E->output.'.bak', $E->output ) if -s $E->output.'.bak';
 
-		ok( $E->environment(1), q{->environment(1)} );
-		ok( $E->syntax(), q{->syntax()} );
-		ok( $E->version(), q{->version()} );
-		ok( $E->help(), q{->help()} );
-		ok( $E->error('-c'), q{->error()} );
-		ok( $E->mailboxparser(), q{(mailboxparser) ->mailboxparser()} );
+        ok( $E->environment(1), '->environment(1)' );
+        ok( $E->syntax, '->syntax' );
+        ok( $E->version, '->version' );
+        ok( $E->help, '->help' );
+        ok( $E->error('-c'), '->error' );
+        ok( $E->mailboxparser, '(mailboxparser) ->mailboxparser' );
 
-		CLEANUP: foreach my $f ( @$LogFiles )
-		{
-			next() unless( -f $E->tempdir().q(/).$f->{'file'} );
-			truncate( $E->tempdir().q(/).$f->{'file'}, 0 );
-		}
-	}
+        CLEANUP: foreach my $f ( @$LogFiles ) {
 
-	ERROR_MESSAGES: {
-		my $command = q();
-		my $xresult = [];
-	}
+            next unless -f $E->tempdir.'/'.$f->{'file'};
+            truncate( $E->tempdir.'/'.$f->{'file'}, 0 );
+        }
+    }
 
-	EXECUTE: foreach my $s ( @$Suite )
-	{
-		my $command = $E->perl().$E->command().$s->{'option'};
-		my $xresult = q();
+    ERROR_MESSAGES: {
+        my $command = q();
+        my $xresult = [];
+    }
 
-		if( $s->{'wantresult'} )
-		{
-			$xresult = qx($command); chomp($xresult);
-			ok( $xresult >= $s->{'expect'}, $s->{'name'} );
-		}
-		else
-		{
-			File::Copy::copy( $E->output().q{.bak}, $E->output() ) if( -s $E->output().q{.bak} );
-			my $yaml = undef();
-			my $file = undef();
+    EXECUTE: foreach my $s ( @$Suite ) {
 
-			if( $s->{'name'} =~ m{Concatenate\z} )
-			{
-				$xresult = scalar(IPC::Cmd::run( 'command' => $command ));
-				ok( $xresult, $s->{'name'}.q{: }.$command );
+        my $command = $E->perl.$E->command.$s->{'option'};
+        my $xresult = q();
 
-				LOGFILE: foreach my $f ( @$LogFiles )
-				{
-					$yaml = undef();
-					$file = $E->tempdir().q(/).$f->{'file'};
+        if( $s->{'wantresult'} ) {
+            $xresult = qx|$command|; chomp $xresult;
+            ok( $xresult >= $s->{'expect'}, $s->{'name'} );
 
-					SKIP: {
-						skip( 'No log file', 3 ) unless( -e $file );
+        } else {
+            File::Copy::copy( $E->output.'.bak', $E->output ) if -s $E->output.'.bak';
+            my $yaml = undef;
+            my $file = undef;
 
-						$yaml = JSON::Syck::LoadFile( $file );
-						isa_ok( $yaml, q|ARRAY|, $f->{'file'}.q{ is Array(JSON)} );
-						ok( scalar(@$yaml) > 0, $f->{'file'}.q{ has }.$f->{'entity'}.q{ records} );
-						is( $K->is_logfile($f->{'file'}), 2, $f->{'file'}.q{ is regular log file} );
+            if( $s->{'name'} =~ m{Concatenate\z} ) {
 
-						unlink( $file ) if( -e $file );
-					}
-				}
-			}
-			elsif( $s->{'name'} =~ m{Merge\z} )
-			{
+                $xresult = scalar(IPC::Cmd::run( 'command' => $command ));
+                ok( $xresult, $s->{'name'}.': '.$command );
 
-				foreach my $c ( 1 .. 3 )
-				{
-					open( my $_tmplogx, q{<}, $E->output );
-					open( my $_tmplog1, q{>}, $X );
-					while( my $__line = <$_tmplogx> )
-					{
-						print($_tmplog1 $__line );
-						last();
-					}
-					close($_tmplogx);
-					close($_tmplog1);
+                LOGFILE: foreach my $f ( @$LogFiles ) {
 
-					$xresult = scalar(IPC::Cmd::run( 'command' => $command ));
-					ok( $xresult, qq([$c] ).$s->{'name'}.q{: }.$command );
+                    $yaml = undef;
+                    $file = $E->tempdir.'/'.$f->{'file'};
 
-					$yaml = JSON::Syck::LoadFile($Y); 
-					isa_ok( $yaml, q|ARRAY|, qq([$c] ).$Y.q{ is Array(JSON)} );
-					is( scalar(@$yaml), 1, qq([$c] ).$Y.q{ has 1 record} );
-					is( $K->is_logfile($Y), 2, qq([$c] ).$Y.q{ is regular log file} );
-				}
-			}
-		}
-	}
+                    SKIP: {
+                        skip( 'No log file', 3 ) unless -e $file;
 
-	BATCHMODE: {
-		my $command = $E->perl().$E->command().$O.q{ -c --batch };
-		my $xresult = qx( $command );
-		my $yamlobj = JSON::Syck::Load($xresult);
-		my $thisent = {};
+                        $yaml = JSON::Syck::LoadFile( $file );
+                        isa_ok( $yaml, 'ARRAY', $f->{'file'}.' is Array(JSON)' );
+                        ok( scalar @$yaml > 0, $f->{'file'}.' has '.$f->{'entity'}.' records' );
+                        is( $K->is_logfile( $f->{'file'} ), 2, $f->{'file'}.' is regular log file' );
 
-		isa_ok( $yamlobj, q|HASH|, '--batch returns YAML(HASH)' );
+                        unlink $file if -e $file;
+                    }
+                }
 
-		foreach my $_sk ( 'user', 'command', 'load' )
-		{
-			ok( $yamlobj->{$_sk}, $_sk.' = '.$yamlobj->{$_sk} );
-		}
+            } elsif( $s->{'name'} =~ m{Merge\z} ) {
 
-		ok( $yamlobj->{'time'}->{'started'}, 'time->started = '.$yamlobj->{'time'}->{'started'} );
-		ok( $yamlobj->{'time'}->{'ended'}, 'time->ended = '.$yamlobj->{'time'}->{'ended'} );
-		ok( $yamlobj->{'time'}->{'elapsed'} > -1, 'time->elapsed = '.$yamlobj->{'time'}->{'elapsed'} );
+                foreach my $c ( 1 .. 3 ) {
 
-		$thisent = $yamlobj->{'status'}->{'log-files'};
-		ok( $thisent->{'all-of-temporary-logs'}, '->all-of-temporary-logs = '.$thisent->{'all-of-temporary-logs'} );
-		ok( $thisent->{'size-of-temporary-logs'}, '->size-of-temporary-logs = '.$thisent->{'size-of-temporary-logs'} );
+                    open( my $_tmplogx, '<', $E->output );
+                    open( my $_tmplog1, '>', $X );
 
-		$thisent = $yamlobj->{'status'}->{'records'};
-	}
+                    while( my $__line = <$_tmplogx> ) {
+                        print( $_tmplog1 $__line );
+                        last;
+                    }
+                    close $_tmplogx;
+                    close $_tmplog1;
 
-	POSTPROCESS: {
-		File::Copy::copy( $E->output().q{.bak}, $E->output() ) if( -s $E->output().q{.bak} );
-		unlink('/tmp/'.File::Basename::basename($E->output())) if( -w '/tmp/'.File::Basename::basename($E->output) );
-	}
+                    $xresult = scalar(IPC::Cmd::run( 'command' => $command ));
+                    ok( $xresult, qq|[$c] |.$s->{'name'}.': '.$command );
+
+                    $yaml = JSON::Syck::LoadFile( $Y ); 
+                    isa_ok( $yaml, 'ARRAY', qq|[$c] |.$Y.' is Array(JSON)' );
+                    is( scalar @$yaml, 1, qq|[$c] |.$Y.' has 1 record' );
+                    is( $K->is_logfile( $Y ), 2, qq|[$c] |.$Y.' is regular log file' );
+                }
+            }
+        }
+    }
+
+    BATCHMODE: {
+        my $command = $E->perl.$E->command.$O.' -c --batch ';
+        my $xresult = qx( $command );
+        my $yamlobj = JSON::Syck::Load( $xresult );
+        my $thisent = {};
+
+        isa_ok( $yamlobj, 'HASH', '--batch returns YAML(HASH)' );
+
+        foreach my $_sk ( 'user', 'command', 'load' ) {
+            ok( $yamlobj->{ $_sk }, $_sk.' = '.$yamlobj->{ $_sk } );
+        }
+
+        ok( $yamlobj->{'time'}->{'started'}, 'time->started = '.$yamlobj->{'time'}->{'started'} );
+        ok( $yamlobj->{'time'}->{'ended'}, 'time->ended = '.$yamlobj->{'time'}->{'ended'} );
+        ok( $yamlobj->{'time'}->{'elapsed'} > -1, 'time->elapsed = '.$yamlobj->{'time'}->{'elapsed'} );
+
+        $thisent = $yamlobj->{'status'}->{'log-files'};
+        ok( $thisent->{'all-of-temporary-logs'}, '->all-of-temporary-logs = '.$thisent->{'all-of-temporary-logs'} );
+        ok( $thisent->{'size-of-temporary-logs'}, '->size-of-temporary-logs = '.$thisent->{'size-of-temporary-logs'} );
+
+        $thisent = $yamlobj->{'status'}->{'records'};
+    }
+
+    POSTPROCESS: {
+        File::Copy::copy( $E->output.'.bak', $E->output ) if -s $E->output.'.bak';
+        unlink '/tmp/'.File::Basename::basename( $E->output ) if -w '/tmp/'.File::Basename::basename( $E->output );
+    }
 
 }
 
