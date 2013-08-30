@@ -1,4 +1,4 @@
-# $Id: Cellphone.pm,v 1.1.2.1 2013/04/18 10:56:28 ak Exp $
+# $Id: Cellphone.pm,v 1.1.2.2 2013/08/30 08:51:14 ak Exp $
 # Copyright (C) 2013 Cubicroot Co. Ltd.
 # Kanadzuchi::Mail::Group::NO::
                                                             
@@ -22,28 +22,18 @@ use warnings;
 # Cellular phone domains in Norway
 # See http://en.wikipedia.org/wiki/List_of_SMS_gateways
 # sub communisexemplar { return qr{[.]no\z}; }
-sub nominisexemplaria
-{
-	my $self = shift;
-	return {
-		'sendega' => [
-			# Sendega; http://www.sendega.no
-			qr{\Asendega[.]com\z},
-		],
-		'teletopiasms' => [
-			# TeletopiaSMS; http://www.teletopiasms.no/
-			qr{\Asms[.]teletopiasms[.]no\z},
-		],
-	};
-}
-
-sub classisnomina
-{
-	my $class = shift;
-	return {
-		'sendega'	=> 'Generic',
-		'teletopiasms'	=> 'Generic',
-	};
+sub nominisexemplaria {
+    my $self = shift;
+    return {
+        'sendega' => [
+            # Sendega; http://www.sendega.no
+            qr{\Asendega[.]com\z},
+        ],
+        'teletopiasms' => [
+            # TeletopiaSMS; http://www.teletopiasms.no/
+            qr{\Asms[.]teletopiasms[.]no\z},
+        ],
+    };
 }
 
 1;

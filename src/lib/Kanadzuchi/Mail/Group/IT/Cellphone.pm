@@ -1,4 +1,4 @@
-# $Id: Cellphone.pm,v 1.1.2.3 2013/04/18 10:56:28 ak Exp $
+# $Id: Cellphone.pm,v 1.1.2.4 2013/08/30 08:51:14 ak Exp $
 # Copyright (C) 2009,2010,2013 Cubicroot Co. Ltd.
 # Kanadzuchi::Mail::Group::IT::
                                                             
@@ -22,29 +22,19 @@ use warnings;
 # Cellular phone domains in Italian Republic/Repubblica Italiana
 # See http://en.wikipedia.org/wiki/List_of_SMS_gateways
 sub communisexemplar { return qr{[.]it\z}; }
-sub nominisexemplaria
-{
-	# *** NOT TESTED YET ***
-	my $self = shift;
-	return {
-		'telecomit' => [
-			# TIM, Telecom Italia; http://www.tim.it/home
-			qr{\Atimnet[.]com\z},
-		],
-		'vodafone' => [
-			# Vodafone; http://www.vodafone.com/
-			qr{\Asms[.]vodafone[.]it\z},
-		],
-	};
-}
-
-sub classisnomina
-{
-	my $class = shift;
-	return {
-		'telecomit'	=> 'Generic',
-		'vodafone'	=> 'Generic',
-	};
+sub nominisexemplaria {
+    # *** NOT TESTED YET ***
+    my $self = shift;
+    return {
+        'telecomit' => [
+            # TIM, Telecom Italia; http://www.tim.it/home
+            qr{\Atimnet[.]com\z},
+        ],
+        'vodafone' => [
+            # Vodafone; http://www.vodafone.com/
+            qr{\Asms[.]vodafone[.]it\z},
+        ],
+    };
 }
 
 1;

@@ -1,4 +1,4 @@
-# $Id: Search.pm,v 1.3.2.2 2013/04/15 04:20:52 ak Exp $
+# $Id: Search.pm,v 1.3.2.3 2013/08/29 11:02:53 ak Exp $
 # Copyright (C) 2010,2013 Cubicroot Co. Ltd.
 # Kanadzuchi::API::HTTP::
                                            
@@ -29,81 +29,77 @@ use Kanadzuchi::Log;
 # ||__|||__|||__|||__|||__|||__|||__|||__|||_______|||__|||__|||__|||__|||__|||__|||__||
 # |/__\|/__\|/__\|/__\|/__\|/__\|/__\|/__\|/_______\|/__\|/__\|/__\|/__\|/__\|/__\|/__\|
 #
-sub search
-{
-	# +-+-+-+-+-+-+
-	# |s|e|a|r|c|h|
-	# +-+-+-+-+-+-+
-	#
-	# @Description	Send query and receive results as JSON format
-	# @Param	<None>
-	# @Return
-	my $self = shift;
-	my $bddr = $self->{'database'};
+sub search {
+    # +-+-+-+-+-+-+
+    # |s|e|a|r|c|h|
+    # +-+-+-+-+-+-+
+    #
+    # @Description  Send query and receive results as JSON format
+    # @Param        <None>
+    # @Return
+    my $self = shift;
+    my $bddr = $self->{'database'};
 
-	my $validcols = [];	# (Ref->Array) Valid column names
-	my $wherecond = {};	# (Ref->Hash) WHERE Condition for sending query
-	my $dbrecords = 0;	# (Integer) The number of records in the db
-	my $paginated = new Kanadzuchi::BdDR::Page();
-	my $bouncelog = new Kanadzuchi::BdDR::BounceLogs::Table('handle' => $bddr->handle());
+    my $validcols = []; # (Ref->Array) Valid column names
+    my $wherecond = {}; # (Ref->Hash) WHERE Condition for sending query
+    my $dbrecords = 0;  # (Integer) The number of records in the db
+    my $paginated = new Kanadzuchi::BdDR::Page;
+    my $bouncelog = new Kanadzuchi::BdDR::BounceLogs::Table( 'handle' => $bddr->handle );
 
-	my $thecolumn = $self->param('pi_column') || q();
-	my $thestring = $self->param('pi_string') || q();
+    my $thecolumn = $self->param('pi_column') || q();
+    my $thestring = $self->param('pi_string') || q();
 
-	my $recordsin = 0;		# (Integer) The number of records in the DB
-	my $serializd = q();		# (String) Serialized/json
-	my $cgiqueryp = $self->query();
+    my $recordsin = 0;      # (Integer) The number of records in the DB
+    my $serializd = q();    # (String) Serialized/json
+    my $cgiqueryp = $self->query;
 
-	# Build column names
-	push @$validcols, @{ $bouncelog->fields->{'join'} };
-	push @$validcols, ( 'recipient', 'hostgroup', 'reason', 'token', 'id' );
+    # Build column names
+    push @$validcols, @{ $bouncelog->fields->{'join'} };
+    push @$validcols, ( 'recipient', 'hostgroup', 'reason', 'token', 'id' );
 
-	# Experimental implementation except the column 'recipient'
-	return unless grep { lc $thecolumn eq $_ } @$validcols;
-	return q() unless $thestring;
+    # Experimental implementation except the column 'recipient'
+    return unless grep { lc $thecolumn eq $_ } @$validcols;
+    return q() unless $thestring;
 
-	if( $thecolumn eq 'recipient' || $thecolumn eq 'addresser' )
-	{
-		$wherecond->{ $thecolumn } = Kanadzuchi::Address->canonify( lc $thestring );
-	}
-	else
-	{
-		$wherecond->{ $thecolumn } = lc $thestring;
-	}
+    if( $thecolumn eq 'recipient' || $thecolumn eq 'addresser' ) {
+        $wherecond->{ $thecolumn } = Kanadzuchi::Address->canonify( lc $thestring );
 
-	$recordsin = $bouncelog->count( $wherecond, $paginated );
+    } else {
+        $wherecond->{ $thecolumn } = lc $thestring;
+    }
 
-	return q() unless $recordsin;
+    $recordsin = $bouncelog->count( $wherecond, $paginated );
 
-	$paginated->resultsperpage( 100 );
-	$paginated->set( $recordsin );
-	$paginated->colnameorderby( 'id' );
-	$paginated->descendorderby( 0 );
+    return q() unless $recordsin;
 
-	# Search and Print
-	MAKE_DATA_AS_JSON: while(1)
-	{
-		my $dataarray = [];		# (Ref->Array) Dumped results
-		my $xiterator = Kanadzuchi::Mail::Stored::BdDR->searchandnew( 
-					$bddr->handle(), $wherecond, $paginated);
+    $paginated->resultsperpage( 100 );
+    $paginated->set( $recordsin );
+    $paginated->colnameorderby( 'id' );
+    $paginated->descendorderby( 0 );
 
-		DUMP_EACH_OBJECT: while( my $obj = $xiterator->next() )
-		{
-			push @$dataarray, $obj;
-		}
+    # Search and Print
+    MAKE_DATA_AS_JSON: while(1) {
 
-		# Create K::Log object and dump
-		my $kanazclog = new Kanadzuchi::Log(
-					'count' => scalar @$dataarray,
-					'entities' => $dataarray,
-					'format' => 'json' );
+        my $dataarray = [];     # (Ref->Array) Dumped results
+        my $xiterator = Kanadzuchi::Mail::Stored::BdDR->searchandnew( 
+                                $bddr->handle, $wherecond, $paginated );
 
-		$serializd .= $kanazclog->dumper() || q();
-		last unless $paginated->hasnext();
-		$paginated->next();
-	}
+        DUMP_EACH_OBJECT: while( my $obj = $xiterator->next ) {
+            push @$dataarray, $obj;
+        }
 
-	return $serializd;
+        # Create K::Log object and dump
+        my $kanazclog = new Kanadzuchi::Log(
+                            'count' => scalar @$dataarray,
+                            'entities' => $dataarray,
+                            'format' => 'json' );
+
+        $serializd .= $kanazclog->dumper || q();
+        last unless $paginated->hasnext;
+        $paginated->next;
+    }
+
+    return $serializd;
 }
 
 1;

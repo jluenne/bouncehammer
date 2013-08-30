@@ -1,4 +1,4 @@
-# $Id: Cellphone.pm,v 1.1.2.3 2013/04/18 10:56:28 ak Exp $
+# $Id: Cellphone.pm,v 1.1.2.4 2013/08/30 08:51:14 ak Exp $
 # Copyright (C) 2009,2010,2013 Cubicroot Co. Ltd.
 # Kanadzuchi::Mail::Group::AR::
                                                             
@@ -22,41 +22,29 @@ use warnings;
 # Cellular phone domains in Argentina/Argentine Republic
 # See http://en.wikipedia.org/wiki/List_of_SMS_gateways
 sub communisexemplar { return qr{[.]ar\z}; }
-sub nominisexemplaria
-{
-	# *** NOT TESTED YET ***
-	my $self = shift;
-	return {
-		'claro' => [
-			# Claro, CTI Movil
-			qr{\Asms[.]ctimovil[.]com[.]ar\z},
-		],
-		'nextel' => [
-			# NEXTEL ARGENTINA; http://www.nextel.com.ar/
-			qr{\Anextel[.]net[.]ar\z},
-		],
-		'personal' => [
-			# Telecom Personal S.A.; http://www.telecom.com.ar/
-			qr{\Aalertas[.]personal[.]com[.]ar\z},
-		],
-		'movistar' => [
-			# Movistar; http://www.movistar.com/
-			qr{\Amovistar[.]com[.]ar\z},
-			qr{\Asms[.]movistar[.]net[.]ar\z},
-			qr{\Amovimensaje[.]com[.]ar\z},
-		],
-	};
-}
-
-sub classisnomina
-{
-	my $class = shift;
-	return {
-		'claro'		=> 'Generic',
-		'movistar'	=> 'Generic',
-		'nextel'	=> 'Generic',
-		'personal'	=> 'Generic',
-	};
+sub nominisexemplaria {
+    # *** NOT TESTED YET ***
+    my $self = shift;
+    return {
+        'claro' => [
+            # Claro, CTI Movil
+            qr{\Asms[.]ctimovil[.]com[.]ar\z},
+        ],
+        'nextel' => [
+            # NEXTEL ARGENTINA; http://www.nextel.com.ar/
+            qr{\Anextel[.]net[.]ar\z},
+        ],
+        'personal' => [
+            # Telecom Personal S.A.; http://www.telecom.com.ar/
+            qr{\Aalertas[.]personal[.]com[.]ar\z},
+        ],
+        'movistar' => [
+            # Movistar; http://www.movistar.com/
+            qr{\Amovistar[.]com[.]ar\z},
+            qr{\Asms[.]movistar[.]net[.]ar\z},
+            qr{\Amovimensaje[.]com[.]ar\z},
+        ],
+    };
 }
 
 1;

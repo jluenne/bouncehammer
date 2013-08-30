@@ -1,4 +1,4 @@
-# $Id: Smartphone.pm,v 1.3.2.6 2013/04/15 04:20:53 ak Exp $
+# $Id: Smartphone.pm,v 1.3.2.7 2013/08/30 08:51:14 ak Exp $
 # -Id: SmartPhone.pm,v 1.1 2009/08/29 07:33:22 ak Exp -
 # Copyright (C) 2009-2011,2013 Cubicroot Co. Ltd.
 # Kanadzuchi::Mail::Group::UK::
@@ -24,51 +24,37 @@ use warnings;
 # and Bailiwick of Guernsey
 # See http://www.thegremlinhunt.com/2010/01/07/list-of-blackberry-internet-service-e-mail-login-sites/
 # sub communisexemplar { return qr{[.]uk\z}; }
-sub nominisexemplaria
-{
-	my $class = shift;
-	return {
-		# orange: see ../Smartphone.pm
-		'bt' => [
-			# BT; http://www.bt.com/
-			qr{\Abt[.]blackberry[.]com\z},
-		],
-		'o2' => [
-			# Telefonica O2 UK Limited.
-			# https://www.o2.co.uk/
-			qr{\Ao2[.]co[.]uk\z},
-			qr{\Ao2email[.]co[.]uk\z},
-		],
-		'sure' => [
-			# Sure (Cable & Wireless) in Guernsey; http://www.surecw.com/
-			qr{\Acwguernsey[.]blackberry[.]net\z},
-		],
-		't-mobile' => [
-			# T-Mobile; http://www.t-mobile.co.uk/
-			qr{\Ainstantemail[.]t-mobile[.]co[.]uk\z},
-		],
-		'tesco' => [
-			# Tesco Mobile; http://www.tesco.com/mobilenetwork/
-			qr{\Atesco[.]blackberry[.]com\z},
-		],
-		'three' => [
-			# Three; http://www.three.co.uk/
-			qr{\A3uk[.]blackberry[.]com\z},
-		],
-	};
-}
-
-sub classisnomina
-{
-	my $class = shift;
-	return {
-		'bt'		=> 'Generic',
-		'o2'		=> 'Generic',
-		'sure'		=> 'Generic',
-		't-mobile'	=> 'Generic',
-		'tesco'		=> 'Generic',
-		'three'		=> 'Generic',
-	};
+sub nominisexemplaria {
+    my $class = shift;
+    return {
+        # orange: see ../Smartphone.pm
+        'bt' => [
+            # BT; http://www.bt.com/
+            qr{\Abt[.]blackberry[.]com\z},
+        ],
+        'o2' => [
+            # Telefonica O2 UK Limited.
+            # https://www.o2.co.uk/
+            qr{\Ao2[.]co[.]uk\z},
+            qr{\Ao2email[.]co[.]uk\z},
+        ],
+        'sure' => [
+            # Sure (Cable & Wireless) in Guernsey; http://www.surecw.com/
+            qr{\Acwguernsey[.]blackberry[.]net\z},
+        ],
+        't-mobile' => [
+            # T-Mobile; http://www.t-mobile.co.uk/
+            qr{\Ainstantemail[.]t-mobile[.]co[.]uk\z},
+        ],
+        'tesco' => [
+            # Tesco Mobile; http://www.tesco.com/mobilenetwork/
+            qr{\Atesco[.]blackberry[.]com\z},
+        ],
+        'three' => [
+            # Three; http://www.three.co.uk/
+            qr{\A3uk[.]blackberry[.]com\z},
+        ],
+    };
 }
 
 1;

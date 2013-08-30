@@ -1,4 +1,4 @@
-# $Id: Update.pm,v 1.15.2.3 2013/04/15 04:20:53 ak Exp $
+# $Id: Update.pm,v 1.15.2.4 2013/08/30 05:54:48 ak Exp $
 # -Id: Update.pm,v 1.1 2009/08/29 09:30:33 ak Exp -
 # -Id: Update.pm,v 1.6 2009/08/13 07:13:58 ak Exp -
 # Copyright (C) 2009,2010,2013 Cubicroot Co. Ltd.
@@ -31,84 +31,81 @@ use Time::Piece;
 # ||__|||__|||__|||__|||__|||__|||__|||__|||_______|||__|||__|||__|||__|||__|||__|||__||
 # |/__\|/__\|/__\|/__\|/__\|/__\|/__\|/__\|/_______\|/__\|/__\|/__\|/__\|/__\|/__\|/__\|
 #
-sub updatetherecord
-{
-	# +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-	# |u|p|d|a|t|e|t|h|e|r|e|c|o|r|d|
-	# +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-	#
-	# @Description	Update the record on the DB.BounceLogs
-	# @Param	<None>
-	# @Return
-	my $self = shift;
-	my $bddr = $self->{'database'};
-	my $file = 'div-result.html';
-	my $iter = undef;	# (K::Iterator) Iterator object
-	my $cond = {};		# (Ref->Hash) WHERE Condition
-	my $isro = $self->{'webconfig'}->{'database'}->{'table'}->{'bouncelogs'}->{'readonly'};
-	my $cgiq = $self->query();
+sub updatetherecord {
+    # +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    # |u|p|d|a|t|e|t|h|e|r|e|c|o|r|d|
+    # +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    #
+    # @Description  Update the record on the DB.BounceLogs
+    # @Param        <None>
+    # @Return
+    my $self = shift;
+    my $bddr = $self->{'database'};
+    my $file = 'div-result.html';
+    my $iter = undef;   # (K::Iterator) Iterator object
+    my $cond = {};      # (Ref->Hash) WHERE Condition
+    my $isro = $self->{'webconfig'}->{'database'}->{'table'}->{'bouncelogs'}->{'readonly'};
+    my $cgiq = $self->query;
 
-	$cond = {
-		'id' => $self->param('pi_id') || $cgiq->param('fe_id') || 0,
-		'token' => $self->param('token') || $cgiq->param('fe_token') || q(),
-	};
-	return $self->e('invalidrecordid', 'ID: #'.$cond->{'id'} ) unless $cond->{'id'};
-	$iter = Kanadzuchi::Mail::Stored::BdDR->searchandnew( $bddr->handle(), $cond );
+    $cond = {
+        'id' => $self->param('pi_id') || $cgiq->param('fe_id') || 0,
+        'token' => $self->param('token') || $cgiq->param('fe_token') || q(),
+    };
+    return $self->e('invalidrecordid', 'ID: #'.$cond->{'id'} ) unless $cond->{'id'};
+    $iter = Kanadzuchi::Mail::Stored::BdDR->searchandnew( $bddr->handle, $cond );
 
-	if( $iter->count() )
-	{
-		my $this = undef;	# (K::Mail::Stored::YAML) YAML object
-		my $iitr = undef;	# (K::Iterator) Iterator for inner process
-		my $data = [];		# (Ref->Array) Updated record
-		my $dont = 0;		# (Integer) Flag, Do Not UPDATE
-		my $stat = 0;		# (Integer) UPDATE Status
-		my $cdat = new Kanadzuchi::BdDR::Cache();
-		my $btab = new Kanadzuchi::BdDR::BounceLogs::Table( 'handle' => $bddr->handle() );
-		my $zchi = $self->{'kanadzuchi'};
+    if( $iter->count ) {
 
-		$this = $iter->first();
-		unless( $this->id() )
-		{
-			$zchi->historieque('err', 
-				sprintf("mode=update, stat=no such record, name=%s",
-					$self->{'configname'} ));
-			return $self->e('nosuchrecord', 'ID: #'.$cond->{'id'});
-		}
+        my $this = undef;   # (K::Mail::Stored::YAML) YAML object
+        my $iitr = undef;   # (K::Iterator) Iterator for inner process
+        my $data = [];      # (Ref->Array) Updated record
+        my $dont = 0;       # (Integer) Flag, Do Not UPDATE
+        my $stat = 0;       # (Integer) UPDATE Status
+        my $cdat = new Kanadzuchi::BdDR::Cache;
+        my $btab = new Kanadzuchi::BdDR::BounceLogs::Table( 'handle' => $bddr->handle );
+        my $zchi = $self->{'kanadzuchi'};
 
-		$dont |= $cgiq->param('fe_hostgroup') eq '_' ? 1 : 0;
-		$dont |= $cgiq->param('fe_reason') eq '_' ? 2 : 0;
+        $this = $iter->first;
+        if( not $this->id )
+        {
+            $zchi->historieque('err', 
+                sprintf( "mode=update, stat=no such record, name=%s",
+                            $self->{'configname'} ));
+            return $self->e( 'nosuchrecord', 'ID: #'.$cond->{'id'} );
+        }
 
-		$this->hostgroup( $cgiq->param('fe_hostgroup') ) unless $dont & 1;
-		$this->reason( $cgiq->param('fe_reason') ) unless $dont & 2;
+        $dont |= $cgiq->param('fe_hostgroup') eq '_' ? 1 : 0;
+        $dont |= $cgiq->param('fe_reason') eq '_' ? 2 : 0;
 
-		if( $dont != 3 )
-		{
-			$this->updated( Time::Piece->new() );
-			$stat = $this->update( $btab, $cdat );
+        $this->hostgroup( $cgiq->param('fe_hostgroup') ) unless $dont & 1;
+        $this->reason( $cgiq->param('fe_reason') ) unless $dont & 2;
 
-			# syslog
-			$zchi->historique('info',
-				sprintf("logs=WebUI, records=1, inserted=0, updated=%d, skipped=0, failed=%d, mode=update, stat=ok, name=%s",
-					( $stat ? 1 : 0 ), ( $stat ? 0 : 1 ), $self->{'configname'} ));
+        if( $dont != 3 ) {
+            $this->updated( Time::Piece->new );
+            $stat = $this->update( $btab, $cdat );
 
-			return 'Failed' unless $stat;
-		}
+            # syslog
+            $zchi->historique('info',
+                sprintf("logs=WebUI, records=1, inserted=0, updated=%d, skipped=0, failed=%d, mode=update, stat=ok, name=%s",
+                    ( $stat ? 1 : 0 ), ( $stat ? 0 : 1 ), $self->{'configname'} ));
 
-		$data = $this->damn();
-		$data->{'updated'}  = $this->updated->ymd().'('.$this->updated->wdayname().') '.$this->updated->hms();
-		$data->{'bounced'}  = $this->bounced->ymd().'('.$this->bounced->wdayname().') '.$this->bounced->hms();
-		$data->{'bounced'} .= ' '.$this->timezoneoffset() if $this->timezoneoffset();
-		$self->tt_params( 
-			'pv_bouncemessages' => [ $data ],
-			'pv_isupdated' => 1,
-			'pv_isreadonly' => $isro,
-		);
-		return $self->tt_process( $file );
-	}
-	else
-	{
-		return $self->e('nosuchrecord', 'ID: #'.$cond->{'id'});
-	}
+            return 'Failed' unless $stat;
+        }
+
+        $data = $this->damn;
+        $data->{'updated'}  = $this->updated->ymd.'('.$this->updated->wdayname.') '.$this->updated->hms;
+        $data->{'bounced'}  = $this->bounced->ymd.'('.$this->bounced->wdayname.') '.$this->bounced->hms;
+        $data->{'bounced'} .= ' '.$this->timezoneoffset if $this->timezoneoffset;
+        $self->tt_params( 
+            'pv_bouncemessages' => [ $data ],
+            'pv_isupdated' => 1,
+            'pv_isreadonly' => $isro,
+        );
+        return $self->tt_process( $file );
+
+    } else {
+        return $self->e( 'nosuchrecord', 'ID: #'.$cond->{'id'} );
+    }
 }
 
 1;

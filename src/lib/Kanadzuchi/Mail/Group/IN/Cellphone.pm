@@ -1,4 +1,4 @@
-# $Id: Cellphone.pm,v 1.1.2.3 2013/04/18 10:56:28 ak Exp $
+# $Id: Cellphone.pm,v 1.1.2.4 2013/08/30 08:51:14 ak Exp $
 # Copyright (C) 2009-2010,2013 Cubicroot Co. Ltd.
 # Kanadzuchi::Mail::Group::IN::
                                                             
@@ -21,60 +21,44 @@ use warnings;
 #
 # Cellular phone domains in India
 # sub communisexemplar { return qr{[.]in\z}; }
-sub nominisexemplaria
-{
-	my $self = shift;
-	return {
-		'aircel' => [
-			# Aircel; http://www.aircel.com/, phone-number@aircel.co.in
-			qr{\Aaircel[.]co[.]in\z},
-			qr{\Aairsms[.]com\z},
-		],
-		'airtel' => [
-			# Bharti Airtel; http://www.airtel.com/
-			qr{\Aairtel(?:ap|chennai|kerala|kk|kol|mail|mobile)[.]com\z}, 
-		],
-		'celforce' => [
-			# Gujarat Celforce / Fascel
-			qr{\Acelforce[.]com\z},
-		],
-		'dehlihutch' => [
-			# Delhi Hutch
-			qr{\Adelhi[.]hutch[.]co[.]in\z},
-		],
-		'escotel' => [
-			# Haryana Escotel
-			qr{\Aescotelmobile[.]com\z},
-		],
-		'rpgcellular' => [
-			# Chennai RPG Cellular
-			qr{\Arpgmail[.]net\z},
-		],
-		'ideacellular' => [
-			# !DEA; http://ideacellular.net:80/IDEA.portal
-			qr{\Aideacellular[.]net\z},
-		],
-		'loopmobile' => [
-			# Loop Mobile (Formerly BPL Mobile); http://www.loopmobile.in/
-			qr{\Abplmobile[.]com\z},
-			qr{\Aloopmobile[.]co[.]in\z},
-		],
-	};
-}
-
-sub classisnomina
-{
-	my $class = shift;
-	return {
-		'aircel'	=> 'Generic',
-		'airtel'	=> 'Generic',
-		'celforce'	=> 'Generic',
-		'dehlihutch'	=> 'Generic',
-		'escotel'	=> 'Generic',
-		'rpgcellular'	=> 'Generic',
-		'ideacellular'	=> 'Generic',
-		'loopmobile'	=> 'Generic',
-	};
+sub nominisexemplaria {
+    my $self = shift;
+    return {
+        'aircel' => [
+            # Aircel; http://www.aircel.com/, phone-number@aircel.co.in
+            qr{\Aaircel[.]co[.]in\z},
+            qr{\Aairsms[.]com\z},
+        ],
+        'airtel' => [
+            # Bharti Airtel; http://www.airtel.com/
+            qr{\Aairtel(?:ap|chennai|kerala|kk|kol|mail|mobile)[.]com\z}, 
+        ],
+        'celforce' => [
+            # Gujarat Celforce / Fascel
+            qr{\Acelforce[.]com\z},
+        ],
+        'dehlihutch' => [
+            # Delhi Hutch
+            qr{\Adelhi[.]hutch[.]co[.]in\z},
+        ],
+        'escotel' => [
+            # Haryana Escotel
+            qr{\Aescotelmobile[.]com\z},
+        ],
+        'rpgcellular' => [
+            # Chennai RPG Cellular
+            qr{\Arpgmail[.]net\z},
+        ],
+        'ideacellular' => [
+            # !DEA; http://ideacellular.net:80/IDEA.portal
+            qr{\Aideacellular[.]net\z},
+        ],
+        'loopmobile' => [
+            # Loop Mobile (Formerly BPL Mobile); http://www.loopmobile.in/
+            qr{\Abplmobile[.]com\z},
+            qr{\Aloopmobile[.]co[.]in\z},
+        ],
+    };
 }
 
 1;

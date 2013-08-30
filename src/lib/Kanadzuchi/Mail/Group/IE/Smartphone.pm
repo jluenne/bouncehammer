@@ -1,4 +1,4 @@
-# $Id: Smartphone.pm,v 1.1.2.3 2013/04/15 04:20:53 ak Exp $
+# $Id: Smartphone.pm,v 1.1.2.4 2013/08/30 08:51:14 ak Exp $
 # Copyright (C) 2011,2013 Cubicroot Co. Ltd.
 # Kanadzuchi::Mail::Group::IE::
                                                                         
@@ -21,28 +21,18 @@ use warnings;
 #
 # Major company's smaprtphone domains in Ireland
 # sub communisexemplar { return qr{[.]ie\z}; }
-sub nominisexemplaria
-{
-	my $class = shift;
-	return {
-		'three' => [
-			# 3 Ireland; http://three.ie/
-			qr{\A3ireland[.]blackberry[.]com\z},
-		],
-		'o2' => [
-			# O2 Ireland; http://www.o2online.ie/
-			qr{\Ao2mail[.]ie\z},
-		],
-	};
-}
-
-sub classisnomina
-{
-	my $class = shift;
-	return {
-		'three'		=> 'Generic',
-		'o2'		=> 'Generic',
-	};
+sub nominisexemplaria {
+    my $class = shift;
+    return {
+        'three' => [
+            # 3 Ireland; http://three.ie/
+            qr{\A3ireland[.]blackberry[.]com\z},
+        ],
+        'o2' => [
+            # O2 Ireland; http://www.o2online.ie/
+            qr{\Ao2mail[.]ie\z},
+        ],
+    };
 }
 
 1;

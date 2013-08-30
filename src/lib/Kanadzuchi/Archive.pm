@@ -1,4 +1,4 @@
-# $Id: Archive.pm,v 1.7.2.1 2013/04/15 04:20:52 ak Exp $
+# $Id: Archive.pm,v 1.7.2.2 2013/08/29 11:02:53 ak Exp $
 # -Id: Compress.pm,v 1.1 2009/08/29 08:04:54 ak Exp -
 # -Id: Compress.pm,v 1.2 2009/05/29 08:22:21 ak Exp -
 # Copyright (C) 2009,2010,2013 Cubicroot Co. Ltd.
@@ -30,15 +30,15 @@ use Digest::MD5;
 # |/__\|/__\|/__\|/__\|/__\|/__\|/__\|/__\|/__\|
 #
 __PACKAGE__->mk_accessors(
-	'input',	# (Path::Class::File) Source file
-	'output',	# (Path::Class::File) Compressed file
-	'cleanup',	# (Integer) Remove the file after compression
-	'override',	# (Integer) Override flag, 1 = Override
-	'level',	# (Integer) Compression level(1-9)
-	'filename',	# (String) Extracted file name
-	'format',	# (String) Data compression format
-	'prefix',	# (String) Archive file prefix
-	'module',	# (String) Module name, IO::Compress::*
+    'input',    # (Path::Class::File) Source file
+    'output',   # (Path::Class::File) Compressed file
+    'cleanup',  # (Integer) Remove the file after compression
+    'override', # (Integer) Override flag, 1 = Override
+    'level',    # (Integer) Compression level(1-9)
+    'filename', # (String) Extracted file name
+    'format',   # (String) Data compression format
+    'prefix',   # (String) Archive file prefix
+    'module',   # (String) Module name, IO::Compress::*
 );
 
 #  ____ ____ ____ ____ ____ ____ ____ ____ 
@@ -46,82 +46,75 @@ __PACKAGE__->mk_accessors(
 # ||__|||__|||__|||__|||__|||__|||__|||__||
 # |/__\|/__\|/__\|/__\|/__\|/__\|/__\|/__\|
 #
-sub ARCHIVEFORMAT() { 'gzip' }	# Default archive format
+sub ARCHIVEFORMAT() { 'gzip' }  # Default archive format
 
 #  ____ ____ ____ ____ ____ _________ ____ ____ ____ ____ ____ ____ ____ 
 # ||C |||l |||a |||s |||s |||       |||M |||e |||t |||h |||o |||d |||s ||
 # ||__|||__|||__|||__|||__|||_______|||__|||__|||__|||__|||__|||__|||__||
 # |/__\|/__\|/__\|/__\|/__\|/_______\|/__\|/__\|/__\|/__\|/__\|/__\|/__\|
 # 
-sub new
-{
-	# +-+-+-+
-	# |n|e|w|
-	# +-+-+-+
-	#
-	# @Description	Wrapper method of new()
-	# @Param	<None>
-	# @Return	Kanadzuchi::Archive::* Object
-	my $class = shift;
-	my $argvs = { @_ };
-	my $plmod = q();
-	my $afext = { 'zip' => 'zip', 'gzip' => 'gz', 'bzip2' => 'bz2' };
+sub new {
+    # +-+-+-+
+    # |n|e|w|
+    # +-+-+-+
+    #
+    # @Description  Wrapper method of new()
+    # @Param        <None>
+    # @Return       Kanadzuchi::Archive::* Object
+    my $class = shift;
+    my $argvs = { @_ };
+    my $plmod = q();
+    my $afext = { 'zip' => 'zip', 'gzip' => 'gz', 'bzip2' => 'bz2' };
 
-	MODULENAME: {
-		$plmod = [ split( q{::}, $class ) ]->[2] || $class->ARCHIVEFORMAT();
-		$argvs->{'module'} = q|IO::Compress::|.$plmod;
-	}
+    MODULENAME: {
+        $plmod = [ split( q{::}, $class ) ]->[2] || $class->ARCHIVEFORMAT();
+        $argvs->{'module'} = 'IO::Compress::'.$plmod;
+    }
 
-	INPUT: {
-		if( defined($argvs->{'input'}) )
-		{
-			last if ref($argvs->{'input'}) =~ m{\APath::Class::File};
-			$argvs->{'input'} = new Path::Class::File( $argvs->{'input'} );
-		}
-	}
+    INPUT: {
+        if( defined $argvs->{'input'} ) {
+            last if ref( $argvs->{'input'} ) =~ m{\APath::Class::File};
+            $argvs->{'input'} = new Path::Class::File( $argvs->{'input'} );
+        }
+    }
 
-	OUTPUT: {
-		$argvs->{'format'} ||= lc( $plmod );
-		$argvs->{'prefix'} = $afext->{ $argvs->{'format'} };
-		last() unless( defined($argvs->{'input'}) );
+    OUTPUT: {
+        $argvs->{'format'} ||= lc( $plmod );
+        $argvs->{'prefix'} = $afext->{ $argvs->{'format'} };
+        last unless defined $argvs->{'input'};
 
-		if( defined($argvs->{'output'}) )
-		{
-			last if ref($argvs->{'output'}) =~ m{\APath::Class::File};
-			$argvs->{'output'} .= $argvs->{'prefix'} unless $argvs->{'output'} =~ m{[.](zip|gz|bz2)\z};
-			$argvs->{'output'}  = new Path::Class::File( $argvs->{'output'} );
-		}
-		else
-		{
-			$argvs->{'output'} = new Path::Class::File( $argvs->{'input'}.q{.}.$argvs->{'prefix'} );
-		}
-	}
+        if( defined $argvs->{'output'} ) {
 
-	FILENAME: {
-		if( defined($argvs->{'filename'}) )
-		{
-			# Remove the directory
-			if( ref($argvs->{'filename'}) =~ m{\APath::Class::File} )
-			{
-				$argvs->{'filename'} = $argvs->{'filename'}->basename();
-			}
-			else
-			{
-				$argvs->{'filename'} = [ reverse(split(q{/}, $argvs->{'filename'})) ]->[0];
-			}
-		}
-		else
-		{
-			last unless defined $argvs->{'input'};
-			$argvs->{'filename'} = $argvs->{'input'}->basename();
-		}
-	}
+            last if ref( $argvs->{'output'} ) =~ m{\APath::Class::File};
+            $argvs->{'output'} .= $argvs->{'prefix'} unless $argvs->{'output'} =~ m{[.](?:zip|gz|bz2)\z};
+            $argvs->{'output'}  = new Path::Class::File( $argvs->{'output'} );
 
-	$argvs->{'override'} = $argvs->{'override'} ? 1 : 0;
-	$argvs->{'cleanup'}  = $argvs->{'cleanup'} ? 1 : 0;
-	$argvs->{'level'}  ||= 6;
+        } else {
+            $argvs->{'output'} = new Path::Class::File( $argvs->{'input'}.'.'.$argvs->{'prefix'} );
+        }
+    }
 
-	return $class->SUPER::new($argvs);
+    FILENAME: {
+        if( defined $argvs->{'filename'} ) {
+            # Remove the directory
+            if( ref( $argvs->{'filename'} ) =~ m{\APath::Class::File} ) {
+                $argvs->{'filename'} = $argvs->{'filename'}->basename;
+
+            } else {
+                $argvs->{'filename'} = [ reverse( split( '/', $argvs->{'filename'} ) ) ]->[0];
+            }
+
+        } else {
+            last unless defined $argvs->{'input'};
+            $argvs->{'filename'} = $argvs->{'input'}->basename;
+        }
+    }
+
+    $argvs->{'override'} = $argvs->{'override'} ? 1 : 0;
+    $argvs->{'cleanup'}  = $argvs->{'cleanup'} ? 1 : 0;
+    $argvs->{'level'}  ||= 6;
+
+    return $class->SUPER::new( $argvs );
 }
 
 #  ____ ____ ____ ____ ____ ____ ____ ____ _________ ____ ____ ____ ____ ____ ____ ____ 
@@ -129,29 +122,27 @@ sub new
 # ||__|||__|||__|||__|||__|||__|||__|||__|||_______|||__|||__|||__|||__|||__|||__|||__||
 # |/__\|/__\|/__\|/__\|/__\|/__\|/__\|/__\|/_______\|/__\|/__\|/__\|/__\|/__\|/__\|/__\|
 #
-sub is_available
-{
-	# +-+-+-+-+-+-+-+-+-+-+-+-+
-	# |i|s|_|a|v|a|i|l|a|b|l|e|
-	# +-+-+-+-+-+-+-+-+-+-+-+-+
-	#
-	# @Description	Is avaiable compression format or not
-	# @Param	<None>
-	# @Return	1 = Is available
-	#		0 = Is not.
-	my $self = shift;
-	my $path = $self->{'module'};
+sub is_available {
+    # +-+-+-+-+-+-+-+-+-+-+-+-+
+    # |i|s|_|a|v|a|i|l|a|b|l|e|
+    # +-+-+-+-+-+-+-+-+-+-+-+-+
+    #
+    # @Description  Is avaiable compression format or not
+    # @Param        <None>
+    # @Return       1 = Is available
+    #               0 = Is not.
+    my $self = shift;
+    my $path = $self->{'module'};
 
-	$path =~ y{:}{/}s;
-	$path .= '.pm';
+    $path =~ y{:}{/}s;
+    $path .= '.pm';
 
-	eval { require $path; };
-	return 1 unless $@;
-	return 0;
+    eval { require $path; };
+    return 1 unless $@;
+    return 0;
 }
 
 sub compress { };
-
 
 1;
 __END__

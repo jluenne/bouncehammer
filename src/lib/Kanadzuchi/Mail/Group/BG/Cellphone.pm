@@ -1,4 +1,4 @@
-# $Id: Cellphone.pm,v 1.1.2.2 2013/04/15 04:20:53 ak Exp $
+# $Id: Cellphone.pm,v 1.1.2.3 2013/08/30 08:51:14 ak Exp $
 # Copyright (C) 2009-2010,2013 Cubicroot Co. Ltd.
 # Kanadzuchi::Mail::Group::BG::
                                                             
@@ -22,34 +22,23 @@ use warnings;
 # Cellular phone domains in Republic of Bulgaria
 # See http://en.wikipedia.org/wiki/List_of_SMS_gateways
 # sub communisexemplar { return qr{[.]bg\z}; }
-sub nominisexemplaria
-{
-	# *** NOT TESTED YET ***
-	my $self = shift;
-	return {
-		'globul' => [
-			# GLOBUL; http://www.globul.bg/
-			qr{\Asms[.]globul[.]bg\z},
-		],
-		'mtel' => [
-			# Mobiltel; http://www.mtel.bg/
-			qr{\Asms[.]mtel[.]net\z},
-		],
-		'vivacom' => [
-			# Vivacom; http://www.vivacom.bg/
-			qr{\Asms[.]vivacom[.]bg\z},	# (country-code-Vivacom-area-code-number@)
-		],
-	};
-}
-
-sub classisnomina
-{
-	my $class = shift;
-	return {
-		'globul'	=> 'Generic',
-		'mtel'		=> 'Generic',
-		'vivacom'	=> 'Generic',
-	};
+sub nominisexemplaria {
+    # *** NOT TESTED YET ***
+    my $self = shift;
+    return {
+        'globul' => [
+            # GLOBUL; http://www.globul.bg/
+            qr{\Asms[.]globul[.]bg\z},
+        ],
+        'mtel' => [
+            # Mobiltel; http://www.mtel.bg/
+            qr{\Asms[.]mtel[.]net\z},
+        ],
+        'vivacom' => [
+            # Vivacom; http://www.vivacom.bg/
+            qr{\Asms[.]vivacom[.]bg\z}, # (country-code-Vivacom-area-code-number@)
+        ],
+    };
 }
 
 1;

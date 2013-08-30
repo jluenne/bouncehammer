@@ -1,4 +1,4 @@
-# $Id: Why.pm,v 1.10.2.3 2013/07/17 04:12:24 ak Exp $
+# $Id: Why.pm,v 1.10.2.5 2013/08/30 05:55:25 ak Exp $
 # -Id: Pattern.pm,v 1.1 2009/08/29 07:33:13 ak Exp -
 # -Id: Pattern.pm,v 1.3 2009/05/29 08:22:25 ak Exp -
 # Copyright (C) 2009,2010,2013 Cubicroot Co. Ltd.
@@ -25,7 +25,7 @@ my $Exemplaria = {
     'MesgTooBig'    => [],
     'NotAccept'     => [],
     'Rejected'      => [],
-    'RelayingDenied' => [],
+    'RelayingDenied'=> [],
     'SecurityError' => [],
     'Suspend'       => [],
     'SystemError'   => [],
@@ -38,26 +38,27 @@ my $Exemplaria = {
 # ||__|||__|||__|||__|||__|||_______|||__|||__|||__|||__|||__|||__|||__||
 # |/__\|/__\|/__\|/__\|/__\|/_______\|/__\|/__\|/__\|/__\|/__\|/__\|/__\|
 #
-sub textumhabet
-{
+sub textumhabet {
     # +-+-+-+-+-+-+-+-+-+-+-+
     # |t|e|x|t|u|m|h|a|b|e|t|
     # +-+-+-+-+-+-+-+-+-+-+-+
     #
     # @Description  Argument text is included in the patterns or not.
     # @Param <str>  (String)
-    # @Return   (Integer) 1 = included
-    # @Return   (Integer) 0 = not
+    # @Return       (Integer) 1 = included
+    # @Return       (Integer) 0 = not
     my $class = shift;
     my $etext = shift || return 0;
-    my $klass = $class; $klass =~ s{\A.+::}{};
 
-    unless( scalar @{ $Exemplaria->{ $klass } } )
-    {
-        $Exemplaria->{ $klass } = $class->exemplaria();
+    my $klass =  $class; 
+       $klass =~ s{\A.+::}{};
+
+    unless( scalar @{ $Exemplaria->{ $klass } } ) {
+
+        $Exemplaria->{ $klass } = $class->exemplaria;
     }
 
-    return 1 if( grep { lc($etext) =~ $_ } @{ $Exemplaria->{$klass} } );
+    return 1 if grep { lc( $etext ) =~ $_ } @{ $Exemplaria->{ $klass } };
     return 0;
 }
 

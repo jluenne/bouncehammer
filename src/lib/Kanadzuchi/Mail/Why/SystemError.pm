@@ -1,4 +1,4 @@
-# $Id: SystemError.pm,v 1.1.2.2 2013/04/15 04:20:53 ak Exp $
+# $Id: SystemError.pm,v 1.1.2.3 2013/08/30 05:55:25 ak Exp $
 # Copyright (C) 2009,2010,2013 Cubicroot Co. Ltd.
 # Kanadzuchi::Mail::Why::
 
@@ -18,17 +18,16 @@ use base 'Kanadzuchi::Mail::Why';
 # |/__\|/__\|/__\|/__\|/__\|/_______\|/__\|/__\|/__\|/__\|/__\|/__\|/__\|
 #
 # Regular expressions of 'System Error'
-sub exemplaria
-{
-	my $class = shift;
-	return [
-		qr{local error in processing},
-		qr{mail system configuration error},
-		qr{maximum forwarding loop count exceeded},
-		qr{server configuration error},
-		qr{system config error},
-		qr{too many hops},
-	];
+sub exemplaria {
+    my $class = shift;
+    return [
+        qr/local error in processing/,
+        qr/mail system configuration error/,
+        qr/maximum forwarding loop count exceeded/,
+        qr/server configuration error/,
+        qr/system config error/,
+        qr/too many hops/,
+    ];
 }
 
 1;

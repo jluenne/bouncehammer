@@ -1,4 +1,4 @@
-# $Id: Smartphone.pm,v 1.1.2.2 2013/04/15 04:20:53 ak Exp $
+# $Id: Smartphone.pm,v 1.1.2.3 2013/08/30 08:51:14 ak Exp $
 # -Id: SmartPhone.pm,v 1.1 2009/08/29 07:33:22 ak Exp -
 # Copyright (C) 2011,2013 Cubicroot Co. Ltd.
 # Kanadzuchi::Mail::Group::MO::
@@ -22,28 +22,18 @@ use warnings;
 #
 # Major company's smaprtphone domains in Macau
 sub communisexemplar { return qr{[.]com\z}; }
-sub nominisexemplaria
-{
-	my $class = shift;
-	return {
-		'ctm' => [
-			# CTM; https://www.eservices.ctm.net/cportal/
-			qr{\Actm[.]blackberry[.]com\z},
-		],
-		'smartone' => [
-			# SmarTone Mobile Communications Limited; http://www.smartone.com.mo/
-			qr{\Asmartonemo[.]blackberry[.]com\z},
-		],
-	};
-}
-
-sub classisnomina
-{
-	my $class = shift;
-	return {
-		'ctm'		=> 'Generic',
-		'smartone'	=> 'Generic',
-	};
+sub nominisexemplaria {
+    my $class = shift;
+    return {
+        'ctm' => [
+            # CTM; https://www.eservices.ctm.net/cportal/
+            qr{\Actm[.]blackberry[.]com\z},
+        ],
+        'smartone' => [
+            # SmarTone Mobile Communications Limited; http://www.smartone.com.mo/
+            qr{\Asmartonemo[.]blackberry[.]com\z},
+        ],
+    };
 }
 
 1;

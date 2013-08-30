@@ -1,4 +1,4 @@
-# $Id: Smartphone.pm,v 1.1.2.2 2013/04/15 04:20:53 ak Exp $
+# $Id: Smartphone.pm,v 1.1.2.3 2013/08/30 08:51:14 ak Exp $
 # -Id: SmartPhone.pm,v 1.1 2009/08/29 07:33:22 ak Exp -
 # Copyright (C) 2009-2011,2013 Cubicroot Co. Ltd.
 # Kanadzuchi::Mail::Group::AU::
@@ -22,33 +22,22 @@ use warnings;
 #
 # Major company's smaprtphone domains in Australia
 sub communisexemplar { return qr{[.]com\z}; }
-sub nominisexemplaria
-{
-	my $class = shift;
-	return {
-		'optus' => [
-			# SingTel Optus Pty Limited; http://www.optus.com.au/
-			qr{\Aoptus[.]blackberry[.]com\z},
-		],
-		'telstra' => [
-			# Telstra; http://www.telstra.com.au/
-			qr{\Atelstra[.]blackberry[.]com\z},
-		],
-		'three' => [
-			# Three Mobile Australia; http://www.three.com.au/
-			qr{\Athree[.]blackberry[.]com\z},
-		],
-	};
-}
-
-sub classisnomina
-{
-	my $class = shift;
-	return {
-		'optus'		=> 'Generic',
-		'telstra'	=> 'Generic',
-		'three'		=> 'Generic',
-	};
+sub nominisexemplaria {
+    my $class = shift;
+    return {
+        'optus' => [
+            # SingTel Optus Pty Limited; http://www.optus.com.au/
+            qr{\Aoptus[.]blackberry[.]com\z},
+        ],
+        'telstra' => [
+            # Telstra; http://www.telstra.com.au/
+            qr{\Atelstra[.]blackberry[.]com\z},
+        ],
+        'three' => [
+            # Three Mobile Australia; http://www.three.com.au/
+            qr{\Athree[.]blackberry[.]com\z},
+        ],
+    };
 }
 
 1;

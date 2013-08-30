@@ -1,4 +1,4 @@
-# $Id: Zip.pm,v 1.4.2.1 2013/04/15 04:20:52 ak Exp $
+# $Id: Zip.pm,v 1.4.2.2 2013/08/29 11:02:53 ak Exp $
 # -Id: Zip.pm,v 1.1 2009/08/29 08:05:06 ak Exp -
 # -Id: Zip.pm,v 1.2 2009/05/26 02:45:39 ak Exp -
 # Copyright (C) 2009,2010,2013 Cubicroot Co. Ltd.
@@ -29,40 +29,40 @@ use warnings;
 # 
 sub compress
 {
-	# +-+-+-+-+-+-+-+-+
-	# |c|o|m|p|r|e|s|s|
-	# +-+-+-+-+-+-+-+-+
-	#
-	# @Description	Compress the file with Zip
-	# @Param	<None>
-	# @Return	n = Size of the compressed file 
-	#		0 = Failed to compress or missing argument
-	my $self = shift;
-	my $zipf = undef;
-	
-	return 0 unless $self->{'input'};
-	return 0 unless -r $self->{'input'};
-	return 0 if( $self->{'override'} == 0 && -e $self->{'output'} );
+    # +-+-+-+-+-+-+-+-+
+    # |c|o|m|p|r|e|s|s|
+    # +-+-+-+-+-+-+-+-+
+    #
+    # @Description  Compress the file with Zip
+    # @Param    <None>
+    # @Return   n = Size of the compressed file 
+    #           0 = Failed to compress or missing argument
+    my $self = shift;
+    my $zipf = undef;
+    
+    return 0 unless $self->{'input'};
+    return 0 unless -r $self->{'input'};
+    return 0 if( $self->{'override'} == 0 && -e $self->{'output'} );
 
-	eval {
-		use IO::Compress::Zip;
+    eval {
+        use IO::Compress::Zip;
 
-		$self->{'output'}->remove() if( $self->{'override'} && -e $self->{'output'} );
-		$zipf = IO::Compress::Zip->new(
-				$self->{'output'}->stringify(),
-				'Name' => $self->{'filename'},
-				'Level' => $self->{'level'},
-				'ExtAttr' => ( 0644 << 16 ),
-				'TextFlag' => -T $self->{'input'} ? 1 : 0,
-				'Append' => 0, );
-	};
-	return 0 if $@;
+        $self->{'output'}->remove if( $self->{'override'} && -e $self->{'output'} );
+        $zipf = IO::Compress::Zip->new(
+                    $self->{'output'}->stringify,
+                    'Name' => $self->{'filename'},
+                    'Level' => $self->{'level'},
+                    'ExtAttr' => ( 0644 << 16 ),
+                    'TextFlag' => -T $self->{'input'} ? 1 : 0,
+                    'Append' => 0, );
+    };
+    return 0 if $@;
 
-	$zipf->binmode();
-	$zipf->print( Perl6::Slurp::slurp( $self->{'input'}->stringify() ) );
-	$zipf->close();
-	$self->{'input'}->remove() if $self->{'cleanup'};
-	return $self->{'output'}->stat->size();
+    $zipf->binmode;
+    $zipf->print( Perl6::Slurp::slurp( $self->{'input'}->stringify ) );
+    $zipf->close;
+    $self->{'input'}->remove if $self->{'cleanup'};
+    return $self->{'output'}->stat->size;
 }
 
 1;

@@ -1,4 +1,4 @@
-# $Id: WebMail.pm,v 1.2.2.2 2013/04/15 04:20:53 ak Exp $
+# $Id: WebMail.pm,v 1.2.2.3 2013/08/30 08:51:14 ak Exp $
 # Copyright (C) 2010,2013 Cubicroot Co. Ltd.
 # Kanadzuchi::Mail::Group::LV::
                                                    
@@ -20,28 +20,18 @@ use warnings;
 #
 # Major company's Webmail domains in Republic of Latvia
 sub communisexemplar { return qr{[.]lv\z}; }
-sub nominisexemplaria
-{
-	my $class = shift;
-	return {
-		# http://www.inbox.lv/
-		'inbokss' => [
-			qr{\Ainbox[.]lv\z},
-		],
-		# http://www.mail.lv/
-		'mail.lv' => [
-			qr{\Amail[.]lv\z},
-		],
-	};
-}
-
-sub classisnomina
-{
-	my $class = shift;
-	return {
-		'inbokss'	=> 'Generic',
-		'mail.lv'	=> 'Generic',
-	};
+sub nominisexemplaria {
+    my $class = shift;
+    return {
+        # http://www.inbox.lv/
+        'inbokss' => [
+            qr{\Ainbox[.]lv\z},
+        ],
+        # http://www.mail.lv/
+        'mail.lv' => [
+            qr{\Amail[.]lv\z},
+        ],
+    };
 }
 
 1;

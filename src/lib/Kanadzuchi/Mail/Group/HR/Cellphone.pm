@@ -1,4 +1,4 @@
-# $Id: Cellphone.pm,v 1.1.2.2 2013/04/15 04:20:53 ak Exp $
+# $Id: Cellphone.pm,v 1.1.2.3 2013/08/30 08:51:14 ak Exp $
 # Copyright (C) 2009-2010,2013 Cubicroot Co. Ltd.
 # Kanadzuchi::Mail::Group::HR::
                                                             
@@ -22,24 +22,15 @@ use warnings;
 # Cellular phone domains in Republic of Croatia/Republika Hrvatska
 # See http://en.wikipedia.org/wiki/List_of_SMS_gateways
 sub communisexemplar { return qr{[.]hr\z}; }
-sub nominisexemplaria
-{
-	# *** NOT TESTED YET ***
-	my $self = shift;
-	return {
-		't-mobile' => [
-			# T-Mobile; http://www.t-mobile.net/ http://t-mobile.hr/
-			qr{\Asms[.]t-mobile[.]hr\z},	# 385domestic-number@
-		],
-	};
-}
-
-sub classisnomina
-{
-	my $class = shift;
-	return {
-		't-mobile'	=> 'Generic',
-	};
+sub nominisexemplaria {
+    # *** NOT TESTED YET ***
+    my $self = shift;
+    return {
+        't-mobile' => [
+            # T-Mobile; http://www.t-mobile.net/ http://t-mobile.hr/
+            qr{\Asms[.]t-mobile[.]hr\z},    # 385domestic-number@
+        ],
+    };
 }
 
 1;

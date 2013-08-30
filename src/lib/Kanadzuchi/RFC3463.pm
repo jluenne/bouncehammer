@@ -1,4 +1,4 @@
-# $Id: RFC3463.pm,v 1.3.2.2 2013/04/15 04:20:52 ak Exp $
+# $Id: RFC3463.pm,v 1.3.2.4 2013/08/30 23:34:15 ak Exp $
 # Copyright (C) 2009,2010,2013 Cubicroot Co. Ltd.
 # Kanadzuchi::
                                                    
@@ -286,66 +286,66 @@ use warnings;
 # |/__\|/__\|/__\|/__\|/__\|/__\|/_______\|/__\|/__\|/__\|/__\|
 #
 my $StandardCode = {
-	'temporary' => {
-		# 'undefined'	=> [ '4.0.0' ],
-		'hasmoved'	=> [ '4.1.6' ],
-		'rejected'	=> [ '4.1.8' ],
-		'mailboxfull'	=> [ '4.2.2' ],
-		'exceedlimit'	=> [ '4.2.3' ],
-		'systemfull'	=> [ '4.3.1' ],
-		'systemerror'	=> [ '4.3.5' ],
-		'expired'	=> [ '4.4.7', '4.4.1' ],
-	},
-	'permanent' => {
-		# 'undefined'	=> [ '5.0.0', '5.5.1', '5.5.2', '5.5.3', '5.5.4', '5.5.5' ],
-		'userunknown'	=> [ '5.1.1', '5.1.0', '5.1.3' ],	# 5.1.3 ?
-		'hostunknown'	=> [ '5.1.2' ],
-		'hasmoved'	=> [ '5.1.6' ],
-		'rejected'	=> [ '5.1.8', '5.1.7' ],
-		'filtered'	=> [ '5.2.1', '5.2.0' ],
-		'mailboxfull'	=> [ '5.2.2' ],
-		'exceedlimit'	=> [ '5.2.3' ],
-		'systemfull'	=> [ '5.3.1' ],
-		'notaccept'	=> [ '5.3.2' ],
-		'mesgtoobig'	=> [ '5.3.4' ],
-		'systemerror'	=> [ '5.3.5', '5.3.0', '5.4.0', '5.4.1', '5.4.2', '5.4.3', '5.4.4', '5.4.5', '5.4.6',],
-		'expired'	=> [ '5.4.7' ],
-		'mailererror'	=> [ '5.2.4' ],
-		'contenterr'	=> [ '5.6.0' ],
-		'securityerr'	=> [ '5.7.0' ],
-	},
+    'temporary' => {
+        # 'undefined'   => [ '4.0.0' ],
+        'hasmoved'      => [ '4.1.6' ],
+        'rejected'      => [ '4.1.8' ],
+        'mailboxfull'   => [ '4.2.2' ],
+        'exceedlimit'   => [ '4.2.3' ],
+        'systemfull'    => [ '4.3.1' ],
+        'systemerror'   => [ '4.3.5' ],
+        'expired'       => [ '4.4.7', '4.4.1' ],
+    },
+    'permanent' => {
+        # 'undefined'   => [ '5.0.0', '5.5.1', '5.5.2', '5.5.3', '5.5.4', '5.5.5' ],
+        'userunknown'   => [ '5.1.1', '5.1.0', '5.1.3' ],   # 5.1.3 ?
+        'hostunknown'   => [ '5.1.2' ],
+        'hasmoved'      => [ '5.1.6' ],
+        'rejected'      => [ '5.1.8', '5.1.7' ],
+        'filtered'      => [ '5.2.1', '5.2.0' ],
+        'mailboxfull'   => [ '5.2.2' ],
+        'exceedlimit'   => [ '5.2.3' ],
+        'systemfull'    => [ '5.3.1' ],
+        'notaccept'     => [ '5.3.2' ],
+        'mesgtoobig'    => [ '5.3.4' ],
+        'systemerror'   => [ '5.3.5', '5.3.0', '5.4.0', '5.4.1', '5.4.2', '5.4.3', '5.4.4', '5.4.5', '5.4.6',],
+        'expired'       => [ '5.4.7' ],
+        'mailererror'   => [ '5.2.4' ],
+        'contenterr'    => [ '5.6.0' ],
+        'securityerr'   => [ '5.7.0' ],
+    },
 };
 
 my $InternalCode = {
-	'temporary' => {
-		'undefined'	=> [ '4.0.900' ],
-		'hasmoved'	=> [ '4.0.916' ],
-		'mailboxfull'	=> [ '4.0.922' ],
-		'exceedlimit'	=> [ '4.0.923' ],
-		'systemfull'	=> [ '4.0.931' ],
-		'expired'	=> [ '4.0.947' ],
-		'suspend'	=> [ '4.0.990' ],
-	},
-	'permanent' => {
-		'undefined'	=> [ '5.0.900' ],
-		'userunknown'	=> [ '5.0.911' ],
-		'hostunknown'	=> [ '5.0.912' ],
-		'hasmoved'	=> [ '5.0.916' ],
-		'rejected'	=> [ '5.0.918' ],
-		'filtered'	=> [ '5.0.921' ],
-		'mailboxfull'	=> [ '5.0.922' ],
-		'exceedlimit'	=> [ '5.0.923' ],
-		'systemfull'	=> [ '5.0.931' ],
-		'notaccept'	=> [ '5.0.932' ],
-		'mesgtoobig'	=> [ '5.0.934' ],
-		'systemerror'	=> [ '5.0.935' ],
-		'expired'	=> [ '5.0.947' ],
-		'contenterr'	=> [ '5.0.960' ],
-		'securityerr'	=> [ '5.0.970' ],
-		'suspend'	=> [ '5.0.990' ],
-		'mailererror'	=> [ '5.0.991' ],
-		'onhold'	=> [ '5.0.999' ],
-	},
+    'temporary' => {
+        'undefined'     => [ '4.0.900' ],
+        'hasmoved'      => [ '4.0.916' ],
+        'mailboxfull'   => [ '4.0.922' ],
+        'exceedlimit'   => [ '4.0.923' ],
+        'systemfull'    => [ '4.0.931' ],
+        'expired'       => [ '4.0.947' ],
+        'suspend'       => [ '4.0.990' ],
+    },
+    'permanent' => {
+        'undefined'     => [ '5.0.900' ],
+        'userunknown'   => [ '5.0.911' ],
+        'hostunknown'   => [ '5.0.912' ],
+        'hasmoved'      => [ '5.0.916' ],
+        'rejected'      => [ '5.0.918' ],
+        'filtered'      => [ '5.0.921' ],
+        'mailboxfull'   => [ '5.0.922' ],
+        'exceedlimit'   => [ '5.0.923' ],
+        'systemfull'    => [ '5.0.931' ],
+        'notaccept'     => [ '5.0.932' ],
+        'mesgtoobig'    => [ '5.0.934' ],
+        'systemerror'   => [ '5.0.935' ],
+        'expired'       => [ '5.0.947' ],
+        'contenterr'    => [ '5.0.960' ],
+        'securityerr'   => [ '5.0.970' ],
+        'suspend'       => [ '5.0.990' ],
+        'mailererror'   => [ '5.0.991' ],
+        'onhold'        => [ '5.0.999' ],
+    },
 };
 
 #  ____ ____ ____ ____ ____ _________ ____ ____ ____ ____ ____ ____ ____ 
@@ -353,58 +353,84 @@ my $InternalCode = {
 # ||__|||__|||__|||__|||__|||_______|||__|||__|||__|||__|||__|||__|||__||
 # |/__\|/__\|/__\|/__\|/__\|/_______\|/__\|/__\|/__\|/__\|/__\|/__\|/__\|
 #
-sub status
-{
-	# +-+-+-+-+-+-+
-	# |s|t|a|t|u|s|
-	# +-+-+-+-+-+-+
-	#
-	# @Description	Reason string -> status code
-	# @Param <str>	(String) Reason
-	# @Param <char>	(Character) Class; t = temporary or p = permanent(default)
-	# @Param <char>	(Character) i = internal code or s = standard code(default)
-	# @Return	(String) D.S.N.
-	#		(String) Empty = Invalid reason name
-	my $class = shift;
-	my $causa = shift || return q();
-	my $klass = shift || 'p';
-	my $ctype = shift || 's';
-	my $codes = undef;
+sub status {
+    # +-+-+-+-+-+-+
+    # |s|t|a|t|u|s|
+    # +-+-+-+-+-+-+
+    #
+    # @Description  Reason string -> status code
+    # @Param <str>  (String) Reason
+    # @Param <char> (Character) Class; t = temporary or p = permanent(default)
+    # @Param <char> (Character) i = internal code or s = standard code(default)
+    # @Return       (String) D.S.N.
+    #               (String) Empty = Invalid reason name
+    my $class = shift;
+    my $causa = shift || return q();
+    my $klass = shift || 'p';
+    my $ctype = shift || 's';
+    my $codes = undef;
 
-	$klass = $klass eq 't' ? 'temporary' : 'permanent';
-	$codes = $ctype eq 'i' ? $InternalCode : $StandardCode;
+    $klass = $klass eq 't' ? 'temporary' : 'permanent';
+    $codes = $ctype eq 'i' ? $InternalCode : $StandardCode;
 
-	return $codes->{ $klass }->{ $causa }->[0] || q();
+    return $codes->{ $klass }->{ $causa }->[0] || q();
 }
 
-sub causa
-{
-	# +-+-+-+-+-+
-	# |c|a|u|s|a|
-	# +-+-+-+-+-+
-	#
-	# @Description	Staus code -> Reason string
-	# @Param <str>	(String) Status code(DSN)
-	# @Return	(String) Reason name
-	#		(String) Empty = Reason does not exist
-	my $class = shift;
-	my $state = shift || return q();
+sub causa {
+    # +-+-+-+-+-+
+    # |c|a|u|s|a|
+    # +-+-+-+-+-+
+    #
+    # @Description  Staus code -> Reason string
+    # @Param <str>  (String) Status code(DSN)
+    # @Return       (String) Reason name
+    #               (String) Empty = Reason does not exist
+    my $class = shift;
+    my $state = shift || return q();
 
-	return q() unless $state =~ m{\A[45][.]\d[.]\d+\z};
+    return q() unless $state =~ m{\A[45][.]\d[.]\d+\z};
 
-	my $causa = q();
-	my $klass = substr($state,0,1) == 4 ? 'temporary' : 'permanent';
-	my $codes = substr($state,4,3) > 800 
-			? $InternalCode->{ $klass }
-			: $StandardCode->{ $klass };
+    my $causa = q();
+    my $klass = substr( $state, 0, 1 ) == 4 ? 'temporary' : 'permanent';
+    my $codes = substr( $state, 4, 3 ) > 800 
+                ? $InternalCode->{ $klass }
+                : $StandardCode->{ $klass };
 
-	foreach my $r ( keys %$codes )
-	{
-		next unless grep { $state eq $_ } @{ $codes->{ $r } };
-		$causa = $r;
-		last;
-	}
-	return $causa;
+    foreach my $r ( keys %$codes ) {
+
+        next unless grep { $state eq $_ } @{ $codes->{ $r } };
+        $causa = $r;
+        last;
+    }
+    return $causa;
+}
+
+sub getdsn {
+    # +-+-+-+-+-+-+
+    # |g|e|t|d|s|n|
+    # +-+-+-+-+-+-+
+    #
+    # @Description  Get D.S.N. code from given string
+    # @Param <str>  (String) String including D.S.N.
+    # @Return       (String) D.S.N.
+    #               (String) Empty = There is no D.S.N.
+    my $class = shift;
+    my $rtext = shift || return q();
+    my $value = q();
+    my $regex = [
+        qr/[ ]?[(][#]([45][.]\d[.]\d+)[)]?[ ]?/.     # #5.5.1
+        qr/\b\d{3}[-\s][#]?([45][.]\d[.]\d+)\b/,    # 550-5.1.1 OR 550 5.5.1
+        qr/\b([45][.]\d[.]\d+)\b/,                  # 5.5.1
+    ];
+
+    for my $e ( @$regex ){
+        next unless $rtext =~ $e;
+        $value = $1;
+        last;
+    }
+    return $value;
+
+
 }
 
 1;

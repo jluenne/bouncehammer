@@ -1,4 +1,4 @@
-# $Id: Log.pm,v 1.21.2.3 2013/04/15 04:20:52 ak Exp $
+# $Id: Log.pm,v 1.21.2.4 2013/08/29 11:02:53 ak Exp $
 # -Id: Log.pm,v 1.2 2009/10/06 06:21:47 ak Exp -
 # -Id: Log.pm,v 1.11 2009/07/16 09:05:33 ak Exp -
 # Copyright (C) 2009-2013 Cubicroot Co. Ltd.
@@ -30,16 +30,16 @@ use Time::Piece;
 # |/__\|/__\|/__\|/__\|/__\|/__\|/__\|/__\|/__\|
 #
 __PACKAGE__->mk_accessors(
-	'directory',	# (Path::Class::Dir) log directory
-	'logfile',	# (Path::Class::File::Lockable) log file.
-	'entities',	# (Ref->Array) K::M::* object
-	'files',	# (Path::CLass::File) Temporary log files
-	'count',	# (Integer) the number of bounced messages
-	'format',	# (String) Log format
-	'header',	# (Integer) 1 = Output the header part
-	'footer',	# (Integer) 1 = Output the footer part
-	'comment',	# (String) Additional description in the header
-	'device',	# (String) Log device, file handle, screeen, ...
+    'directory',# (Path::Class::Dir) log directory
+    'logfile',  # (Path::Class::File::Lockable) log file.
+    'entities', # (Ref->Array) K::M::* object
+    'files',    # (Path::CLass::File) Temporary log files
+    'count',    # (Integer) the number of bounced messages
+    'format',   # (String) Log format
+    'header',   # (Integer) 1 = Output the header part
+    'footer',   # (Integer) 1 = Output the footer part
+    'comment',  # (String) Additional description in the header
+    'device',   # (String) Log device, file handle, screeen, ...
 );
 
 #  ____ ____ ____ ____ ____ ____ _________ ____ ____ ____ ____ 
@@ -69,23 +69,22 @@ $OutputHeader->{'csv'} .= q|diagnosticcode,mta,listid,token|.qq|\n|;
 # ||__|||__|||__|||__|||__|||_______|||__|||__|||__|||__|||__|||__|||__||
 # |/__\|/__\|/__\|/__\|/__\|/_______\|/__\|/__\|/__\|/__\|/__\|/__\|/__\|
 #
-sub new
-{
-	# +-+-+-+
-	# |n|e|w|
-	# +-+-+-+
-	#
-	# @Description	Wrapper method of new()
-	# @Param
-	# @Return	Kanadzuchi::Log Object
-	my $class = shift;
-	my $argvs = { @_ };
+sub new {
+    # +-+-+-+
+    # |n|e|w|
+    # +-+-+-+
+    #
+    # @Description  Wrapper method of new()
+    # @Param
+    # @Return       Kanadzuchi::Log Object
+    my $class = shift;
+    my $argvs = { @_ };
 
-	DEFAULT_VALUES: {
-		$argvs->{'format'} = 'yaml' unless( $argvs->{'format'} );
-		$argvs->{'comment'} = q() unless( $argvs->{'comment'} );
-	}
-	return $class->SUPER::new( $argvs );
+    DEFAULT_VALUES: {
+        $argvs->{'format'} = 'yaml' unless $argvs->{'format'};
+        $argvs->{'comment'} = q() unless $argvs->{'comment'};
+    }
+    return $class->SUPER::new( $argvs );
 }
 
 #  ____ ____ ____ ____ ____ ____ ____ ____ _________ ____ ____ ____ ____ ____ ____ ____ 
@@ -93,158 +92,140 @@ sub new
 # ||__|||__|||__|||__|||__|||__|||__|||__|||_______|||__|||__|||__|||__|||__|||__|||__||
 # |/__\|/__\|/__\|/__\|/__\|/__\|/__\|/__\|/_______\|/__\|/__\|/__\|/__\|/__\|/__\|/__\|
 #
-sub logger
-{
-	# +-+-+-+-+-+-+
-	# |l|o|g|g|e|r|
-	# +-+-+-+-+-+-+
-	#
-	# @Description	Log to the file(JSON::Syck::Dump)
-	# @Param	<None>
-	# @Return	0 = device not found or no record to log
-	#		n = the number of logged records
-	# @See		dumper()
-	my $self = shift; $self->{'format'} = q(yaml);
-	my $reqv = defined wantarray ? 1 : 0;
-	my $data = undef;
+sub logger {
+    # +-+-+-+-+-+-+
+    # |l|o|g|g|e|r|
+    # +-+-+-+-+-+-+
+    #
+    # @Description  Log to the file(JSON::Syck::Dump)
+    # @Param        <None>
+    # @Return       0 = device not found or no record to log
+    #               n = the number of logged records
+    # @See          dumper()
+    my $self = shift; $self->{'format'} = 'yaml';
+    my $reqv = defined wantarray ? 1 : 0;
+    my $data = undef;
 
-	if( $reqv == 1 )
-	{
-		$data = $self->dumper();
-		return $data;
-	}
-	else
-	{
-		return $self->dumper();
-	}
+    if( $reqv == 1 ) {
+
+        $data = $self->dumper;
+        return $data;
+
+    } else {
+        return $self->dumper;
+    }
 }
 
-sub dumper
-{
-	# +-+-+-+-+-+-+
-	# |d|u|m|p|e|r|
-	# +-+-+-+-+-+-+
-	#
-	# @Description	Dump to the file or screen with format
-	# @Param	<None>
-	# @Return	0 = No record to dump 
-	#		1 = Successfully dumped
-	my $self = shift;
-	my $atab = undef;
-	my $data = undef;
-	my $reqv = defined wantarray ? 1 : 0;
-	my $damn = {};
-	my $head = q();
-	my $foot = q();
+sub dumper {
+    # +-+-+-+-+-+-+
+    # |d|u|m|p|e|r|
+    # +-+-+-+-+-+-+
+    #
+    # @Description  Dump to the file or screen with format
+    # @Param        <None>
+    # @Return       0 = No record to dump 
+    #               1 = Successfully dumped
+    my $self = shift;
+    my $atab = undef;
+    my $data = undef;
+    my $reqv = defined wantarray ? 1 : 0;
+    my $damn = {};
+    my $head = q();
+    my $foot = q();
 
-	return 0 if $self->{'count'} == 0;
+    return 0 if $self->{'count'} == 0;
 
-	# Output header
-	if( $self->{'format'} ne 'csv' )
-	{
-		my $_t = localtime();
-		$OutputHeader->{ $self->{'format'} } = '# Generated: '.$_t->ymd('/').' '.$_t->hms(':').qq| \n|,
-	}
+    # Output header
+    if( $self->{'format'} ne 'csv' ) {
 
-	# Decide header and footer
-	if( $self->{'header'} )
-	{
-		$head .= $OutputHeader->{ $self->{'format'} };
-		$head .= q|# |.qq|$self->{'comment'}\n| if length($self->{'comment'});
-	}
+        my $_t = localtime;
+        $OutputHeader->{ $self->{'format'} } = '# Generated: '.$_t->ymd('/').' '.$_t->hms(':').qq| \n|,
+    }
 
-	if( $self->{'footer'} )
-	{
-		$foot .= q|# |.qq|$self->{'comment'}\n| if length($self->{'comment'});
-	}
+    # Decide header and footer
+    if( $self->{'header'} ) {
+        $head .= $OutputHeader->{ $self->{'format'} };
+        $head .= q|# |.qq|$self->{'comment'}\n| if length $self->{'comment'};
+    }
 
-	# Print header
-	if( $self->{'format'} eq 'asciitable' )
-	{
-		require Text::ASCIITable;
-		$atab->{'tab'} = new Text::ASCIITable( { 'headingText' => 'Bounce Messages' } );
-		$atab->{'tab'}->setOptions( 'outputWidth', 80 );
-		$atab->{'tab'}->setCols( '#', 'Date', 'Addresser', 'Recipient', 'Stat', 'Reason' );
-		$atab->{'num'} = 0;
-	}
-	else
-	{
-		$data .= $head;
-	}
+    if( $self->{'footer'} ) {
+        $foot .= q|# |.qq|$self->{'comment'}\n| if length $self->{'comment'};
+    }
 
-	# Print left square bracket character for the format JSON
-	$data .= '[ ' if $self->{'format'} eq 'json';
+    # Print header
+    if( $self->{'format'} eq 'asciitable' ) {
+        require Text::ASCIITable;
+        $atab->{'tab'} = new Text::ASCIITable( { 'headingText' => 'Bounce Messages' } );
+        $atab->{'tab'}->setOptions( 'outputWidth', 80 );
+        $atab->{'tab'}->setCols( '#', 'Date', 'Addresser', 'Recipient', 'Stat', 'Reason' );
+        $atab->{'num'} = 0;
 
-	PREPARE_LOG: foreach my $_e ( @{$self->{'entities'}} )
-	{
-		$damn = $_e->damn();
+    } else {
+        $data .= $head;
+    }
 
-		if( defined($atab) )
-		{
-			$atab->{'num'}++;
-			$damn->{'datestring'} = $_e->bounced->ymd('/').' '.$_e->bounced->hms(':');
-			$atab->{'tab'}->addRow( $atab->{'num'}, $damn->{'datestring'}, $damn->{'addresser'},
-				$damn->{'recipient'}, $damn->{'deliverystatus'}, $damn->{'reason'} );
-		}
-		else
-		{
-			if( $self->{'format'} eq 'csv' )
-			{
-				$damn->{'diagnosticcode'} =~ y{,}{ };
-				$data .= sprintf( $OutputFormat->{ $self->{'format'} },
-						$damn->{'bounced'}, $damn->{'addresser'}, $damn->{'recipient'},
-						$damn->{'senderdomain'}, $damn->{'destination'}, $damn->{'reason'}, 
-						$damn->{'hostgroup'}, $damn->{'provider'}, $damn->{'frequency'}, 
-						$damn->{'deliverystatus'}, $damn->{'timezoneoffset'},
-						$damn->{'diagnosticcode'}, $damn->{'smtpagent'}, $damn->{'listid'},
-						$damn->{'token'} );
+    # Print left square bracket character for the format JSON
+    $data .= '[ ' if $self->{'format'} eq 'json';
 
-			}
-			else
-			{
-				$data .= sprintf( $OutputFormat->{ $self->{'format'} },
-						$damn->{'bounced'}, $damn->{'addresser'}, $damn->{'recipient'},
-						$damn->{'senderdomain'}, $damn->{'destination'},
-						$damn->{'reason'}, $damn->{'hostgroup'}, $damn->{'provider'}, 
-						$damn->{'frequency'}, $damn->{'description'}, $damn->{'token'} );
-			}
-			$data .= $RecDelimiter->{ $self->{'format'} }.qq(\n);
-		}
+    PREPARE_LOG: foreach my $_e ( @{ $self->{'entities'} } ) {
+        $damn = $_e->damn;
 
-	} # End of foreach() PREPARE_LOG:
+        if( defined $atab ) {
+            $atab->{'num'}++;
+            $damn->{'datestring'} = $_e->bounced->ymd('/').' '.$_e->bounced->hms(':');
+            $atab->{'tab'}->addRow( $atab->{'num'}, $damn->{'datestring'}, $damn->{'addresser'},
+                                    $damn->{'recipient'}, $damn->{'deliverystatus'}, $damn->{'reason'} );
+        } else {
 
-	# Replace the ',' at the end of data with right square bracket for the format JSON
-	$data =~ s{,\n\z}{ ]\n} if $self->{'format'} eq 'json';
+            if( $self->{'format'} eq 'csv' ) {
 
-	if( defined($atab) && $atab->{'num'} > 0 )
-	{
-		$atab->{'tab'}->addRowLine();
-		$atab->{'tab'}->addRow( q{}, q{}, q{}, q{Total}, $self->{'count'} );
-		$data = $atab->{'tab'}->draw();
-	}
-	else
-	{
-		$data .= $foot if length $foot;
-	}
+                $damn->{'diagnosticcode'} =~ y{,}{ };
+                $data .= sprintf( $OutputFormat->{ $self->{'format'} },
+                            $damn->{'bounced'}, $damn->{'addresser'}, $damn->{'recipient'},
+                            $damn->{'senderdomain'}, $damn->{'destination'}, $damn->{'reason'}, 
+                            $damn->{'hostgroup'}, $damn->{'provider'}, $damn->{'frequency'}, 
+                            $damn->{'deliverystatus'}, $damn->{'timezoneoffset'},
+                            $damn->{'diagnosticcode'}, $damn->{'smtpagent'}, $damn->{'listid'},
+                            $damn->{'token'} );
 
-	if( $reqv == 1 )
-	{
-		# Return as a scalar(dumped data)
-		return $data;
-	}
-	else
-	{
-		# Dumped data are not required, return true;
-		if( ref($self->{'device'}) eq 'IO::File' )
-		{
-			print( {$self->{'device'}} $data );
-		}
-		else
-		{
-			print( STDOUT $data );
-		}
-		return 1;
-	}
+            } else {
+                $data .= sprintf( $OutputFormat->{ $self->{'format'} },
+                            $damn->{'bounced'}, $damn->{'addresser'}, $damn->{'recipient'},
+                            $damn->{'senderdomain'}, $damn->{'destination'},
+                            $damn->{'reason'}, $damn->{'hostgroup'}, $damn->{'provider'}, 
+                            $damn->{'frequency'}, $damn->{'description'}, $damn->{'token'} );
+            }
+            $data .= $RecDelimiter->{ $self->{'format'} }.qq(\n);
+        }
+
+    } # End of foreach() PREPARE_LOG:
+
+    # Replace the ',' at the end of data with right square bracket for the format JSON
+    $data =~ s{,\n\z}{ ]\n} if $self->{'format'} eq 'json';
+
+    if( defined($atab) && $atab->{'num'} > 0 ) {
+        $atab->{'tab'}->addRowLine();
+        $atab->{'tab'}->addRow( q{}, q{}, q{}, q{Total}, $self->{'count'} );
+        $data = $atab->{'tab'}->draw();
+
+    } else {
+        $data .= $foot if length $foot;
+    }
+
+    if( $reqv == 1 ) {
+        # Return as a scalar(dumped data)
+        return $data;
+
+    } else {
+        # Dumped data are not required, return true;
+        if( ref( $self->{'device'} ) eq 'IO::File' ) {
+            print( {$self->{'device'}} $data );
+
+        } else {
+            print( STDOUT $data );
+        }
+        return 1;
+    }
 }
 
 1;

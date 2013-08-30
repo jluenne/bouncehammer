@@ -1,4 +1,4 @@
-# $Id: Cellphone.pm,v 1.1.2.3 2013/04/18 10:56:28 ak Exp $
+# $Id: Cellphone.pm,v 1.1.2.4 2013/08/30 08:51:14 ak Exp $
 # Copyright (C) 2009,2010,2013 Cubicroot Co. Ltd.
 # Kanadzuchi::Mail::Group::IS::
                                                             
@@ -22,29 +22,19 @@ use warnings;
 # Cellular phone domains in Republic of Iceland
 # See http://en.wikipedia.org/wiki/List_of_SMS_gateways
 sub communisexemplar { return qr{[.]is\z}; }
-sub nominisexemplaria
-{
-	# *** NOT TESTED YET ***
-	my $self = shift;
-	return {
-		'siminn' => [
-			# Síminn; http://www.siminn.is
-			qr{\Abox[.]is\z},
-		],
-		'vodafone' => [
-			# Vodafone; http://www.vodafone.is/
-			qr{\Asms[.]is\z},
-		],
-	};
-}
-
-sub classisnomina
-{
-	my $class = shift;
-	return {
-		'siminn'	=> 'Generic',
-		'vodafone'	=> 'Generic',
-	};
+sub nominisexemplaria {
+    # *** NOT TESTED YET ***
+    my $self = shift;
+    return {
+        'siminn' => [
+            # Síminn; http://www.siminn.is
+            qr{\Abox[.]is\z},
+        ],
+        'vodafone' => [
+            # Vodafone; http://www.vodafone.is/
+            qr{\Asms[.]is\z},
+        ],
+    };
 }
 
 1;

@@ -1,4 +1,4 @@
-# $Id: WebMail.pm,v 1.2.2.1 2013/04/15 04:20:53 ak Exp $
+# $Id: WebMail.pm,v 1.2.2.2 2013/08/30 08:51:14 ak Exp $
 # Copyright (C) 2010,2013 Cubicroot Co. Ltd.
 # Kanadzuchi::Mail::Group::IR::
                                                    
@@ -20,24 +20,15 @@ use warnings;
 #
 # Major company's Webmail domains in Iran
 sub communisexemplar { return qr{[.]ir\z}; }
-sub nominisexemplaria
-{
-	my $class = shift;
-	return {
-		# Experimental(Not tested)
-		# http://iran.ir/
-		'iran.ir' => [
-			qr{\Airan[.]ir\z},
-		],
-	};
-}
-
-sub classisnomina
-{
-	my $class = shift;
-	return {
-		'iran.ir'	=> 'Generic',
-	};
+sub nominisexemplaria {
+    my $class = shift;
+    return {
+        # Experimental(Not tested)
+        # http://iran.ir/
+        'iran.ir' => [
+            qr{\Airan[.]ir\z},
+        ],
+    };
 }
 
 1;

@@ -1,4 +1,4 @@
-# $Id: NotAccept.pm,v 1.1.2.4 2013/04/15 04:20:53 ak Exp $
+# $Id: NotAccept.pm,v 1.1.2.5 2013/08/30 05:55:25 ak Exp $
 # Copyright (C) 2009,2010,2013 Cubicroot Co. Ltd.
 # Kanadzuchi::Mail::Why::
                                                             
@@ -18,28 +18,27 @@ use base 'Kanadzuchi::Mail::Why';
 # |/__\|/__\|/__\|/__\|/__\|/_______\|/__\|/__\|/__\|/__\|/__\|/__\|/__\|
 #
 # Regular expressions of 'Not Accept'
-sub exemplaria
-{
-	my $class = shift;
-	return [
-		# Rejected due to IP address or hostname.
-		qr{dns lookup failure: .+ try again later},
-		qr{domain does not exist:},
-		qr{domain of sender address .+ does not exist},
-		qr{http://www[.]spamhaus[.]org},
-		qr{http://dsbl[.]org/},
-		qr{invalid domain, see [<]url:.+[>]},
-		qr{listed in work[.]drbl[.]imedia[.]ru},
-		qr{mail server at .+ is blocked},
-		qr{message rejected for policy reasons},
-		qr{mx records for .+ violate section .+},
-		qr{name service error for },	# Malformed MX RR or host not found
-		qr{rfc 1035 violation: recursive cname records for},
-		qr{smtp protocol returned a permanent error},
-		qr{sorry, your remotehost looks suspiciously like spammer},
-		qr{we do not accept mail from hosts with dynamic ip or generic dns ptr-records}, # MAIL.RU
-		qr{we do not accept mail from dynamic ips}, # MAIL.RU
-	];
+sub exemplaria {
+    my $class = shift;
+    return [
+        # Rejected due to IP address or hostname.
+        qr/dns lookup failure: .+ try again later/,
+        qr/domain does not exist:/,
+        qr/domain of sender address .+ does not exist/,
+        qr|http://www[.]spamhaus[.]org|,
+        qr|http://dsbl[.]org/|,
+        qr/invalid domain, see [<]url:.+[>]/,
+        qr/listed in work[.]drbl[.]imedia[.]ru/,
+        qr/mail server at .+ is blocked/,
+        qr/message rejected for policy reasons/,
+        qr/mx records for .+ violate section .+/,
+        qr/name service error for /,    # Malformed MX RR or host not found
+        qr/rfc 1035 violation: recursive cname records for/,
+        qr/smtp protocol returned a permanent error/,
+        qr/sorry, your remotehost looks suspiciously like spammer/,
+        qr/we do not accept mail from hosts with dynamic ip or generic dns ptr-records/, # MAIL.RU
+        qr/we do not accept mail from dynamic ips/, # MAIL.RU
+    ];
 }
 
 1;

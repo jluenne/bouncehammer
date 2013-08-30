@@ -1,4 +1,4 @@
-# $Id: Stored.pm,v 1.2.2.1 2013/04/15 04:20:53 ak Exp $
+# $Id: Stored.pm,v 1.2.2.2 2013/08/30 05:55:40 ak Exp $
 # Copyright (C) 2010,2013 Cubicroot Co. Ltd.
 # Kanadzuchi::Statistics::
                                          
@@ -20,7 +20,7 @@ use Kanadzuchi::Mail;
 # |/__\|/__\|/__\|/__\|/__\|/__\|/__\|/__\|/__\|
 #
 __PACKAGE__->mk_accessors(
-	'cache',	# (Ref->Array)
+    'cache',    # (Ref->Array)
 );
 
 #  ____ ____ ____ ____ ____ _________ ____ ____ ____ ____ ____ ____ ____ 
@@ -28,21 +28,20 @@ __PACKAGE__->mk_accessors(
 # ||__|||__|||__|||__|||__|||_______|||__|||__|||__|||__|||__|||__|||__||
 # |/__\|/__\|/__\|/__\|/__\|/_______\|/__\|/__\|/__\|/__\|/__\|/__\|/__\|
 #
-sub new
-{
-	# +-+-+-+
-	# |n|e|w|
-	# +-+-+-+
-	#
-	# @Description	Wrapper method of new()
-	# @Param <ref>	(Ref->Hash)
-	# @Return	(Kanadzuchi::Statistics::Stored) Object
-	my $class = shift;
-	my $argvs = { @_ };
+sub new {
+    # +-+-+-+
+    # |n|e|w|
+    # +-+-+-+
+    #
+    # @Description  Wrapper method of new()
+    # @Param <ref>  (Ref->Hash)
+    # @Return       (Kanadzuchi::Statistics::Stored) Object
+    my $class = shift;
+    my $argvs = { @_ };
 
-	# Default values
-	$argvs->{'cache'} = [];
-	return $class->SUPER::new(%$argvs);
+    # Default values
+    $argvs->{'cache'} = [];
+    return $class->SUPER::new( %$argvs );
 }
 
 #  ____ ____ ____ ____ ____ ____ ____ ____ _________ ____ ____ ____ ____ ____ ____ ____ 
@@ -51,38 +50,37 @@ sub new
 # |/__\|/__\|/__\|/__\|/__\|/__\|/__\|/__\|/_______\|/__\|/__\|/__\|/__\|/__\|/__\|/__\|
 #
 sub congregat {}
-sub aggregate
-{
-	# +-+-+-+-+-+-+-+-+-+
-	# |a|g|g|r|e|g|a|t|e|
-	# +-+-+-+-+-+-+-+-+-+
-	#
-	# @Description	Aggregate by the column
-	# @Param <str>	(String) Column name
-	# @Return	(Ref->Array) Aggregated data
-	my $self = shift;
-	my $name = shift || return [];
-	my $cond = shift || {};
+sub aggregate {
+    # +-+-+-+-+-+-+-+-+-+
+    # |a|g|g|r|e|g|a|t|e|
+    # +-+-+-+-+-+-+-+-+-+
+    #
+    # @Description  Aggregate by the column
+    # @Param <str>  (String) Column name
+    # @Return       (Ref->Array) Aggregated data
+    my $self = shift;
+    my $name = shift || return [];
+    my $cond = shift || {};
 
-	$cond = undef if( ref($cond) eq q|HASH| && ! keys %$cond );
+    $cond = undef if( ref( $cond ) eq 'HASH' && ! keys %$cond );
 
-	my $aggr = $self->congregat( $name, $cond );
-	my $list = [];
+    my $aggr = $self->congregat( $name, $cond );
+    my $list = [];
 
-	if( $name eq 'hostgroup' || $name eq 'reason' )
-	{
-		$list = $name eq 'reason' 
-			? Kanadzuchi::Mail->id2rname('@')
-			: Kanadzuchi::Mail->id2gname('@');
+    if( $name eq 'hostgroup' || $name eq 'reason' ) {
 
-		while( my $e =  shift @$list )
-		{
-			next if( grep { $e eq $_->{'name'} } @$aggr );
-			push @$aggr, { 'name' => $e, 'size' => 0, 'freq' => 0 };
-		}
-	}
-	$self->{'cache'} = $aggr if scalar @$aggr;
-	return $aggr;
+        $list = $name eq 'reason' 
+            ? Kanadzuchi::Mail->id2rname('@')
+            : Kanadzuchi::Mail->id2gname('@');
+
+        while( my $e =  shift @$list ) {
+
+            next if( grep { $e eq $_->{'name'} } @$aggr );
+            push @$aggr, { 'name' => $e, 'size' => 0, 'freq' => 0 };
+        }
+    }
+    $self->{'cache'} = $aggr if scalar @$aggr;
+    return $aggr;
 }
 
 1;

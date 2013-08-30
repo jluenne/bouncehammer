@@ -1,4 +1,4 @@
-# $Id: WebMail.pm,v 1.8.2.2 2013/04/15 04:20:53 ak Exp $
+# $Id: WebMail.pm,v 1.8.2.3 2013/08/30 08:51:14 ak Exp $
 # Copyright (C) 2010-2011,2013 Cubicroot Co. Ltd.
 # Kanadzuchi::Mail::Group::RU::
                                                    
@@ -19,40 +19,29 @@ use warnings;
 # |/__\|/__\|/__\|/__\|/__\|/_______\|/__\|/__\|/__\|/__\|/__\|/__\|/__\|
 #
 # Major company's Webmail domains in Russia
-sub nominisexemplaria
-{
-	my $class = shift;
-	return {
-		# http://qip.ru/
-		'qip' => [
-			qr{\A(?:qip|pochta|front|hotbox|hotmail|land|newmail)[.]ru\z},
-			qr{\A(?:nightmail|nm|pochtamt|pop3|rbcmail|smtp)[.]ru\z},
-			qr{\A(?:5ballov|aeterna|ziza|memori|photofile|fotoplenka)[.]ru\z},
-			qr{\A(?:fromru|mail15|mail333|pochta)[.]com\z},
-			qr{\Akrovatka[.]su\z},
-			qr{\Apisem[.]net\z},
-		],
+sub nominisexemplaria {
+    my $class = shift;
+    return {
+        # http://qip.ru/
+        'qip' => [
+            qr{\A(?:qip|pochta|front|hotbox|hotmail|land|newmail)[.]ru\z},
+            qr{\A(?:nightmail|nm|pochtamt|pop3|rbcmail|smtp)[.]ru\z},
+            qr{\A(?:5ballov|aeterna|ziza|memori|photofile|fotoplenka)[.]ru\z},
+            qr{\A(?:fromru|mail15|mail333|pochta)[.]com\z},
+            qr{\Akrovatka[.]su\z},
+            qr{\Apisem[.]net\z},
+        ],
 
-		# http://mail.ru/
-		'runet' => [
-			qr{\A(?:mail|bk|inbox|list)[.]ru\z},
-		],
+        # http://mail.ru/
+        'runet' => [
+            qr{\A(?:mail|bk|inbox|list)[.]ru\z},
+        ],
 
-		# http://yandex.ru/
-		'yandex' => [
-			qr{\Ayandex[.]ru\z},
-		],
-	};
-}
-
-sub classisnomina
-{
-	my $class = shift;
-	return {
-		'qip'		=> 'Generic',
-		'runet'		=> 'Generic',
-		'yandex'	=> 'Generic',
-	};
+        # http://yandex.ru/
+        'yandex' => [
+            qr{\Ayandex[.]ru\z},
+        ],
+    };
 }
 
 1;

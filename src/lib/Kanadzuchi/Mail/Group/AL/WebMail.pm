@@ -1,4 +1,4 @@
-# $Id: WebMail.pm,v 1.1.2.2 2013/04/15 04:20:53 ak Exp $
+# $Id: WebMail.pm,v 1.1.2.3 2013/08/30 08:51:14 ak Exp $
 # Copyright (C) 2010,2013 Cubicroot Co. Ltd.
 # Kanadzuchi::Mail::Group::AL::
                                                    
@@ -20,27 +20,18 @@ use warnings;
 #
 # Major company's Webmail domains in Republic of Albania
 # sub communisexemplar { return qr{[.]al\z}; }
-sub nominisexemplaria
-{
-	my $class = shift;
-	return {
-		'primo' => [
-			# primo webmail; http://mail.albaniaonline.net/
-			qr{\Aalbaniaonline[.]net\z},
-			qr{\Aalbmail[.]com\z},
-			qr{\Aprimo[.]al\z},
-			qr{\A(?:get|my)primo[.]al\z},
-			qr{\Ashukelaw[.]com\z},
-		],
-	};
-}
-
-sub classisnomina
-{
-	my $class = shift;
-	return {
-		'primo'		=> 'Generic',
-	};
+sub nominisexemplaria {
+    my $class = shift;
+    return {
+        'primo' => [
+            # primo webmail; http://mail.albaniaonline.net/
+            qr{\Aalbaniaonline[.]net\z},
+            qr{\Aalbmail[.]com\z},
+            qr{\Aprimo[.]al\z},
+            qr{\A(?:get|my)primo[.]al\z},
+            qr{\Ashukelaw[.]com\z},
+        ],
+    };
 }
 
 1;

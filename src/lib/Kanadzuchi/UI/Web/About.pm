@@ -1,4 +1,4 @@
-# $Id: About.pm,v 1.1.2.1 2013/04/15 04:20:53 ak Exp $
+# $Id: About.pm,v 1.1.2.2 2013/08/30 05:54:48 ak Exp $
 # Copyright (C) 2010,2013 Cubicroot Co. Ltd.
 # Kanadzuchi::UI:Web::
                                      
@@ -18,16 +18,15 @@ use warnings;
 # ||__|||__|||__|||__|||__|||__|||__|||__|||_______|||__|||__|||__|||__|||__|||__|||__||
 # |/__\|/__\|/__\|/__\|/__\|/__\|/__\|/__\|/_______\|/__\|/__\|/__\|/__\|/__\|/__\|/__\|
 #
-sub about
-{
-	# +-+-+-+-+-+
-	# |a|b|o|u|t|
-	# +-+-+-+-+-+
-	#
-	# @Description	About...
-	my $self = shift;
-	my $file = 'about.html';
-	return $self->tt_process($file);
+sub about {
+    # +-+-+-+-+-+
+    # |a|b|o|u|t|
+    # +-+-+-+-+-+
+    #
+    # @Description  About...
+    my $self = shift;
+    my $file = 'about.html';
+    return $self->tt_process( $file );
 }
 
 1;

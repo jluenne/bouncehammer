@@ -1,4 +1,4 @@
-# $Id: WebMail.pm,v 1.3.2.2 2013/04/15 04:20:53 ak Exp $
+# $Id: WebMail.pm,v 1.3.2.3 2013/08/30 08:51:14 ak Exp $
 # Copyright (C) 2010,2013 Cubicroot Co. Ltd.
 # Kanadzuchi::Mail::Group::TW::
                                                    
@@ -20,31 +20,21 @@ use warnings;
 #
 # Major company's Webmail domains in Republic Of China, Taiwan
 sub communisexemplar { return qr{[.]tw\z}; }
-sub nominisexemplaria
-{
-	my $class = shift;
-	return {
-		'kingnet' => [
-			# KingNet(Gmail); http://mail.kingnet.com.tw/
-			qr{kingnet[.]com[.]tw\z},
-		],
-		'seednet' => [
-			# http://www.seed.net.tw/
-			qr{\Aseed[.]net[.]tw\z},
-			qr{\Atpts[1-8][.]seed[.]net[.]tw\z},
-			qr{\A(?:venus|mars|saturn|titan|iris|libra|pavo)[.]seed[.]net[.]tw\z},
-			qr{\A(?:ara|tcts|tcts1|shts|ksts|ksmail)[.]seed[.]net[.]tw\z},
-		],
-	};
-}
-
-sub classisnomina
-{
-	my $class = shift;
-	return {
-		'kingnet'	=> 'Generic',
-		'seednet'	=> 'Generic',
-	};
+sub nominisexemplaria {
+    my $class = shift;
+    return {
+        'kingnet' => [
+            # KingNet(Gmail); http://mail.kingnet.com.tw/
+            qr{kingnet[.]com[.]tw\z},
+        ],
+        'seednet' => [
+            # http://www.seed.net.tw/
+            qr{\Aseed[.]net[.]tw\z},
+            qr{\Atpts[1-8][.]seed[.]net[.]tw\z},
+            qr{\A(?:venus|mars|saturn|titan|iris|libra|pavo)[.]seed[.]net[.]tw\z},
+            qr{\A(?:ara|tcts|tcts1|shts|ksts|ksmail)[.]seed[.]net[.]tw\z},
+        ],
+    };
 }
 
 1;

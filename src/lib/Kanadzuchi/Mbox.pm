@@ -1,4 +1,4 @@
-# $Id: Mbox.pm,v 1.28.2.14 2013/04/15 04:20:52 ak Exp $
+# $Id: Mbox.pm,v 1.28.2.15 2013/08/29 11:02:53 ak Exp $
 # -Id: Parser.pm,v 1.10 2009/12/26 19:40:12 ak Exp -
 # -Id: Parser.pm,v 1.1 2009/08/29 08:50:27 ak Exp -
 # -Id: Parser.pm,v 1.4 2009/07/31 09:03:53 ak Exp -
@@ -42,12 +42,12 @@ use Kanadzuchi::MTA::FeedbackLoop;
 # |/__\|/__\|/__\|/__\|/__\|/__\|/__\|/__\|/__\|
 #
 __PACKAGE__->mk_accessors(
-	'file',		# (String) File name to parse
-	'greed',	# (Integer) Flag, 1 is greedily parse
-	'emails',	# (Ref->Array) eMails, Raw test data
-	'nmails',	# (Interger) The number of eMails
-	'messages',	# (Ref->Array) Messages(Ref->Hash)
-	'nmesgs',	# (Integer) The number of parsed messages
+    'file',     # (String) File name to parse
+    'greed',    # (Integer) Flag, 1 is greedily parse
+    'emails',   # (Ref->Array) eMails, Raw test data
+    'nmails',   # (Interger) The number of eMails
+    'messages', # (Ref->Array) Messages(Ref->Hash)
+    'nmesgs',   # (Integer) The number of parsed messages
 );
 
 #  ____ ____ ____ ____ ____ ____ ____ ____ 
@@ -56,10 +56,10 @@ __PACKAGE__->mk_accessors(
 # |/__\|/__\|/__\|/__\|/__\|/__\|/__\|/__\|
 #
 sub ENDOF() { qq(\n__THE_END_OF_THE_EMAIL__\n); }
-my $TransferAgents = __PACKAGE__->postulat();
+my $TransferAgents = __PACKAGE__->postulat;
 my $MostFamousMTAs = [ 
-	'Sendmail', 'Postfix', 'qmail', 'Exim', 'Courier',
-	'OpenSMTPD', 'FeedbackLoop'
+    'Sendmail', 'Postfix', 'qmail', 'Exim', 'Courier',
+    'OpenSMTPD', 'FeedbackLoop'
 ];
 
 #  ____ ____ ____ ____ ____ _________ ____ ____ ____ ____ ____ ____ ____ 
@@ -67,225 +67,219 @@ my $MostFamousMTAs = [
 # ||__|||__|||__|||__|||__|||_______|||__|||__|||__|||__|||__|||__|||__||
 # |/__\|/__\|/__\|/__\|/__\|/_______\|/__\|/__\|/__\|/__\|/__\|/__\|/__\|
 #
-sub new
-{
-	# +-+-+-+
-	# |n|e|w|
-	# +-+-+-+
-	#
-	# @Description	Wrapper method of new()
-	# @Param
-	# @Return	Kanadzuchi::Mbox Object
-	my $class = shift;
-	my $argvs = { @_ };
+sub new {
+    # +-+-+-+
+    # |n|e|w|
+    # +-+-+-+
+    #
+    # @Description  Wrapper method of new()
+    # @Param
+    # @Return       Kanadzuchi::Mbox Object
+    my $class = shift;
+    my $argvs = { @_ };
 
-	DEFAULT_VALUES: {
-		$argvs->{'greed'} = 0 unless $argvs->{'greed'};
-		$argvs->{'nmails'} = 0;
-		$argvs->{'emails'} = [];
-		$argvs->{'nmesgs'} = 0;
-		$argvs->{'messages'} = [];
-	}
+    DEFAULT_VALUES: {
+        $argvs->{'greed'}    = 0 unless $argvs->{'greed'};
+        $argvs->{'nmails'}   = 0;
+        $argvs->{'emails'}   = [];
+        $argvs->{'nmesgs'}   = 0;
+        $argvs->{'messages'} = [];
+    }
 
-	return $class->SUPER::new( $argvs );
+    return $class->SUPER::new( $argvs );
 }
 
-sub postulat
-{
-	# +-+-+-+-+-+-+-+-+
-	# |p|o|s|t|u|l|a|t|
-	# +-+-+-+-+-+-+-+-+
-	#
-	# @Description	Require Kanadzuchi::MTA::??::*
-	# @Param	<None>
-	# @Return	(Ref->Array) Loaded class names
-	# @See		etc/avalable-countries
-	#
-	#     agents: [ 'name-of-mta1', 'name-of-mta2', ... ]
-	#       * The key 'agents' does not exist: Load all of modules in Kanadzuchi::
-	#         Mbox::<CCTLD or ISO3166>::*.pm
-	#       * The key 'agents' is EMPTY: Does NOT load any moduels in Kanadzuchi::
-	#         Mbox::<CCTLD or ISO3166>::*.pm
-	#       * The key 'agents' has a value: Load only the module of its name in 
-	#         Kanadzuch::Mbox::<CCTLD or ISO3166>::<its name>.pm
-	my $class = shift;
+sub postulat {
+    # +-+-+-+-+-+-+-+-+
+    # |p|o|s|t|u|l|a|t|
+    # +-+-+-+-+-+-+-+-+
+    #
+    # @Description  Require Kanadzuchi::MTA::??::*
+    # @Param        <None>
+    # @Return       (Ref->Array) Loaded class names
+    # @See          etc/avalable-countries
+    #
+    # agents: [ 'name-of-mta1', 'name-of-mta2', ... ]
+    #   * The key 'agents' does not exist: Load all of modules in Kanadzuchi::
+    #     Mbox::<CCTLD or ISO3166>::*.pm
+    #   * The key 'agents' is EMPTY: Does NOT load any moduels in Kanadzuchi::
+    #     Mbox::<CCTLD or ISO3166>::*.pm
+    #   * The key 'agents' has a value: Load only the module of its name in 
+    #     Kanadzuch::Mbox::<CCTLD or ISO3166>::<its name>.pm
+    my $class = shift;
 
-	# Experimental implementation for the future.
-	my $libmboxroot = '__KANADZUCHILIB__/Kanadzuchi/MTA';
-	my $additionals = [ 'User', 'Comm' ];
-	my $iso3166list = [ 'JP', 'US' ];
-	my $iso3166conf = '__KANADZUCHIETC__/available-countries';
-	my $countryconf = ( -r $iso3166conf && -s _ && -T _ ) ? JSON::Syck::LoadFile($iso3166conf) : {};
-	my $didfileload = keys %$countryconf ? 1 : 0;
-	my $listofclass = [];
-	my $acclassname = q();
+    # Experimental implementation for the future.
+    my $libmboxroot = '__KANADZUCHILIB__/Kanadzuchi/MTA';
+    my $additionals = [ 'User', 'Comm' ];
+    my $iso3166list = [ 'JP', 'US' ];
+    my $iso3166conf = '__KANADZUCHIETC__/available-countries';
+    my $countryconf = ( -r $iso3166conf && -s _ && -T _ ) ? JSON::Syck::LoadFile( $iso3166conf ) : {};
+    my $didfileload = keys %$countryconf ? 1 : 0;
+    my $listofclass = [];
+    my $acclassname = q();
 
-	EACH_COUNTRY: foreach my $code ( @$iso3166list )
-	{
-		# etc/avalable-countries does not exist, load all of modules in 
-		# Kanadzuchi/MTA/??/*.pm
-		my $directory = $libmboxroot.'/'.$code;
-		my $mtaoption = [];	# Require files in this array
+    EACH_COUNTRY: foreach my $code ( @$iso3166list ) {
+        # etc/avalable-countries does not exist, load all of modules in 
+        # Kanadzuchi/MTA/??/*.pm
+        my $directory = $libmboxroot.'/'.$code;
+        my $mtaoption = []; # Require files in this array
 
-		# The directory does not exist or is not readable, or is not executable.
-		next(EACH_COUNTRY) unless( -d $directory && -r _ && -x _ );
+        # The directory does not exist or is not readable, or is not executable.
+        next(EACH_COUNTRY) unless( -d $directory && -r _ && -x _ );
 
-		if( $didfileload && exists( $countryconf->{ lc $code }->{'agents'} ) )
-		{
-			# The key 'agents' exists, check the value of the key
-			$mtaoption = $countryconf->{ lc $code }->{'agents'};
+        if( $didfileload && exists( $countryconf->{ lc $code }->{'agents'} ) ) {
+            # The key 'agents' exists, check the value of the key
+            $mtaoption = $countryconf->{ lc $code }->{'agents'};
 
-			# agents: []
-			#   * The key 'agents' is EMPTY: Does NOT load any moduels in 
-			#     Kanadzuchi::MTA::<CCTLD or ISO3166>::*.pm
-			next(EACH_COUNTRY) unless( scalar @$mtaoption );
+            # agents: []
+            #   * The key 'agents' is EMPTY: Does NOT load any moduels in 
+            #     Kanadzuchi::MTA::<CCTLD or ISO3166>::*.pm
+            next(EACH_COUNTRY) unless scalar @$mtaoption;
 
-			# agents: [ 'something', ... ]
-			#   * The key 'agents' has a value: Load only the module of its
-			#     name in Kanadzuch::MTA::<CCTLD or ISO3166>::<its name>.pm
-			map { $_ = lc $_.'.pm' } @$mtaoption;
-		}
+            # agents: [ 'something', ... ]
+            #   * The key 'agents' has a value: Load only the module of its
+            #     name in Kanadzuch::MTA::<CCTLD or ISO3166>::<its name>.pm
+            map { $_ = lc $_.'.pm' } @$mtaoption;
+        }
 
-		opendir( my $dh, $directory );
-		READDIR: while( my $de = readdir($dh) )
-		{
-			my $fp = $directory.'/'.$de;
+        opendir( my $dh, $directory );
+        READDIR: while( my $de = readdir $dh ) {
 
-			# the file is not *.pm, nor regular file, nor readable
-			next(READDIR) if( $fp !~ m{[.]pm\z} || ! -f $fp || ! -r _ );
-			next(READDIR) if( scalar @$mtaoption && ! grep { lc($de) eq $_ } @$mtaoption );
+            my $fp = $directory.'/'.$de;
 
-			$acclassname  = 'Kanadzuchi::MTA::'.$code.'::'.$de;
-			$acclassname =~ s{[.]pm\z}{};
+            # the file is not *.pm, nor regular file, nor readable
+            next(READDIR) if( $fp !~ m{[.]pm\z} || ! -f $fp || ! -r _ );
+            next(READDIR) if( scalar @$mtaoption && ! grep { lc($de) eq $_ } @$mtaoption );
 
-			eval { require $fp; };
-			push @$listofclass, $acclassname unless $@;
-		}
-		closedir $dh;
+            $acclassname  = 'Kanadzuchi::MTA::'.$code.'::'.$de;
+            $acclassname =~ s{[.]pm\z}{};
 
-	} # End of foreach(EACH_COUNTRY)
+            eval { require $fp; };
+            push @$listofclass, $acclassname unless $@;
+        }
+        closedir $dh;
 
-	ADDITIONALS: foreach my $amod ( @$additionals )
-	{
-		# Load user-defined modules and commercial MTA modules
-		my $directory = $libmboxroot.'/'.$amod;
+    } # End of foreach(EACH_COUNTRY)
 
-		next unless( -d $directory && -r _ && -x _ );
-		opendir( my $dh, $directory );
+    ADDITIONALS: foreach my $amod ( @$additionals ) {
+        # Load user-defined modules and commercial MTA modules
+        my $directory = $libmboxroot.'/'.$amod;
 
-		READAM: while( my $de = readdir($dh) )
-		{
-			my $fp = $directory.'/'.$de;
+        next unless( -d $directory && -r _ && -x _ );
+        opendir( my $dh, $directory );
 
-			# the file is not *.pm, nor regular file, nor readable
-			next(READAM) if( $fp !~ m{[.]pm\z} || ! -f $fp || ! -r _ );
+        READAM: while( my $de = readdir $dh ) {
 
-			$acclassname  = 'Kanadzuchi::MTA::'.$amod.'::'.$de;
-			$acclassname =~ s{[.]pm\z}{};
+            my $fp = $directory.'/'.$de;
 
-			eval { require $fp; };
-			push @$listofclass, $acclassname unless $@;
-		}
+            # the file is not *.pm, nor regular file, nor readable
+            next(READAM) if( $fp !~ m{[.]pm\z} || ! -f $fp || ! -r _ );
 
-		closedir $dh;
+            $acclassname  = 'Kanadzuchi::MTA::'.$amod.'::'.$de;
+            $acclassname =~ s{[.]pm\z}{};
 
-	} # End of foreach(ADDITIONALS)
+            eval { require $fp; };
+            push @$listofclass, $acclassname unless $@;
+        }
 
-	return $listofclass;
+        closedir $dh;
+
+    } # End of foreach(ADDITIONALS)
+
+    return $listofclass;
 }
 
-sub breakit
-{
-	# +-+-+-+-+-+-+-+
-	# |b|r|e|a|k|i|t|
-	# +-+-+-+-+-+-+-+
-	#
-	# @Description	Break the header of message and return its body
-	# @Param <ref>	(Ref->Hash) Message entity.
-	# @Param <ref>	(Ref->String) Message body
-	# @Return	(String) Message body or empty string
-	my $packagename = shift;
-	my $thismessage = shift || return q();
-	my $thebodypart = shift || return q();
-	my $theheadpart = $thismessage->{'head'};
+sub breakit {
+    # +-+-+-+-+-+-+-+
+    # |b|r|e|a|k|i|t|
+    # +-+-+-+-+-+-+-+
+    #
+    # @Description  Break the header of message and return its body
+    # @Param <ref>  (Ref->Hash) Message entity.
+    # @Param <ref>  (Ref->String) Message body
+    # @Return       (String) Message body or empty string
+    #
+    my $packagename = shift;
+    my $thismessage = shift || return q();
+    my $thebodypart = shift || return q();
+    my $theheadpart = $thismessage->{'head'};
 
-	# For Code Refactoring IN THE FUTURE.
-	# my $contenttype = [	
-	#	qr{\Amultipart/(?:report|mixed)},
-	#	qr{\Amessage/(?:delivery-status|rfc822)},
-	#	qr{\Atext/rfc822-headers},
-	# ];
+    # For Code Refactoring IN THE FUTURE.
+    # my $contenttype = [   
+    #   qr{\Amultipart/(?:report|mixed)},
+    #   qr{\Amessage/(?:delivery-status|rfc822)},
+    #   qr{\Atext/rfc822-headers},
+    # ];
 
-	# Check whether or not the message is a bounce mail.
-	#  _____             _     _____                                _          _ 
-	# |  ___|_      ____| |_  |  ___|__  _ ____      ____ _ _ __ __| | ___  __| |
-	# | |_  \ \ /\ / / _` (_) | |_ / _ \| '__\ \ /\ / / _` | '__/ _` |/ _ \/ _` |
-	# |  _|  \ V  V / (_| |_  |  _| (_) | |   \ V  V / (_| | | | (_| |  __/ (_| |
-	# |_|     \_/\_/ \__,_(_) |_|  \___/|_|    \_/\_/ \__,_|_|  \__,_|\___|\__,_|
-	#                                                                            
-	# Pre-Process eMail body if it is a forwarded bounce message.
-	#  Get forwarded text if a subject begins from 'fwd:' or 'fw:'
-	if( lc( $theheadpart->{'subject'} ) =~ m{\A\s*fwd?:} )
-	{
-		# Break quoted strings, quote symbols(>)
-		$$thebodypart =~ s{\A.+?[>]}{>}s;
-		$$thebodypart =~ s{^[>]+[ ]}{}gm;
-		$$thebodypart =~ s{^[>]$}{}gm;
-	}
+    # Check whether or not the message is a bounce mail.
+    #  _____             _     _____                                _          _ 
+    # |  ___|_      ____| |_  |  ___|__  _ ____      ____ _ _ __ __| | ___  __| |
+    # | |_  \ \ /\ / / _` (_) | |_ / _ \| '__\ \ /\ / / _` | '__/ _` |/ _ \/ _` |
+    # |  _|  \ V  V / (_| |_  |  _| (_) | |   \ V  V / (_| | | | (_| |  __/ (_| |
+    # |_|     \_/\_/ \__,_(_) |_|  \___/|_|    \_/\_/ \__,_|_|  \__,_|\___|\__,_|
+    #                                                                            
+    # Pre-Process eMail body if it is a forwarded bounce message.
+    #  Get forwarded text if a subject begins from 'fwd:' or 'fw:'
+    # 
+    if( lc( $theheadpart->{'subject'} ) =~ m{\A\s*fwd?:} ) {
+        # Break quoted strings, quote symbols(>)
+        $$thebodypart =~ s{\A.+?[>]}{>}s;
+        $$thebodypart =~ s{^[>]+[ ]}{}gm;
+        $$thebodypart =~ s{^[>]$}{}gm;
+    }
 
-	#  ____  _                  _               _   _____                          _   
-	# / ___|| |_ __ _ _ __   __| | __ _ _ __ __| | |  ___|__  _ __ _ __ ___   __ _| |_ 
-	# \___ \| __/ _` | '_ \ / _` |/ _` | '__/ _` | | |_ / _ \| '__| '_ ` _ \ / _` | __|
-	#  ___) | || (_| | | | | (_| | (_| | | | (_| | |  _| (_) | |  | | | | | | (_| | |_ 
-	# |____/ \__\__,_|_| |_|\__,_|\__,_|_|  \__,_| |_|  \___/|_|  |_| |_| |_|\__,_|\__|
-	#                                                                                  
-	# Pre-Process eMail headers of standard bounce message
-	#return $$thebodypart if( $theheadpart->{'content-type'} && 
-	#			grep { $theheadpart->{'content-type'} =~ $_ } @$contenttype );
-	#
-	my $parserclass = q();		# (String) Package|Class name
-	my $pseudofield = q();		# (String) Pseudo headers
-	my $agentmodule = q();		# (String) Agent class name
-	my $isforwarded = 0;		# (Integer) Is forwarded message
+    #  ____  _                  _               _   _____                          _   
+    # / ___|| |_ __ _ _ __   __| | __ _ _ __ __| | |  ___|__  _ __ _ __ ___   __ _| |_ 
+    # \___ \| __/ _` | '_ \ / _` |/ _` | '__/ _` | | |_ / _ \| '__| '_ ` _ \ / _` | __|
+    #  ___) | || (_| | | | | (_| | (_| | | | (_| | |  _| (_) | |  | | | | | | (_| | |_ 
+    # |____/ \__\__,_|_| |_|\__,_|\__,_|_|  \__,_| |_|  \___/|_|  |_| |_| |_|\__,_|\__|
+    #                                                                                  
+    # Pre-Process eMail headers of standard bounce message
+    #return $$thebodypart if( $theheadpart->{'content-type'} && 
+    #           grep { $theheadpart->{'content-type'} =~ $_ } @$contenttype );
+    #
+    my $parserclass = q();      # (String) Package|Class name
+    my $pseudofield = q();      # (String) Pseudo headers
+    my $agentmodule = q();      # (String) Agent class name
+    my $isforwarded = 0;        # (Integer) Is forwarded message
 
-	# Most famous MTAs
-	foreach my $mta ( @$MostFamousMTAs )
-	{
-		$agentmodule  = 'Kanadzuchi::MTA::'.$mta;
-		$pseudofield .= $agentmodule->reperit( $theheadpart, $thebodypart );
-		last if $pseudofield;
-	}
+    # Most famous MTAs
+    foreach my $mta ( @$MostFamousMTAs ) {
 
-	# Optionals
-	unless( $pseudofield )
-	{
-		foreach my $mod ( @$TransferAgents )
-		{
-			$pseudofield .= $mod->reperit( $theheadpart, $thebodypart );
-			last if $pseudofield;
-		}
+        $agentmodule  = 'Kanadzuchi::MTA::'.$mta;
+        $pseudofield .= $agentmodule->reperit( $theheadpart, $thebodypart );
+        last if $pseudofield;
+    }
 
-		# Fallback
-		unless( $pseudofield )
-		{
-			require Kanadzuchi::MTA::Fallback;
-			$pseudofield .= Kanadzuchi::MTA::Fallback->reperit( $theheadpart, $thebodypart );
+    # Optionals
+    unless( $pseudofield ) {
 
-			unless( $pseudofield )
-			{
-				if( $$thebodypart =~ m{^[Ss]tatus: [45][.][0-7][.]\d+(.*)}m )
-				{
-					unless( $$thebodypart =~ m{^[Dd]iagnostic-[Cc]ode: }m )
-					{
-						$pseudofield .= 'X-SMTP-Diagnosis: '.$1.qq(\n);
-					}
-					$pseudofield .= Kanadzuchi::MTA->xsmtpcommand('DATA');
-					$pseudofield .= Kanadzuchi::MTA->xsmtpagent('unknown');
-				}
-			}
-		}
-	}
-	return $pseudofield.$$thebodypart;
+        foreach my $mod ( @$TransferAgents ) {
+
+            $pseudofield .= $mod->reperit( $theheadpart, $thebodypart );
+            last if $pseudofield;
+        }
+
+        # Fallback
+        unless( $pseudofield ) {
+
+            require Kanadzuchi::MTA::Fallback;
+            $pseudofield .= Kanadzuchi::MTA::Fallback->reperit( $theheadpart, $thebodypart );
+
+            unless( $pseudofield ) {
+
+                if( $$thebodypart =~ m{^[Ss]tatus: [45][.][0-7][.]\d+(.*)}m ) {
+
+                    unless( $$thebodypart =~ m{^[Dd]iagnostic-[Cc]ode: }m ) {
+                        $pseudofield .= 'X-SMTP-Diagnosis: '.$1.qq(\n);
+                    }
+                    $pseudofield .= Kanadzuchi::MTA->xsmtpcommand('DATA');
+                    $pseudofield .= Kanadzuchi::MTA->xsmtpagent('unknown');
+                }
+            }
+        }
+    }
+    return $pseudofield.$$thebodypart;
 }
 
 #  ____ ____ ____ ____ ____ ____ ____ ____ _________ ____ ____ ____ ____ ____ ____ ____ 
@@ -293,280 +287,273 @@ sub breakit
 # ||__|||__|||__|||__|||__|||__|||__|||__|||_______|||__|||__|||__|||__|||__|||__|||__||
 # |/__\|/__\|/__\|/__\|/__\|/__\|/__\|/__\|/_______\|/__\|/__\|/__\|/__\|/__\|/__\|/__\|
 #
-sub slurpit
-{
-	# +-+-+-+-+-+-+-+
-	# |s|l|u|r|p|i|t|
-	# +-+-+-+-+-+-+-+
-	#
-	# @Description	Slurp the email
-	# @Param	<None>
-	# @Return	(Integer) n = The number of slurped emails
-	my $self = shift;
-	my $file = defined $self->{'file'} ? $self->{'file'} : \*STDIN;
+sub slurpit {
+    # +-+-+-+-+-+-+-+
+    # |s|l|u|r|p|i|t|
+    # +-+-+-+-+-+-+-+
+    #
+    # @Description  Slurp the email
+    # @Param        <None>
+    # @Return       (Integer) n = The number of slurped emails
+    #
+    my $self = shift;
+    my $file = defined $self->{'file'} ? $self->{'file'} : \*STDIN;
 
-	unless( ref($file) eq q|SCALAR| )
-	{
-		return 0 if( $file =~ m{[\n\r]} || $file =~ m{[\x00-\x1f\x7f]} );
-		return 0 if(
-			! ( -f $file && -T _ && -s _ ) &&
-			! ( ref($file) eq q|GLOB| && -T $file )
-		);
-	}
+    unless( ref( $file ) eq 'SCALAR' ) {
+        return 0 if( $file =~ m{[\n\r]} || $file =~ m{[\x00-\x1f\x7f]} );
+        return 0 if(
+            ! ( -f $file && -T _ && -s _ ) &&
+            ! ( ref( $file ) eq 'GLOB' && -T $file )
+        );
+    }
 
-	$self->{'emails'} = [];
+    $self->{'emails'} = [];
 
-	eval {
-		# Slurp the mailbox, Convert from CRLF to LF,
-		#
-		# mboxes
-		#  mboxo	Original mbox implementation
-		#  mboxcl	Content-Length field in UNIX From_ line
-		#  mboxcl2	From_ in the message body is not quoted.
-		#  mboxrd
-		#  MMDF		No UNIX From_ line, and blank line at the end of the message body.
-		# 		^A^A^A^A(4 Ctrl-As) around the message.
-		#  Eudora	No blank line at the end of the message, From_ ???@???
-		#  Netscape	From_ -
-		@{ $self->{'emails'} } =
-			map( { s{\x0d\x0a}{\n}g; y{\x0d\x0a}{\n\n}; q(From ).$_; }
-				Perl6::Slurp::slurp( $file,
-					{
-						'irs' => qr(\nFrom ),
-						'chomp' => ENDOF
-					}
-				)
-			);
+    eval {
+        # Slurp the mailbox, Convert from CRLF to LF,
+        #
+        # mboxes
+        #  mboxo    Original mbox implementation
+        #  mboxcl   Content-Length field in UNIX From_ line
+        #  mboxcl2  From_ in the message body is not quoted.
+        #  mboxrd
+        #  MMDF     No UNIX From_ line, and blank line at the end of the message body.
+        #           ^A^A^A^A(4 Ctrl-As) around the message.
+        #  Eudora   No blank line at the end of the message, From_ ???@???
+        #  Netscape From_ -
+        @{ $self->{'emails'} } =
+            map( { s{\x0d\x0a}{\n}g; y{\x0d\x0a}{\n\n}; 'From '.$_; }
+                Perl6::Slurp::slurp( $file,
+                    {
+                        'irs' => qr(\nFrom ),
+                        'chomp' => ENDOF
+                    }
+                )
+            );
 
-		if( scalar @{ $self->{'emails'} } )
-		{
-			$self->{'emails'}->[0] =~ s{\AFrom (.+)\z}{$1}s;
-			$self->{'emails'}->[-1] .= ENDOF;
-		}
-	};
+        if( scalar @{ $self->{'emails'} } ) {
 
-	return 0 if $@;
-	$self->{'nmails'} = scalar @{$self->{'emails'}};
-	return $self->{'nmails'};
+            $self->{'emails'}->[0] =~ s{\AFrom (.+)\z}{$1}s;
+            $self->{'emails'}->[-1] .= ENDOF;
+        }
+    };
+
+    return 0 if $@;
+    $self->{'nmails'} = scalar @{ $self->{'emails'} };
+    return $self->{'nmails'};
 }
 
-sub parseit
-{
-	# +-+-+-+-+-+-+-+
-	# |p|a|r|s|e|i|t|
-	# +-+-+-+-+-+-+-+
-	#
-	# @Description	Parse the email text
-	# @Param <ref>	(Integer) Flag for saving failed messages
-	# @Param <ref>	(Ref->Code) Callback function
-	# @Return	(Integer) n = The number of parsed messages
-	my $self = shift;
-	my $save = shift || 0;
-	my $call = shift || sub {};
-	my $ends = ENDOF;
-	my $seek = 0;
+sub parseit {
+    # +-+-+-+-+-+-+-+
+    # |p|a|r|s|e|i|t|
+    # +-+-+-+-+-+-+-+
+    #
+    # @Description  Parse the email text
+    # @Param <ref>  (Integer) Flag for saving failed messages
+    # @Param <ref>  (Ref->Code) Callback function
+    # @Return       (Integer) n = The number of parsed messages
+    my $self = shift;
+    my $save = shift || 0;
+    my $call = shift || sub {};
+    my $ends = ENDOF;
+    my $seek = 0;
 
-	my $agentclasses = [ map { 'Kanadzuchi::MTA::'.$_ } @$MostFamousMTAs ];
-	my $emailheaders = [ 
-		'From', 'To', 'Date', 'Subject', 'Content-Type',
-		'Reply-To', 'Message-Id',
-	];
-	my $agentheaders = [];
+    my $agentclasses = [ map { 'Kanadzuchi::MTA::'.$_ } @$MostFamousMTAs ];
+    my $emailheaders = [ 
+        'From', 'To', 'Date', 'Subject', 'Content-Type',
+        'Reply-To', 'Message-Id',
+    ];
+    my $agentheaders = [];
 
-	# Load each agent's headers
-	map { push @$agentheaders, @{ $_->emailheaders() } } @$agentclasses;
-	map { push @$agentheaders, @{ $_->emailheaders() } } @$TransferAgents;
+    # Load each agent's headers
+    map { push @$agentheaders, @{ $_->emailheaders } } @$agentclasses;
+    map { push @$agentheaders, @{ $_->emailheaders } } @$TransferAgents;
 
 
-	PARSE_EMAILS: while( my $_email = shift @{ $self->{'emails'} } )
-	{
-		my $_mail = {};
-		my $_from = q();	# 'From_' of UNIX mbox
-		my $_head = q();	# Message header as a string
-		my $_body = q();	# Message body as a string
+    PARSE_EMAILS: while( my $_email = shift @{ $self->{'emails'} } ) {
 
-		# Callback(), Term::ProgressBar
-		$call->();
+        my $_mail = {};
+        my $_from = q();    # 'From_' of UNIX mbox
+        my $_head = q();    # Message header as a string
+        my $_body = q();    # Message body as a string
 
-		if( $_email =~ m{\AFrom[ ](.+?)\n(.+?)\n\n(.+)$ends\z}so )
-		{
-			$_from = $1;
-			$_head = $2;
-			$_body = $3;
-		}
-		elsif( $_email =~ m{\A(.+?)\n\n(.+)$ends\z}so )
-		{
-			# There is no UNIX From line, Insert pseudo it.
-			$_from = q(From MAILER-DAEMON Sun Dec 31 23:59:59 2000);
-			$_head = $1;
-			$_body = $2;
-		}
-		else
-		{
-			next(PARSE_EMAILS);
-		}
+        # Callback(), Term::ProgressBar
+        $call->();
 
-		# 1. Set the content in UNIX From_ Line
-		$_mail->{'from'} = $_from;
-		$_mail->{'head'} = { 
-			'to' => q(),
-			'from' => q(),
-			'date' => q(),
-			'subject' => q(),
-			'reply-to' => q(),
-			'received' => [], 
-			'message-id' => q(),
-			'content-type' => q(),
-		};
+        if( $_email =~ m{\AFrom[ ](.+?)\n(.+?)\n\n(.+)$ends\z}so ) {
 
-		# 2. Parse email headers
-		my $__continued = 0;	# Flag; Continued from the previous line.
-		my $__ehcounter = 0;	# Temporary counter for email headers
+            $_from = $1;
+            $_head = $2;
+            $_body = $3;
 
-		LINES: foreach my $e ( split( qq{\n}, $_head ) )
-		{
-			HEADERS: foreach my $eh ( @$emailheaders, @$agentheaders )
-			{
-				next(HEADERS) unless( $e =~ m{\A$eh[:][ ]*}i );
-				$_mail->{'head'}->{ lc $eh } = $1 if( $e =~ m/\A${eh}[:][ ]*(.+?)\z/i );
-			}
+        } elsif( $_email =~ m{\A(.+?)\n\n(.+)$ends\z}so ) {
+            # There is no UNIX From line, Insert pseudo it.
+            $_from = 'From MAILER-DAEMON Sun Dec 31 23:59:59 2000';
+            $_head = $1;
+            $_body = $2;
 
-			# Get and concatenate 'Received:' headers
-			if( $e =~ m{\AReceived[:][ ]*(.+?)\z}i )
-			{
-				push( @{ $_mail->{'head'}->{'received'} }, $1 );
-				$__continued = 1;
-				$__ehcounter = scalar( @{ $_mail->{'head'}->{'received'} } ) - 1;
-			}
-			elsif( $__continued && $e =~ m{\A[\s\t]+(.+?)\z} )
-			{
-				# This line is countinued from the previous line.
-				next(LINES) unless( scalar @{ $_mail->{'head'}->{'received'} } );
-				$_mail->{'head'}->{'received'}->[ $__ehcounter ] .= q( ).$1;
-			}
-			else
-			{
-				$__continued = 0;
-				$__ehcounter = 0;
-			}
-		}
+        } else {
+            next(PARSE_EMAILS);
+        }
 
-		# 3. Rewrite the part of the message body
-		$_mail->{'body'} = __PACKAGE__->breakit( $_mail, \$_body );
-		$_head = q();
+        # 1. Set the content in UNIX From_ Line
+        $_mail->{'from'} = $_from;
+        $_mail->{'head'} = { 
+            'to' => q(),
+            'from' => q(),
+            'date' => q(),
+            'subject' => q(),
+            'reply-to' => q(),
+            'received' => [], 
+            'message-id' => q(),
+            'content-type' => q(),
+        };
 
-		# 4. Save entire message
-		$_mail->{'data'} = $_email if $save;
+        # 2. Parse email headers
+        my $__continued = 0;    # Flag; Continued from the previous line.
+        my $__ehcounter = 0;    # Temporary counter for email headers
 
-		# Parse message body
-		# Concatenate multiple-lined headers
-		next(PARSE_EMAILS) unless $_mail->{'body'};
-		$_mail->{'body'} =~ s{^[Ff]rom:[ ]*([^\n\r]+)[\n\r][ \t]+([^\n\r]+)}{From: $1 $2}gm;
-		$_mail->{'body'} =~ s{^[Tt]o:[ ]*([^\n\r]+)[\n\r][ \t]+([^\n\r]+)}{To: $1 $2}gm;
+        LINES: foreach my $e ( split( qq{\n}, $_head ) ) {
 
-		if( $_mail->{'body'} =~ m{^[Dd]iagnostic-[Cc]ode:[\s]*([^\n\r]+)[\n\r]([\s\t]+.+)}ms )
-		{
-			my $_d1 = 'Diagnostic-Code: '.$1;
-			my $_d2 = $2; $_d2 =~ y{\r}{\n};
+            HEADERS: foreach my $eh ( @$emailheaders, @$agentheaders ) {
 
-			foreach my $e ( split( qq(\n), $_d2 ) )
-			{
-				last unless $e =~ m{\A[\s\t]+};
-				$_d1 .= ' '.$e;
-			}
+                next(HEADERS) unless $e =~ m{\A$eh[:][ ]*}i;
+                $_mail->{'head'}->{ lc $eh } = $1 if $e =~ m/\A${eh}[:][ ]*(.+?)\z/i;
+            }
 
-			$_d1 =~ y{ }{}s;
-			$_mail->{'body'} =~ s{^[Dd]iagnostic-[Cc]ode:[\s]*[^\n\r]+[\n\r][\s\t]+[^\n\r]+}{$_d1}m;
-		}
+            # Get and concatenate 'Received:' headers
+            if( $e =~ m{\AReceived[:][ ]*(.+?)\z}i ) {
 
-		# Delete non-required headers
-		$_mail->{'body'} =~ y{\n}{\n}s;		# Delete blank lines
-		$_mail->{'body'} =~ s{^\W.+[\r\n]}{}mg;	# Delete non-email headers
+                push( @{ $_mail->{'head'}->{'received'} }, $1 );
+                $__continued = 1;
+                $__ehcounter = scalar( @{ $_mail->{'head'}->{'received'} } ) - 1;
 
-		# Parse greedy
-		if( $self->{'greed'} )
-		{
-			# Addresser
-			$_mail->{'body'} =~ s{^[Aa]pparently-[Ff]rom:[ ]*(.+)$}{<<<<: Apparently-From: $1}m;
-			$_mail->{'body'} =~ s{^[Rr]esent-[Ff]rom:[ ]*(.+)$}{<<<<: Resent-From: $1}m;
-			$_mail->{'body'} =~ s{^[Rr]esent-[Rr]eply-[Tt]o:[ ]*(.+)$}{<<<<: Resent-Reply-To: $1}m;
-			$_mail->{'body'} =~ s{^[Rr]esent-[Ss]ender:[ ]*(.+)$}{<<<<: Resent-Sender: $1}m;
-			$_mail->{'body'} =~ s{^[Ss]ender:[ ]*(.+)$}{<<<<: Sender: $1}m;
+            } elsif( $__continued && $e =~ m{\A[\s\t]+(.+?)\z} ) {
+                # This line is countinued from the previous line.
+                next(LINES) unless scalar @{ $_mail->{'head'}->{'received'} };
+                $_mail->{'head'}->{'received'}->[ $__ehcounter ] .= ' '.$1;
 
-			# Recipient
-			$_mail->{'body'} =~ s{^[Aa]pparently-[Tt]o:[ ]*(.+)$}{<<<<: Apparently-To: $1}m;
-			$_mail->{'body'} =~ s{^[Ee]nvelope-[Tt]o:[ ]*(.+)$}{<<<<: Envelope-To: $1}m;
-			$_mail->{'body'} =~ s{^[Rr]esent-[Tt]o:[ ]*(.+)$}{<<<<: Resent-To: $1}m;
-			$_mail->{'body'} =~ s{^[Xx]-[Ee]nvelope-[Tt]o:[ ]*(.+)$}{<<<<: X-Envelope-To: $1}m;
+            } else {
+                $__continued = 0;
+                $__ehcounter = 0;
+            }
+        }
 
-			# Date
-			$_mail->{'body'} =~ s{^[Pp]osted:[ ]*(.+)$}{<<<<: Posted: $1}m;
-			$_mail->{'body'} =~ s{^[Pp]osted-[Dd]ate:[ ]*(.+)$}{<<<<: Posted-Date: $1}m;
-			$_mail->{'body'} =~ s{^[Rr]esent-[Dd]ate:[ ]*(.+)$}{<<<<: Resent-Date: $1}m;
-		}
+        # 3. Rewrite the part of the message body
+        $_mail->{'body'} = __PACKAGE__->breakit( $_mail, \$_body );
+        $_head = q();
 
-		# Mark required headers
-		$_mail->{'body'} =~ s{^[Aa]rrival-[Dd]ate:[ ]*(.+)$}{<<<<: Arrival-Date: $1}m;
-		$_mail->{'body'} =~ s{^[Dd]ate:[ ]*(.+)$}{<<<<: Date: $1}gm;
-		$_mail->{'body'} =~ s{^[Dd]elivered-[Tt]o:[ ]*(.+)$}{<<<<: Delivered-To: $1}m;
-		$_mail->{'body'} =~ s{^[Dd]iagnostic-[Cc]ode:[ ]*(.+)$}{<<<<: Diagnostic-Code: $1}m;
-		$_mail->{'body'} =~ s{^[Ee]nvelope-[Ff]rom:[ ]*(.+)$}{<<<<: Envelope-From: $1}m;
-		$_mail->{'body'} =~ s{^[Ee]rrors-[Tt]o:[ ]*(.+)([;].+)?$}{<<<<: Errors-To: $1}m;
-		$_mail->{'body'} =~ s{^[Ff]inal-[Rr]ecipient:[ ]*[Rr][Ff][Cc]822;[ ]*(.+)$}{<<<<: Final-Recipient: $1}m;
-		$_mail->{'body'} =~ s{^[Ff]rom:[ ]*(.+)$}{<<<<: From: $1}gm;
-		$_mail->{'body'} =~ s{^[Ff]orward-[Pp]ath:[ ]*(.+)$}{<<<<: Forward-Path: $1}m;
-		$_mail->{'body'} =~ s{^[Ll]ast-[Aa]ttempt-[Dd]ate:[ ]*(.+)$}{<<<<: Last-Attempt-Date: $1}m;
-		$_mail->{'body'} =~ s{^[Ll]ist-[Ii]d:[ ]*(.+)$}{<<<<: List-Id: $1}m;
-		$_mail->{'body'} =~ s{^[Oo]riginal-[Rr]ecipient:[ ]*[Rr][Ff][Cc]822;[ ]*(.+)$}{<<<<: Original-Recipient: $1}m;
-		$_mail->{'body'} =~ s{^[Rr]eply-[Tt]o:[ ]*(.+)$}{<<<<: Reply-To: $1}m;
-		$_mail->{'body'} =~ s{^[Rr]eturn-[Pp]ath:[ ]*(.+)$}{<<<<: Return-Path: $1}gm;
-		$_mail->{'body'} =~ s{^[Rr]everse-[Pp]ath:[ ]*(.+)$}{<<<<: Reverse-Path: $1}m;
-		$_mail->{'body'} =~ s{^[Ss]tatus:[ ]*(\d[.]\d[.]\d+).*$}{<<<<: Status: $1}gm;
-		$_mail->{'body'} =~ s{^[Tt]o:[ ]*(.+)$}{<<<<: To: $1}m;
-		$_mail->{'body'} =~ s{^[Xx]-[Aa]ctual-[Rr]ecipient:[ ]*[Rf][Ff][Cc]822;[ ]*(.+)$}{<<<<: X-Actual-Recipient: $1}m;
-		$_mail->{'body'} =~ s{^[Xx]-[Aa]ctual-[Rr]ecipient:[ ]*(.+)$}{<<<<: X-Actual-Recipient: $1}m;
-		$_mail->{'body'} =~ s{^[Xx]-[Pp]ostfix-[Ss]ender:[ ]*(.+)$}{<<<<: X-Postfix-Sender: $1}m;
-		$_mail->{'body'} =~ s{^[Xx]-[Ee]nvelope-[Ff]rom:[ ]*(.+)$}{<<<<: X-Envelope-From: $1}m;
-		$_mail->{'body'} =~ s{^[Xx]-SMTP-Agent:[ ]*(.+)$}{<<<<: X-SMTP-Agent: $1}m;
-		$_mail->{'body'} =~ s{^[Xx]-SMTP-Command:[ ]*(.+)$}{<<<<: X-SMTP-Command: $1}m;
-		$_mail->{'body'} =~ s{^[Xx]-SMTP-Diagnosis:[ ]*(.+)$}{<<<<: X-SMTP-Diagnosis: $1}m;
-		$_mail->{'body'} =~ s{^[Xx]-SMTP-Status:[ ]*(.+)$}{<<<<: X-SMTP-Status: $1}m;
-		$_mail->{'body'} =~ s{^[Xx]-SMTP-Recipient:[ ]*(.+)$}{<<<<: X-SMTP-Recipient: $1}m;
-		$_mail->{'body'} =~ s{^[Xx]-SMTP-Charset:[ ]*(.+)$}{<<<<: X-SMTP-Charset: $1}m;
+        # 4. Save entire message
+        $_mail->{'data'} = $_email if $save;
 
-		$_mail->{'body'} =~ s{^\w.+[\r\n]}{}gm;			# Delete non-required headers
-		$_mail->{'body'} =~ s{^<<<<:\s}{}gm;			# Delete the mark
+        # Parse message body
+        # Concatenate multiple-lined headers
+        next(PARSE_EMAILS) unless $_mail->{'body'};
+        $_mail->{'body'} =~ s{^[Ff]rom:[ ]*([^\n\r]+)[\n\r][ \t]+([^\n\r]+)}{From: $1 $2}gm;
+        $_mail->{'body'} =~ s{^[Tt]o:[ ]*([^\n\r]+)[\n\r][ \t]+([^\n\r]+)}{To: $1 $2}gm;
 
-		# Missing From: header in the body part, See Kanadzuchi/Mail/Bounced.pm line 139 - 164
-		unless( $_mail->{'body'} =~ m{
-				^(?:From|Return-Path|Reply-To|Errors-To|Reverse-Path
-					|X-Postfix-Sender|Envelope-From|X-Envelope-From
-					|Resent-From|Sender|Resent-Reply-To|Apparently-From):[ ]}mx ){
+        if( $_mail->{'body'} =~ m{^[Dd]iagnostic-[Cc]ode:[\s]*([^\n\r]+)[\n\r]([\s\t]+.+)}ms ) {
 
-			$_mail->{'body'} .= qq(\n) unless $_mail->{'body'} =~ m{\n\z}mx;
-			$_mail->{'body'} .= 'From: '.$_mail->{'head'}->{'to'}.qq(\n);
-		}
+            my $_d1 = 'Diagnostic-Code: '.$1;
+            my $_d2 = $2; $_d2 =~ y{\r}{\n};
 
-		# Missing Date: header in the body part, See Kanadzuchi/Mail/Bounced.pm line 245 - 253
-		unless( $_mail->{'body'} =~ m{
-				^(?:Arrival-Date|Last-Attempt-Date|Date
-					|Posted-Date|Posted|Resent-Date):[ ]}mx ){
+            foreach my $e ( split( qq(\n), $_d2 ) ) {
 
-			$_mail->{'body'} .= 'Date: '.$_mail->{'head'}->{'date'}.qq(\n);
-		}
+                last unless $e =~ m{\A[\s\t]+};
+                $_d1 .= ' '.$e;
+            }
 
-		push @{ $self->{'messages'} }, {
-				'data' => $_mail->{'data'},
-				'from' => $_mail->{'from'},
-				'head' => $_mail->{'head'},
-				'body' => $_mail->{'body'}, };
+            $_d1 =~ y{ }{}s;
+            $_mail->{'body'} =~ s{^[Dd]iagnostic-[Cc]ode:[\s]*[^\n\r]+[\n\r][\s\t]+[^\n\r]+}{$_d1}m;
+        }
 
-		$self->{'nmesgs'}++;
+        # Delete non-required headers
+        $_mail->{'body'} =~ y{\n}{\n}s;         # Delete blank lines
+        $_mail->{'body'} =~ s{^\W.+[\r\n]}{}mg; # Delete non-email headers
 
-	} # End of while(PARSE_EMAILS)
+        # Parse greedy
+        if( $self->{'greed'} ) {
+            # Addresser
+            $_mail->{'body'} =~ s{^[Aa]pparently-[Ff]rom:[ ]*(.+)$}{<<<<: Apparently-From: $1}m;
+            $_mail->{'body'} =~ s{^[Rr]esent-[Ff]rom:[ ]*(.+)$}{<<<<: Resent-From: $1}m;
+            $_mail->{'body'} =~ s{^[Rr]esent-[Rr]eply-[Tt]o:[ ]*(.+)$}{<<<<: Resent-Reply-To: $1}m;
+            $_mail->{'body'} =~ s{^[Rr]esent-[Ss]ender:[ ]*(.+)$}{<<<<: Resent-Sender: $1}m;
+            $_mail->{'body'} =~ s{^[Ss]ender:[ ]*(.+)$}{<<<<: Sender: $1}m;
 
-	$self->{'emails'} = [];
-	return $self->{'nmesgs'};
+            # Recipient
+            $_mail->{'body'} =~ s{^[Aa]pparently-[Tt]o:[ ]*(.+)$}{<<<<: Apparently-To: $1}m;
+            $_mail->{'body'} =~ s{^[Ee]nvelope-[Tt]o:[ ]*(.+)$}{<<<<: Envelope-To: $1}m;
+            $_mail->{'body'} =~ s{^[Rr]esent-[Tt]o:[ ]*(.+)$}{<<<<: Resent-To: $1}m;
+            $_mail->{'body'} =~ s{^[Xx]-[Ee]nvelope-[Tt]o:[ ]*(.+)$}{<<<<: X-Envelope-To: $1}m;
+
+            # Date
+            $_mail->{'body'} =~ s{^[Pp]osted:[ ]*(.+)$}{<<<<: Posted: $1}m;
+            $_mail->{'body'} =~ s{^[Pp]osted-[Dd]ate:[ ]*(.+)$}{<<<<: Posted-Date: $1}m;
+            $_mail->{'body'} =~ s{^[Rr]esent-[Dd]ate:[ ]*(.+)$}{<<<<: Resent-Date: $1}m;
+        }
+
+        # Mark required headers
+        $_mail->{'body'} =~ s{^[Aa]rrival-[Dd]ate:[ ]*(.+)$}{<<<<: Arrival-Date: $1}m;
+        $_mail->{'body'} =~ s{^[Dd]ate:[ ]*(.+)$}{<<<<: Date: $1}gm;
+        $_mail->{'body'} =~ s{^[Dd]elivered-[Tt]o:[ ]*(.+)$}{<<<<: Delivered-To: $1}m;
+        $_mail->{'body'} =~ s{^[Dd]iagnostic-[Cc]ode:[ ]*(.+)$}{<<<<: Diagnostic-Code: $1}m;
+        $_mail->{'body'} =~ s{^[Ee]nvelope-[Ff]rom:[ ]*(.+)$}{<<<<: Envelope-From: $1}m;
+        $_mail->{'body'} =~ s{^[Ee]rrors-[Tt]o:[ ]*(.+)([;].+)?$}{<<<<: Errors-To: $1}m;
+        $_mail->{'body'} =~ s{^[Ff]inal-[Rr]ecipient:[ ]*[Rr][Ff][Cc]822;[ ]*(.+)$}{<<<<: Final-Recipient: $1}m;
+        $_mail->{'body'} =~ s{^[Ff]rom:[ ]*(.+)$}{<<<<: From: $1}gm;
+        $_mail->{'body'} =~ s{^[Ff]orward-[Pp]ath:[ ]*(.+)$}{<<<<: Forward-Path: $1}m;
+        $_mail->{'body'} =~ s{^[Ll]ast-[Aa]ttempt-[Dd]ate:[ ]*(.+)$}{<<<<: Last-Attempt-Date: $1}m;
+        $_mail->{'body'} =~ s{^[Ll]ist-[Ii]d:[ ]*(.+)$}{<<<<: List-Id: $1}m;
+        $_mail->{'body'} =~ s{^[Oo]riginal-[Rr]ecipient:[ ]*[Rr][Ff][Cc]822;[ ]*(.+)$}{<<<<: Original-Recipient: $1}m;
+        $_mail->{'body'} =~ s{^[Rr]eply-[Tt]o:[ ]*(.+)$}{<<<<: Reply-To: $1}m;
+        $_mail->{'body'} =~ s{^[Rr]eturn-[Pp]ath:[ ]*(.+)$}{<<<<: Return-Path: $1}gm;
+        $_mail->{'body'} =~ s{^[Rr]everse-[Pp]ath:[ ]*(.+)$}{<<<<: Reverse-Path: $1}m;
+        $_mail->{'body'} =~ s{^[Ss]tatus:[ ]*(\d[.]\d[.]\d+).*$}{<<<<: Status: $1}gm;
+        $_mail->{'body'} =~ s{^[Tt]o:[ ]*(.+)$}{<<<<: To: $1}m;
+        $_mail->{'body'} =~ s{^[Xx]-[Aa]ctual-[Rr]ecipient:[ ]*[Rf][Ff][Cc]822;[ ]*(.+)$}{<<<<: X-Actual-Recipient: $1}m;
+        $_mail->{'body'} =~ s{^[Xx]-[Aa]ctual-[Rr]ecipient:[ ]*(.+)$}{<<<<: X-Actual-Recipient: $1}m;
+        $_mail->{'body'} =~ s{^[Xx]-[Pp]ostfix-[Ss]ender:[ ]*(.+)$}{<<<<: X-Postfix-Sender: $1}m;
+        $_mail->{'body'} =~ s{^[Xx]-[Ee]nvelope-[Ff]rom:[ ]*(.+)$}{<<<<: X-Envelope-From: $1}m;
+        $_mail->{'body'} =~ s{^[Xx]-SMTP-Agent:[ ]*(.+)$}{<<<<: X-SMTP-Agent: $1}m;
+        $_mail->{'body'} =~ s{^[Xx]-SMTP-Command:[ ]*(.+)$}{<<<<: X-SMTP-Command: $1}m;
+        $_mail->{'body'} =~ s{^[Xx]-SMTP-Diagnosis:[ ]*(.+)$}{<<<<: X-SMTP-Diagnosis: $1}m;
+        $_mail->{'body'} =~ s{^[Xx]-SMTP-Status:[ ]*(.+)$}{<<<<: X-SMTP-Status: $1}m;
+        $_mail->{'body'} =~ s{^[Xx]-SMTP-Recipient:[ ]*(.+)$}{<<<<: X-SMTP-Recipient: $1}m;
+        $_mail->{'body'} =~ s{^[Xx]-SMTP-Charset:[ ]*(.+)$}{<<<<: X-SMTP-Charset: $1}m;
+
+        $_mail->{'body'} =~ s{^\w.+[\r\n]}{}gm;         # Delete non-required headers
+        $_mail->{'body'} =~ s{^<<<<:\s}{}gm;            # Delete the mark
+
+        # Missing From: header in the body part, See Kanadzuchi/Mail/Bounced.pm line 139 - 164
+        unless( $_mail->{'body'} =~ m{
+                ^(?:From|Return-Path|Reply-To|Errors-To|Reverse-Path
+                    |X-Postfix-Sender|Envelope-From|X-Envelope-From
+                    |Resent-From|Sender|Resent-Reply-To|Apparently-From):[ ]}mx ){
+
+                $_mail->{'body'} .= qq(\n) unless $_mail->{'body'} =~ m{\n\z}mx;
+                $_mail->{'body'} .= 'From: '.$_mail->{'head'}->{'to'}.qq(\n);
+        }
+
+        # Missing Date: header in the body part, See Kanadzuchi/Mail/Bounced.pm line 245 - 253
+        unless( $_mail->{'body'} =~ m{
+                ^(?:Arrival-Date|Last-Attempt-Date|Date
+                    |Posted-Date|Posted|Resent-Date):[ ]}mx ){
+
+                $_mail->{'body'} .= 'Date: '.$_mail->{'head'}->{'date'}.qq(\n);
+        }
+
+        push @{ $self->{'messages'} }, {
+                'data' => $_mail->{'data'},
+                'from' => $_mail->{'from'},
+                'head' => $_mail->{'head'},
+                'body' => $_mail->{'body'}, };
+
+        $self->{'nmesgs'}++;
+
+    } # End of while(PARSE_EMAILS)
+
+    $self->{'emails'} = [];
+    return $self->{'nmesgs'};
 }
 
 1;

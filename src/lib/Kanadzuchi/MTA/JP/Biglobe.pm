@@ -1,4 +1,4 @@
-# $Id: Biglobe.pm,v 1.1.2.6 2011/10/07 06:23:15 ak Exp $
+# $Id: Biglobe.pm,v 1.1.2.7 2013/08/30 05:55:02 ak Exp $
 # Copyright (C) 2009-2011 Cubicroot Co. Ltd.
 # Kanadzuchi::MTA::JP::
                                                  
@@ -20,24 +20,24 @@ use base 'Kanadzuchi::MTA';
 # |/__\|/__\|/__\|/__\|/__\|/__\|/_______\|/__\|/__\|/__\|/__\|
 #
 my $RxBiglobe = {
-	'begin' => qr{\A   ----- The following addresses had delivery problems -----\z},
-	'error' => qr{\A   ----- Non-delivered information -----\z},
-	'endof' => qr{\AContent-Type: message/rfc822\z},
-	'from'  => [
-		'postmaster@biglobe.ne.jp',
-		'postmaster@inacatv.ne.jp',
-		'postmaster@tmtv.ne.jp',
-		'postmaster@ttv.ne.jp',
-	],
+    'begin' => qr/\A   ----- The following addresses had delivery problems -----\z/,
+    'error' => qr/\A   ----- Non-delivered information -----\z/,
+    'endof' => qr|\AContent-Type: message/rfc822\z|,
+    'from'  => [
+        'postmaster@biglobe.ne.jp',
+        'postmaster@inacatv.ne.jp',
+        'postmaster@tmtv.ne.jp',
+        'postmaster@ttv.ne.jp',
+    ],
 };
 
 my $RxErrors = {
-	'filtered' => [
-		qr{Mail Delivery Failed[.][.][.] User unknown},
-	],
-	'mailboxfull' => [
-		qr{The number of messages in recipient's mailbox exceeded the local limit[.]},
-	],
+    'filtered' => [
+        qr/Mail Delivery Failed[.][.][.] User unknown/,
+    ],
+    'mailboxfull' => [
+        qr/The number of messages in recipient's mailbox exceeded the local limit[.]/,
+    ],
 };
 
 #  ____ ____ ____ ____ ____ _________ ____ ____ ____ ____ ____ ____ ____ 
@@ -45,110 +45,104 @@ my $RxErrors = {
 # ||__|||__|||__|||__|||__|||_______|||__|||__|||__|||__|||__|||__|||__||
 # |/__\|/__\|/__\|/__\|/__\|/_______\|/__\|/__\|/__\|/__\|/__\|/__\|/__\|
 #
-sub version { '0.1.5' };
+sub version { '0.1.6' };
 sub description { 'NEC Biglobe' };
 sub xsmtpagent { 'X-SMTP-Agent: JP::Biglobe'.qq(\n); }
-sub emailheaders
-{
-	# +-+-+-+-+-+-+-+-+-+-+-+-+
-	# |e|m|a|i|l|h|e|a|d|e|r|s|
-	# +-+-+-+-+-+-+-+-+-+-+-+-+
-	#
-	# @Description	Required email headers
-	# @Param 	<None>
-	# @Return	(Ref->Array) Header names
-	my $class = shift();
-	return [ '' ];
+sub emailheaders {
+    # +-+-+-+-+-+-+-+-+-+-+-+-+
+    # |e|m|a|i|l|h|e|a|d|e|r|s|
+    # +-+-+-+-+-+-+-+-+-+-+-+-+
+    #
+    # @Description  Required email headers
+    # @Param        <None>
+    # @Return       (Ref->Array) Header names
+    my $class = shift;
+    return [ '' ];
 }
 
-sub reperit
-{
-	# +-+-+-+-+-+-+-+
-	# |r|e|p|e|r|i|t|
-	# +-+-+-+-+-+-+-+
-	#
-	# @Description	Detect an error of Biglobe(NEC)
-	# @Param <ref>	(Ref->Hash) Message header
-	# @Param <ref>	(Ref->String) Message body
-	# @Return	(String) Pseudo header content
-	my $class = shift();
-	my $mhead = shift() || return q();
-	my $mbody = shift() || return q();
+sub reperit {
+    # +-+-+-+-+-+-+-+
+    # |r|e|p|e|r|i|t|
+    # +-+-+-+-+-+-+-+
+    #
+    # @Description  Detect an error of Biglobe(NEC)
+    # @Param <ref>  (Ref->Hash) Message header
+    # @Param <ref>  (Ref->String) Message body
+    # @Return       (String) Pseudo header content
+    my $class = shift;
+    my $mhead = shift || return q();
+    my $mbody = shift || return q();
 
-	return q() unless( grep { $mhead->{'from'} eq $_ } @{ $RxBiglobe->{'from'} } );
-	return q() unless( $mhead->{'subject'} =~ m{\AReturned mail:} );
+    return q() unless( grep { $mhead->{'from'} eq $_ } @{ $RxBiglobe->{'from'} } );
+    return q() unless( $mhead->{'subject'} =~ m{\AReturned mail:} );
 
-	my $phead = q();
-	my $pstat = q();
-	my $xsmtp = q();
-	my $causa = q();	# (String) Error reason
-	my $endof = 0;		# (Integer) The line matched 'endof' regexp.
+    my $phead = q();
+    my $pstat = q();
+    my $xsmtp = q();
+    my $causa = q();    # (String) Error reason
+    my $endof = 0;      # (Integer) The line matched 'endof' regexp.
 
-	my $rcptintxt = q();	# (String) #n.n.n
-	my $rhostsaid = q();	# (String) Diagnostic-Code:
+    my $rcptintxt = q();    # (String) #n.n.n
+    my $rhostsaid = q();    # (String) Diagnostic-Code:
 
-	EACH_LINE: foreach my $el ( split( qq{\n}, $$mbody ) )
-	{
-		$endof = 1 if( $endof == 0 && $el =~ $RxBiglobe->{'endof'} );
-		next() if( $endof || $el =~ m{\A\z} );
+    EACH_LINE: foreach my $el ( split( qq{\n}, $$mbody ) ) {
 
-		if( ($el =~ $RxBiglobe->{'begin'}) .. ($el =~ $RxBiglobe->{'endof'}) )
-		{
-			# This is a MIME-encapsulated message.
-			#
-			# ----_Biglobe000000/00000.biglobe.ne.jp
-			# Content-Type: text/plain; charset="iso-2022-jp"
-			#
-			#    ----- The following addresses had delivery problems -----
-			# ********@***.biglobe.ne.jp
-			#
-			#    ----- Non-delivered information -----
-			# The number of messages in recipient's mailbox exceeded the local limit.
-			#
-			# ----_Biglobe000000/00000.biglobe.ne.jp
-			# Content-Type: message/rfc822
+        $endof = 1 if( $endof == 0 && $el =~ $RxBiglobe->{'endof'} );
+        next if( $endof || $el =~ m{\A\z} );
 
-			if( ! $rcptintxt && $el =~ m{\A.+[@].+\z} )
-			{
-				$rcptintxt = $el;
-				next();
-			}
+        if( ($el =~ $RxBiglobe->{'begin'}) .. ($el =~ $RxBiglobe->{'endof'}) ) {
+            # This is a MIME-encapsulated message.
+            #
+            # ----_Biglobe000000/00000.biglobe.ne.jp
+            # Content-Type: text/plain; charset="iso-2022-jp"
+            #
+            #    ----- The following addresses had delivery problems -----
+            # ********@***.biglobe.ne.jp
+            #
+            #    ----- Non-delivered information -----
+            # The number of messages in recipient's mailbox exceeded the local limit.
+            #
+            # ----_Biglobe000000/00000.biglobe.ne.jp
+            # Content-Type: message/rfc822
 
-			if( $el =~ $RxBiglobe->{'error'} )
-			{
-				$rhostsaid = $el;
-				next();
-			}
-			elsif( length $rhostsaid )
-			{
-				$rhostsaid = $el;
-				$endof = 1;
-				next();
-			}
-		}
-	}
+            if( ! $rcptintxt && $el =~ m{\A.+[@].+\z} ) {
+                $rcptintxt = $el;
+                next;
+            }
 
-	return q() unless $rcptintxt;
-	return q() unless $rhostsaid;
-	$rhostsaid =~ y{ }{ }s;
-	$rhostsaid =~ s{--\d+[.]\d+/\w.+\z}{};
+            if( $el =~ $RxBiglobe->{'error'} ) {
+                $rhostsaid = $el;
+                next;
 
-	foreach my $er ( keys %$RxErrors )
-	{
-		if( grep { $rhostsaid =~ $_ } @{ $RxErrors->{ $er } } )
-		{
-			$causa = $er;
-			$pstat  = Kanadzuchi::RFC3463->status($er,'p','i');
-			last();
-		}
-	}
+            } elsif( length $rhostsaid ) {
+                $rhostsaid = $el;
+                $endof = 1;
+                next;
+            }
+        }
+    }
 
-	$pstat ||= Kanadzuchi::RFC3463->status('undefined','p','i');
-	$phead  .= __PACKAGE__->xsmtpstatus($pstat);
-	$phead  .= __PACKAGE__->xsmtpdiagnosis($rhostsaid);
-	$phead  .= __PACKAGE__->xsmtpcommand($xsmtp);
-	$phead  .= __PACKAGE__->xsmtpagent();
-	return( $phead );
+    return q() unless $rcptintxt;
+    return q() unless $rhostsaid;
+
+    $rhostsaid =~ y{ }{ }s;
+    $rhostsaid =~ s{--\d+[.]\d+/\w.+\z}{};
+
+    foreach my $er ( keys %$RxErrors ) {
+
+        if( grep { $rhostsaid =~ $_ } @{ $RxErrors->{ $er } } ) {
+            $causa = $er;
+            $pstat  = Kanadzuchi::RFC3463->status( $er, 'p', 'i' );
+            last;
+        }
+    }
+
+    $pstat ||= Kanadzuchi::RFC3463->status( 'undefined', 'p', 'i' );
+    $phead  .= __PACKAGE__->xsmtpstatus( $pstat );
+    $phead  .= __PACKAGE__->xsmtpdiagnosis( $rhostsaid );
+    $phead  .= __PACKAGE__->xsmtpcommand( $xsmtp );
+    $phead  .= __PACKAGE__->xsmtpagent;
+    return $phead;
 }
 
 1;

@@ -1,4 +1,4 @@
-# $Id: Exim.pm,v 1.6.2.7 2013/06/20 11:38:11 ak Exp $
+# $Id: Exim.pm,v 1.6.2.8 2013/08/30 05:55:02 ak Exp $
 # Copyright (C) 2009-2013 Cubicroot Co. Ltd.
 # Kanadzuchi::MTA::
                               
@@ -44,51 +44,51 @@ use warnings;
 # deliver.c:6426|"------ This is a copy of the message's headers. ------\n");
 #
 my $RxEximMTA = {
-	'from' => qr/\AMail Delivery System/,
-	'begin' => qr/\AThis message was created automatically by mail delivery software[.]\z/,
-	'endof' => qr/\A------ This is a copy of the message.+headers[.] ------\z/,
-	'subject' => qr/Mail delivery failed(:?: returning message to sender)?/,
-	'message-id' => qr/\A[<]\w+[-]\w+[-]\w+[@].+\z/,
-	# Message-Id: <E1P1YNN-0003AD-Ga@example.org>
+    'from' => qr/\AMail Delivery System/,
+    'begin' => qr/\AThis message was created automatically by mail delivery software[.]\z/,
+    'endof' => qr/\A------ This is a copy of the message.+headers[.] ------\z/,
+    'subject' => qr/Mail delivery failed(:?: returning message to sender)?/,
+    'message-id' => qr/\A[<]\w+[-]\w+[-]\w+[@].+\z/,
+    # Message-Id: <E1P1YNN-0003AD-Ga@example.org>
 };
 
 my $RxBounced = {
-	'mail' => qr/\AA message that you sent could not be delivered to (?:one or more|all) of its/,
-	'rcpt' => qr/\Acould not be delivered to one or more of its recipients[.] The following/,
+    'mail' => qr/\AA message that you sent could not be delivered to (?:one or more|all) of its/,
+    'rcpt' => qr/\Acould not be delivered to one or more of its recipients[.] The following/,
 };
 
 # src/transports/smtp.c
 my $RxSMTPErr = {
-	'mail' => qr/SMTP error from remote (?:mail server|mailer) after MAIL FROM:/,
-	'rcpt' => qr/SMTP error from remote (?:mail server|mailer) after RCPT TO:/,
-	'data' => qr/SMTP error from remote (?:mail server|mailer) after (?:DATA|end of data):/,
+    'mail' => qr/SMTP error from remote (?:mail server|mailer) after MAIL FROM:/,
+    'rcpt' => qr/SMTP error from remote (?:mail server|mailer) after RCPT TO:/,
+    'data' => qr/SMTP error from remote (?:mail server|mailer) after (?:DATA|end of data):/,
 };
 
 # find exim/ -type f -exec grep 'message = US' {} /dev/null \;
 my $RxTrError = {
-	'userunknown' => [
-		qr/user not found/,
-	],
-	'hostunknown' => [
-		qr/all relevant MX records point to non-existent hosts/i,
-		qr/Unrouteable address/i,
-		qr/all host address lookups failed permanently/i,
-	],
-	'mailboxfull' => [
-		qr/mailbox is full:?/i,
-		qr/error: quota exceed/i,
-	],
-	'notaccept' => [
-		qr/an MX or SRV record indicated no SMTP service/i,
-		qr/no host found for existing SMTP connection/i,
-	],
-	'systemerror' => [
-		qr/delivery to (?:file|pipe) forbidden/i,
-		qr/local delivery failed/i,
-	],
-	'contenterr' => [
-		qr/Too many ["]Received["] headers /i,
-	],
+    'userunknown' => [
+        qr/user not found/,
+    ],
+    'hostunknown' => [
+        qr/all relevant MX records point to non-existent hosts/i,
+        qr/Unrouteable address/i,
+        qr/all host address lookups failed permanently/i,
+    ],
+    'mailboxfull' => [
+        qr/mailbox is full:?/i,
+        qr/error: quota exceed/i,
+    ],
+    'notaccept' => [
+        qr/an MX or SRV record indicated no SMTP service/i,
+        qr/no host found for existing SMTP connection/i,
+    ],
+    'systemerror' => [
+        qr/delivery to (?:file|pipe) forbidden/i,
+        qr/local delivery failed/i,
+    ],
+    'contenterr' => [
+        qr/Too many ["]Received["] headers /i,
+    ],
 };
 
 #  ____ ____ ____ ____ ____ _________ ____ ____ ____ ____ ____ ____ ____ 
@@ -96,140 +96,130 @@ my $RxTrError = {
 # ||__|||__|||__|||__|||__|||_______|||__|||__|||__|||__|||__|||__|||__||
 # |/__\|/__\|/__\|/__\|/__\|/_______\|/__\|/__\|/__\|/__\|/__\|/__\|/__\|
 #
-sub version { '2.1.7' };
+sub version { '2.1.8' };
 sub description { 'Exim' };
 sub xsmtpagent { 'X-SMTP-Agent: Exim'.qq(\n); }
-sub emailheaders
-{
-	# +-+-+-+-+-+-+-+-+-+-+-+-+
-	# |e|m|a|i|l|h|e|a|d|e|r|s|
-	# +-+-+-+-+-+-+-+-+-+-+-+-+
-	#
-	# @Description	Required email headers
-	# @Param 	<None>
-	# @Return	(Ref->Array) Header names
-	my $class = shift;
-	return [ 'X-Failed-Recipients' ];
+sub emailheaders {
+    # +-+-+-+-+-+-+-+-+-+-+-+-+
+    # |e|m|a|i|l|h|e|a|d|e|r|s|
+    # +-+-+-+-+-+-+-+-+-+-+-+-+
+    #
+    # @Description  Required email headers
+    # @Param        <None>
+    # @Return       (Ref->Array) Header names
+    my $class = shift;
+    return [ 'X-Failed-Recipients' ];
 }
 
-sub reperit
-{
-	# +-+-+-+-+-+-+-+
-	# |r|e|p|e|r|i|t|
-	# +-+-+-+-+-+-+-+
-	#
-	# @Description	Detect an error from Exim
-	# @Param <ref>	(Ref->Hash) Message header
-	# @Param <ref>	(Ref->String) Message body
-	# @Return	(String) Pseudo header content
-	my $class = shift;
-	my $mhead = shift || return q();
-	my $mbody = shift || return q();
+sub reperit {
+    # +-+-+-+-+-+-+-+
+    # |r|e|p|e|r|i|t|
+    # +-+-+-+-+-+-+-+
+    #
+    # @Description  Detect an error from Exim
+    # @Param <ref>  (Ref->Hash) Message header
+    # @Param <ref>  (Ref->String) Message body
+    # @Return       (String) Pseudo header content
+    my $class = shift;
+    my $mhead = shift || return q();
+    my $mbody = shift || return q();
 
-	return q() unless defined $mhead->{'x-failed-recipients'};
-	return q() unless $mhead->{'subject'} =~ $RxEximMTA->{'subject'};
-	return q() unless $mhead->{'from'} =~ $RxEximMTA->{'from'};
-	# return q() unless( $mhead->{'message-id'} =~ $RxEximMTA->{'message-id'} );
+    return q() unless defined $mhead->{'x-failed-recipients'};
+    return q() unless $mhead->{'subject'} =~ $RxEximMTA->{'subject'};
+    return q() unless $mhead->{'from'} =~ $RxEximMTA->{'from'};
+    # return q() unless( $mhead->{'message-id'} =~ $RxEximMTA->{'message-id'} );
 
-	my $pstat = q();	# (String) Stauts code
-	my $phead = q();	# (String) Pseudo email header
-	my $xsmtp = q();	# (String) SMTP Command in transcript of session
-	my $causa = q();	# (String) Error reason
-	my $frcpt = $mhead->{'x-failed-recipients'};
-	my $ucode = Kanadzuchi::RFC3463->status('undefined','p','i');
-	my $endof = 0;		# (Integer) The line matched 'endof' regexp.
+    my $pstat = q();    # (String) Stauts code
+    my $phead = q();    # (String) Pseudo email header
+    my $xsmtp = q();    # (String) SMTP Command in transcript of session
+    my $causa = q();    # (String) Error reason
+    my $frcpt = $mhead->{'x-failed-recipients'};
+    my $ucode = Kanadzuchi::RFC3463->status('undefined','p','i');
+    my $endof = 0;      # (Integer) The line matched 'endof' regexp.
 
-	my $statintxt = q();	# (String) #n.n.n
-	my $rhostsaid = q();	# (String) Diagnostic-Code:
-	my $esmtpcomm = {};	# (Ref->Hash) SMTP Command names
+    my $statintxt = q();    # (String) #n.n.n
+    my $rhostsaid = q();    # (String) Diagnostic-Code:
+    my $esmtpcomm = {};     # (Ref->Hash) SMTP Command names
 
-	EACH_LINE: foreach my $el ( split( qq{\n}, $$mbody ) )
-	{
-		$endof = 1 if( $endof == 0 && $el =~ $RxEximMTA->{'endof'} );
-		next if( $endof || $el =~ m{\A\z} );
+    EACH_LINE: foreach my $el ( split( qq{\n}, $$mbody ) ) {
 
-		if( ($el =~ $RxEximMTA->{'begin'}) .. ($el =~ $RxEximMTA->{'endof'}) )
-		{
-			# This message was created automatically by mail delivery software.
-			#
-			if( $el =~ $RxBounced->{'mail'} || $el =~ $RxBounced->{'rcpt'} )
-			{
-				# A message that you sent could not be delivered to one or more of its
-				# recipients. This is a permanent error. The following address(es) failed:
-				#  -- OR --
-				# could not be delivered to one or more of its recipients. The following
-				# address(es) failed: ***@****.**
-				$rhostsaid = $el;
-				next;
-			}
+        $endof = 1 if( $endof == 0 && $el =~ $RxEximMTA->{'endof'} );
+        next if( $endof || $el =~ m{\A\z} );
 
-			$rhostsaid .= ' '.$el if $rhostsaid;
-		}
-	}
+        if( ($el =~ $RxEximMTA->{'begin'}) .. ($el =~ $RxEximMTA->{'endof'}) ) {
+            # This message was created automatically by mail delivery software.
+            #
+            if( $el =~ $RxBounced->{'mail'} || $el =~ $RxBounced->{'rcpt'} ) {
+                # A message that you sent could not be delivered to one or more of its
+                # recipients. This is a permanent error. The following address(es) failed:
+                #  -- OR --
+                # could not be delivered to one or more of its recipients. The following
+                # address(es) failed: ***@****.**
+                $rhostsaid = $el;
+                next;
+            }
 
-	return q() unless $rhostsaid;
-	$rhostsaid =~ s{\A }{}g;
-	$rhostsaid =~ s{ \z}{}g;
-	$rhostsaid =~ y{ }{ }s;
-	$rhostsaid =~ s{\A.+address[(]es[)] failed: }{};
+            $rhostsaid .= ' '.$el if $rhostsaid;
+        }
+    }
 
-	# SMTP Error
-	foreach my $s ( keys %$RxSMTPErr )
-	{
-		next unless $rhostsaid =~ $RxSMTPErr->{ $s };
-		$xsmtp = uc $s;
-		last;
-	}
+    return q() unless $rhostsaid;
+    $rhostsaid =~ s{\A }{}g;
+    $rhostsaid =~ s{ \z}{}g;
+    $rhostsaid =~ y{ }{ }s;
+    $rhostsaid =~ s{\A.+address[(]es[)] failed: }{};
 
-	# Transport Error
-	foreach my $t ( keys %$RxTrError )
-	{
-		next unless grep { $rhostsaid =~ $_ } @{ $RxTrError->{ $t } };
-		$causa = $t;
-		last;
-	}
+    # SMTP Error
+    foreach my $s ( keys %$RxSMTPErr ) {
 
-	if( $rhostsaid =~ m{\b([45][.][0-9][.][0-9]+)\b} )
-	{
-		$pstat = $1;
-	}
-	elsif( $causa )
-	{
-		$pstat = Kanadzuchi::RFC3463->status( $causa, 'p', 'i' );
-	}
-	else
-	{
-		$pstat = $ucode if $rhostsaid;
-	}
+        next unless $rhostsaid =~ $RxSMTPErr->{ $s };
+        $xsmtp = uc $s;
+        last;
+    }
 
-	if( ! $xsmtp || $xsmtp eq 'CONN' )
-	{
-		$esmtpcomm = __PACKAGE__->SMTPCOMMAND();
-		foreach my $cmd ( keys %$esmtpcomm )
-		{
-			next unless $rhostsaid =~ $esmtpcomm->{ $cmd };
-			$xsmtp = uc $cmd;
-			last;
-		}
+    # Transport Error
+    foreach my $t ( keys %$RxTrError ) {
+        next unless grep { $rhostsaid =~ $_ } @{ $RxTrError->{ $t } };
+        $causa = $t;
+        last;
+    }
 
-		unless( $xsmtp )
-		{
-			# Destination domain is included in From: Address
-			#  From: Mail Delivery System <postmaster@mta11.example.jp>
-			#  X-Failed-Recipients: hoge@example.jp
-			(my $_dest = $frcpt) =~ s{\A.+[@]}{};
+    if( $rhostsaid =~ m/\b([45][.][0-9][.][0-9]+)\b/ ) {
+        $pstat = $1;
 
-			$xsmtp = 'DATA' if $mhead->{'from'} =~ $_dest;
-		}
-	}
+    } elsif( $causa ) {
+        $pstat = Kanadzuchi::RFC3463->status( $causa, 'p', 'i' );
 
-	$phead .= __PACKAGE__->xsmtprecipient( $frcpt );
-	$phead .= __PACKAGE__->xsmtpdiagnosis( $rhostsaid );
-	$phead .= __PACKAGE__->xsmtpcommand( $xsmtp );
-	$phead .= __PACKAGE__->xsmtpstatus( $pstat );
-	$phead .= __PACKAGE__->xsmtpagent();
+    } else {
+        $pstat = $ucode if $rhostsaid;
+    }
 
-	return $phead;
+    if( ! $xsmtp || $xsmtp eq 'CONN' ) {
+
+        $esmtpcomm = __PACKAGE__->SMTPCOMMAND;
+        foreach my $cmd ( keys %$esmtpcomm ) {
+            next unless $rhostsaid =~ $esmtpcomm->{ $cmd };
+            $xsmtp = uc $cmd;
+            last;
+        }
+
+        if( not $xsmtp ) {
+            # Destination domain is included in From: Address
+            #  From: Mail Delivery System <postmaster@mta11.example.jp>
+            #  X-Failed-Recipients: hoge@example.jp
+            (my $_dest = $frcpt) =~ s{\A.+[@]}{};
+
+            $xsmtp = 'DATA' if $mhead->{'from'} =~ $_dest;
+        }
+    }
+
+    $phead .= __PACKAGE__->xsmtprecipient( $frcpt );
+    $phead .= __PACKAGE__->xsmtpdiagnosis( $rhostsaid );
+    $phead .= __PACKAGE__->xsmtpcommand( $xsmtp );
+    $phead .= __PACKAGE__->xsmtpstatus( $pstat );
+    $phead .= __PACKAGE__->xsmtpagent;
+
+    return $phead;
 }
 
 1;

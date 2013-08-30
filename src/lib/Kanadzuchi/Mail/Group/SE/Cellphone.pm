@@ -1,4 +1,4 @@
-# $Id: Cellphone.pm,v 1.1.2.2 2013/04/15 04:20:53 ak Exp $
+# $Id: Cellphone.pm,v 1.1.2.3 2013/08/30 08:51:14 ak Exp $
 # Copyright (C) 2009-2010,2013 Cubicroot Co. Ltd.
 # Kanadzuchi::Mail::Group::SE::
                                                             
@@ -22,24 +22,15 @@ use warnings;
 # Cellular phone domains in Kingdom of Sweden/Konungariket Sverige
 # See http://en.wikipedia.org/wiki/List_of_SMS_gateways
 sub communisexemplar { return qr{[.]se\z}; }
-sub nominisexemplaria
-{
-	# *** NOT TESTED YET ***
-	my $self = shift;
-	return {
-		'tele2' => [
-			# TELE2; http://www.tele2.se/
-			qr{\Asms[.]tele2[.]se\z},
-		],
-	};
-}
-
-sub classisnomina
-{
-	my $class = shift;
-	return {
-		'tele2'		=> 'Generic',
-	};
+sub nominisexemplaria {
+    # *** NOT TESTED YET ***
+    my $self = shift;
+    return {
+        'tele2' => [
+            # TELE2; http://www.tele2.se/
+            qr{\Asms[.]tele2[.]se\z},
+        ],
+    };
 }
 
 1;

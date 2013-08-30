@@ -1,4 +1,4 @@
-# $Id: Smartphone.pm,v 1.1.2.3 2013/04/15 04:20:53 ak Exp $
+# $Id: Smartphone.pm,v 1.1.2.4 2013/08/30 08:51:14 ak Exp $
 # Copyright (C) 2011,2013 Cubicroot Co. Ltd.
 # Kanadzuchi::Mail::Group::IL::
                                                                         
@@ -21,29 +21,19 @@ use warnings;
 #
 # Major company's smaprtphone domains in Israel
 sub communisexemplar { return qr{[.]com\z}; }
-sub nominisexemplaria
-{
-	my $class = shift;
-	return {
-		# Orange: see ../Smartphone.pm
-		'cellcom' => [
-			# סלקום - דף הבית ; http://www.cellcom.co.il/
-			qr{\Acellcom[.]blackberry[.]com\z},
-		],
-		'pelephone' => [
-			# Pelephone; http://www.pelephone.co.il/
-			qr{\Apelephone[.]blackberry[.]com\z},
-		],
-	};
-}
-
-sub classisnomina
-{
-	my $class = shift;
-	return {
-		'cellcom'	=> 'Generic',
-		'pelephone'	=> 'Generic',
-	};
+sub nominisexemplaria {
+    my $class = shift;
+    return {
+        # Orange: see ../Smartphone.pm
+        'cellcom' => [
+            # סלקום - דף הבית ; http://www.cellcom.co.il/
+            qr{\Acellcom[.]blackberry[.]com\z},
+        ],
+        'pelephone' => [
+            # Pelephone; http://www.pelephone.co.il/
+            qr{\Apelephone[.]blackberry[.]com\z},
+        ],
+    };
 }
 
 1;

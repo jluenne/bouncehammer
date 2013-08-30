@@ -1,4 +1,4 @@
-# $Id: Cellphone.pm,v 1.1.2.1 2013/04/18 10:56:28 ak Exp $
+# $Id: Cellphone.pm,v 1.1.2.2 2013/08/30 08:51:14 ak Exp $
 # Copyright (C) 2013 Cubicroot Co. Ltd.
 # Kanadzuchi::Mail::Group::PA::
                                                             
@@ -21,23 +21,14 @@ use warnings;
 #
 # Cellular phone domains in Panama
 # sub communisexemplar { return qr{[.]pa\z}; }
-sub nominisexemplaria
-{
-	my $self = shift;
-	return {
-		'cwmovil' => [
-			# Cable & Wireless Panama; http://www.cwmovil.com/
-			qr{\Acwmovil[.]com\z},
-		],
-	};
-}
-
-sub classisnomina
-{
-	my $class = shift;
-	return {
-		'cwmovil'	=> 'Generic',
-	};
+sub nominisexemplaria {
+    my $self = shift;
+    return {
+        'cwmovil' => [
+            # Cable & Wireless Panama; http://www.cwmovil.com/
+            qr{\Acwmovil[.]com\z},
+        ],
+    };
 }
 
 1;

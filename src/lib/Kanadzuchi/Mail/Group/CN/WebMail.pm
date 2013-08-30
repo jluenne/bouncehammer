@@ -1,4 +1,4 @@
-# $Id: WebMail.pm,v 1.3.2.1 2013/04/15 04:20:53 ak Exp $
+# $Id: WebMail.pm,v 1.3.2.2 2013/08/30 08:51:14 ak Exp $
 # Copyright (C) 2010,2013 Cubicroot Co. Ltd.
 # Kanadzuchi::Mail::Group::CN::
                                                    
@@ -19,25 +19,16 @@ use warnings;
 # |/__\|/__\|/__\|/__\|/__\|/_______\|/__\|/__\|/__\|/__\|/__\|/__\|/__\|
 #
 # Major company's Webmail domains in China
-sub nominisexemplaria
-{
-	my $class = shift;
-	return {
-		# NetEase http://www.163.com/
-		'netease' => [
-			qr{\A(?:163|126|188)[.]com\z},
-			qr{\Avip[.]163[.]com\z},
-			qr{\Ayeah[.]net\z},
-		],
-	};
-}
-
-sub classisnomina
-{
-	my $class = shift;
-	return {
-		'netease'	=> 'Generic',
-	};
+sub nominisexemplaria {
+    my $class = shift;
+    return {
+        # NetEase http://www.163.com/
+        'netease' => [
+            qr{\A(?:163|126|188)[.]com\z},
+            qr{\Avip[.]163[.]com\z},
+            qr{\Ayeah[.]net\z},
+        ],
+    };
 }
 
 1;

@@ -1,4 +1,4 @@
-# $Id: WebMail.pm,v 1.4.2.2 2013/04/15 04:20:53 ak Exp $
+# $Id: WebMail.pm,v 1.4.2.3 2013/08/30 08:51:14 ak Exp $
 # Copyright (C) 2010,2013 Cubicroot Co. Ltd.
 # Kanadzuchi::Mail::Group::CA::
                                                    
@@ -19,31 +19,21 @@ use warnings;
 # |/__\|/__\|/__\|/__\|/__\|/_______\|/__\|/__\|/__\|/__\|/__\|/__\|/__\|
 #
 # Major company's Webmail domains in Canada
-sub nominisexemplaria
-{
-	my $class = shift;
-	return {
-		'hush' => [
-			# Hushmail http://www.hushmail.com/
-			qr{\Ahushmail[.](?:com|me)\z},
-			qr{\Ahush[.](?:com|ai)\z},
-			qr{\Amac[.]hush[.]com\z},
-		],
-		'zworg' => [
-			# Zworg.com; https://zworg.com/
-			qr{\Azworg[.]com\z},
-			qr{\A(?:irk|mailcanada)[.]ca\z},
-		],
-	};
-}
-
-sub classisnomina
-{
-	my $class = shift;
-	return {
-		'hush'		=> 'Generic',
-		'zworg'		=> 'Generic',
-	};
+sub nominisexemplaria {
+    my $class = shift;
+    return {
+        'hush' => [
+            # Hushmail http://www.hushmail.com/
+            qr{\Ahushmail[.](?:com|me)\z},
+            qr{\Ahush[.](?:com|ai)\z},
+            qr{\Amac[.]hush[.]com\z},
+        ],
+        'zworg' => [
+            # Zworg.com; https://zworg.com/
+            qr{\Azworg[.]com\z},
+            qr{\A(?:irk|mailcanada)[.]ca\z},
+        ],
+    };
 }
 
 1;

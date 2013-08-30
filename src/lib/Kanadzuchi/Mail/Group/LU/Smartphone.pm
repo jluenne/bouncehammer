@@ -1,4 +1,4 @@
-# $Id: Smartphone.pm,v 1.1.2.4 2013/04/15 04:20:53 ak Exp $
+# $Id: Smartphone.pm,v 1.1.2.5 2013/08/30 08:51:14 ak Exp $
 # -Id: SmartPhone.pm,v 1.1 2009/08/29 07:33:22 ak Exp -
 # Copyright (C) 2011,2013 Cubicroot Co. Ltd.
 # Kanadzuchi::Mail::Group::LU::
@@ -23,34 +23,23 @@ use warnings;
 # Major company's smaprtphone domains in Grand Duchy of Luxembourg 
 # See http://www.thegremlinhunt.com/2010/01/07/list-of-blackberry-internet-service-e-mail-login-sites/
 # sub communisexemplar { return qr{[.]lu\z}; }
-sub nominisexemplaria
-{
-	my $class = shift;
-	return {
-		'luxgsm' => [
-			# LuxGSM; http://www.luxgsm.lu/ 
-			qr{\Amobileemail[.]luxgsm[.]lu\z},
-		],
-		'orange' => [
-			# Orange Luxembourg; http://orange.lu/
-			# And see ../Smartphone.pm
-			qr{\Avoxmobile[.]blackberry[.]com\z},
-		],
-		'tango' => [
-			# Tango; http://www.tango.lu/
-			qr{\Atango[.]blackberry[.]com\z},
-		],
-	};
-}
-
-sub classisnomina
-{
-	my $class = shift;
-	return {
-		'luxgsm'	=> 'Generic',
-		'orange'	=> 'Generic',
-		'tango'		=> 'Generic',
-	};
+sub nominisexemplaria {
+    my $class = shift;
+    return {
+        'luxgsm' => [
+            # LuxGSM; http://www.luxgsm.lu/ 
+            qr{\Amobileemail[.]luxgsm[.]lu\z},
+        ],
+        'orange' => [
+            # Orange Luxembourg; http://orange.lu/
+            # And see ../Smartphone.pm
+            qr{\Avoxmobile[.]blackberry[.]com\z},
+        ],
+        'tango' => [
+            # Tango; http://www.tango.lu/
+            qr{\Atango[.]blackberry[.]com\z},
+        ],
+    };
 }
 
 1;

@@ -1,4 +1,4 @@
-# $Id: Cellphone.pm,v 1.1.2.3 2013/04/18 10:56:28 ak Exp $
+# $Id: Cellphone.pm,v 1.1.2.4 2013/08/30 08:51:14 ak Exp $
 # Copyright (C) 2009,2010,2013 Cubicroot Co. Ltd.
 # Kanadzuchi::Mail::Group::CA::
                                                             
@@ -22,80 +22,61 @@ use warnings;
 # Cellular phone domains in Canada
 # See http://en.wikipedia.org/wiki/List_of_SMS_gateways
 # sub communisexemplar { return qr{[.]ca\z}; }
-sub nominisexemplaria
-{
-	# *** NOT TESTED YET ***
-	my $self = shift;
-	return {
-		'aliant' => [
-			# Bell Aliant; http://bell.aliant.ca/
-			qr{\Awirefree[.]informe[.]ca\z},
-			qr{\Asms[.]wirefree[.]informe[.]ca\z},
-		],
-		'bell' => [
-			# Bell Canada; http://www.bell.ca/
-			qr{\Atxt[.]bell(?:mobility)?.ca\z},
-			qr{\Abellmobility[.]ca\z}
-		],
-		'fido' => [
-			# Fido Solutions; http://www.fido.ca/
-			qr{\Afido[.]ca\z},
-			qr{\Asms[.]fido[.]ca\z},
-		],
-		'lynxmobility' => [
-			# Lynx Mobility
-			qr{\Asms[.]lynxmobility[.]com},
-		],
-		'mts' => [
-			# Manitoba Telecom Services; http://www.mts.ca/
-			qr{\Atext[.]mtsmobility[.]com\z},
-		],
-		'presidentschoice' => [
-			# President's Choice: PC; http://www.presidentschoice.ca/
-			qr{\Amobiletxt[.]ca\z},
-		],
-		'rogers' => [
-			# Rogers Wireless; http://www.rogers.com/wireless
-			qr{\A(?:pcs|mms)[.]rogers[.]com\z},
-		],
-		'sasktel' => [
-			# SaskTel; http://www.sasktel.com/
-			qr{\Asms[.]sasktel[.]com\z},
-			qr{\Apcs[.]sasktelmobility[.]com\z},
-		],
-		'telus' => [
-			# Telus; http://www.telus.com/
-			#  See Koodo Mobile; http://www.koodomobile.com/
-			qr{\Amsg[.]telus[.]com\z},
-			qr{\Amms[.]telusmobility[.]com\z},
-		],
-		'virgin' => [
-			# Virgin Mobile; http://www.virginmobile.com/
-			qr{\Avmobile[.]ca\z},
-		],
-		'windmobile' => [
-			# Wind Mobile; http://www.windmobile.ca/
-			qr{\Atxt[.]windmobile[.]ca\z},
-		],
-	};
-}
-
-sub classisnomina
-{
-	my $class = shift;
-	return {
-		'aliant'	=> 'Generic',
-		'bell'		=> 'Generic',
-		'fido'		=> 'Generic',
-		'lynxmobility'	=> 'Generic',
-		'mts'		=> 'Generic',
-		'presidentschoice' => 'Generic',
-		'rogers'	=> 'Generic',
-		'sasktel'	=> 'Generic',
-		'telus'		=> 'Generic',
-		'virgin'	=> 'Generic',
-		'windmobile'	=> 'Generic',
-	};
+sub nominisexemplaria {
+    # *** NOT TESTED YET ***
+    my $self = shift;
+    return {
+        'aliant' => [
+            # Bell Aliant; http://bell.aliant.ca/
+            qr{\Awirefree[.]informe[.]ca\z},
+            qr{\Asms[.]wirefree[.]informe[.]ca\z},
+        ],
+        'bell' => [
+            # Bell Canada; http://www.bell.ca/
+            qr{\Atxt[.]bell(?:mobility)?.ca\z},
+            qr{\Abellmobility[.]ca\z}
+        ],
+        'fido' => [
+            # Fido Solutions; http://www.fido.ca/
+            qr{\Afido[.]ca\z},
+            qr{\Asms[.]fido[.]ca\z},
+        ],
+        'lynxmobility' => [
+            # Lynx Mobility
+            qr{\Asms[.]lynxmobility[.]com},
+        ],
+        'mts' => [
+            # Manitoba Telecom Services; http://www.mts.ca/
+            qr{\Atext[.]mtsmobility[.]com\z},
+        ],
+        'presidentschoice' => [
+            # President's Choice: PC; http://www.presidentschoice.ca/
+            qr{\Amobiletxt[.]ca\z},
+        ],
+        'rogers' => [
+            # Rogers Wireless; http://www.rogers.com/wireless
+            qr{\A(?:pcs|mms)[.]rogers[.]com\z},
+        ],
+        'sasktel' => [
+            # SaskTel; http://www.sasktel.com/
+            qr{\Asms[.]sasktel[.]com\z},
+            qr{\Apcs[.]sasktelmobility[.]com\z},
+        ],
+        'telus' => [
+            # Telus; http://www.telus.com/
+            #  See Koodo Mobile; http://www.koodomobile.com/
+            qr{\Amsg[.]telus[.]com\z},
+            qr{\Amms[.]telusmobility[.]com\z},
+        ],
+        'virgin' => [
+            # Virgin Mobile; http://www.virginmobile.com/
+            qr{\Avmobile[.]ca\z},
+        ],
+        'windmobile' => [
+            # Wind Mobile; http://www.windmobile.ca/
+            qr{\Atxt[.]windmobile[.]ca\z},
+        ],
+    };
 }
 
 1;

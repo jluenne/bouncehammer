@@ -1,4 +1,4 @@
-# $Id: Smartphone.pm,v 1.1.2.3 2013/04/15 04:20:53 ak Exp $
+# $Id: Smartphone.pm,v 1.1.2.4 2013/08/30 05:55:25 ak Exp $
 # Copyright (C) 2011,2013 Cubicroot Co. Ltd.
 # Kanadzuchi::Mail::Group::AE::
                                                                         
@@ -21,28 +21,18 @@ use warnings;
 #
 # Major company's smaprtphone domains in United Arab Emirates
 sub communisexemplar { return qr{[.]com\z}; }
-sub nominisexemplaria
-{
-	my $class = shift;
-	return {
-		'du' => [
-			# du; http://du.ae/
-			qr{\Adu[.]blackberry[.]com\z},
-		],
-		'etisalat' => [
-			# Etisalat; http://www.etisalat.ae/
-			qr{\Aetisalat[.]blackberry[.]com\z},
-		],
-	};
-}
-
-sub classisnomina
-{
-	my $class = shift;
-	return {
-		'du'		=> 'Generic',
-		'etisalat'	=> 'Generic',
-	};
+sub nominisexemplaria {
+    my $class = shift;
+    return {
+        'du' => [
+            # du; http://du.ae/
+            qr{\Adu[.]blackberry[.]com\z},
+        ],
+        'etisalat' => [
+            # Etisalat; http://www.etisalat.ae/
+            qr{\Aetisalat[.]blackberry[.]com\z},
+        ],
+    };
 }
 
 1;

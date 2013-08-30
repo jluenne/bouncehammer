@@ -1,4 +1,4 @@
-# $Id: Smartphone.pm,v 1.1.2.2 2013/04/15 04:20:53 ak Exp $
+# $Id: Smartphone.pm,v 1.1.2.3 2013/08/30 08:51:14 ak Exp $
 # Copyright (C) 2011,2013 Cubicroot Co. Ltd.
 # Kanadzuchi::Mail::Group::UA::
                                                                         
@@ -21,23 +21,14 @@ use warnings;
 #
 # Major company's smaprtphone domains in Ukraine
 sub communisexemplar { return qr{[.]com\z}; }
-sub nominisexemplaria
-{
-	my $class = shift;
-	return {
-		'mtc' => [
-			# MTC; http://www.mts.com.ua/
-			qr{\Amtsua[.]blackberry[.]com\z},
-		],
-	};
-}
-
-sub classisnomina
-{
-	my $class = shift;
-	return {
-		'mtc'		=> 'Generic',
-	};
+sub nominisexemplaria {
+    my $class = shift;
+    return {
+        'mtc' => [
+            # MTC; http://www.mts.com.ua/
+            qr{\Amtsua[.]blackberry[.]com\z},
+        ],
+    };
 }
 
 1;

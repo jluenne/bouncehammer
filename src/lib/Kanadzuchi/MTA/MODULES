@@ -1,4 +1,4 @@
-# $Id: MODULES,v 1.1.2.12 2013/04/15 04:20:52 ak Exp $
+# $Id: MODULES,v 1.1.2.14 2013/08/30 05:55:02 ak Exp $
 # Copyright (C) 2011-2013 Cubicroot Co. Ltd.
 package Kanadzuchi::MTA::MODULES;
 use strict;
@@ -10,21 +10,19 @@ use warnings;
 # |/__\|/__\|/__\|/__\|/__\|/_______\|/__\|/__\|/__\|/__\|/__\|/__\|/__\|
 #
 sub standard {
-	return [
-		'ApacheJames', 'Courier', 'Exim', 'Fallback', 'FeedbackLoop',
-		'OpenSMTPD', 'Postfix', 'qmail', 'Sendmail', 'sSMTP',
-		'JP::aubyKDDI', 'JP::Biglobe',
-		'US::Facebook', 'US::Google', 
-	];
+    return [
+        'ApacheJames', 'Courier', 'Exim', 'Fallback', 'FeedbackLoop', 'OpenSMTPD',
+        'Postfix', 'qmail', 'Sendmail', 'sSMTP', 'JP::aubyKDDI', 'JP::Biglobe',
+        'US::Facebook', 'US::Google', 'US::Verizon',
+    ];
 }
 
 sub commercial {
-	return [ 
-		'Activehunter', 'AmazonSES', 'Domino', 'Exchange', 
-		'InterScan', 'IMailServer', 'MailFoundry', 'McAfee',
-		'mFILTER', 'MXLogic', 'Notes', 'SendGrid', 
-		'StarOffice21', 'SurfControl', 
-	];
+    return [ 
+        'Activehunter', 'AmazonSES', 'Domino', 'Exchange', 'InterScan', 
+        'IMailServer', 'MailFoundry', 'McAfee', 'mFILTER', 'MXLogic', 'Notes',
+        'SendGrid', 'StarOffice21', 'SurfControl', 
+    ];
 }
 
 1;

@@ -1,4 +1,4 @@
-# $Id: Smartphone.pm,v 1.1.2.2 2013/04/15 04:20:53 ak Exp $
+# $Id: Smartphone.pm,v 1.1.2.3 2013/08/30 08:51:14 ak Exp $
 # -Id: SmartPhone.pm,v 1.1 2009/08/29 07:33:22 ak Exp -
 # Copyright (C) 2011,2013 Cubicroot Co. Ltd.
 # Kanadzuchi::Mail::Group::CZ::
@@ -23,28 +23,18 @@ use warnings;
 # Major company's smaprtphone domains in Czech Republic/Czechia
 # See http://www.thegremlinhunt.com/2010/01/07/list-of-blackberry-internet-service-e-mail-login-sites/
 # sub communisexemplar { return qr{[.]cz\z}; }
-sub nominisexemplaria
-{
-	my $class = shift;
-	return {
-		'o2' => [
-			# O2; http://www.o2online.cz/
-			qr{\Ao2[.]blackberry[.]cz\z},
-		],
-		't-mobile' => [
-			# T-Mobile; http://www.t-mobile.cz/
-			qr{\Atmobilecz[.]blackberry[.]com\z},
-		],
-	};
-}
-
-sub classisnomina
-{
-	my $class = shift;
-	return {
-		'o2'		=> 'Generic',
-		't-mobile'	=> 'Generic',
-	};
+sub nominisexemplaria {
+    my $class = shift;
+    return {
+        'o2' => [
+            # O2; http://www.o2online.cz/
+            qr{\Ao2[.]blackberry[.]cz\z},
+        ],
+        't-mobile' => [
+            # T-Mobile; http://www.t-mobile.cz/
+            qr{\Atmobilecz[.]blackberry[.]com\z},
+        ],
+    };
 }
 
 1;

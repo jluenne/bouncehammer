@@ -1,4 +1,4 @@
-# $Id: MailboxFull.pm,v 1.8.2.3 2013/07/16 21:33:47 ak Exp $
+# $Id: MailboxFull.pm,v 1.8.2.5 2013/08/30 05:55:25 ak Exp $
 # -Id: MailboxFull.pm,v 1.1 2009/08/29 07:33:28 ak Exp -
 # -Id: MailboxFull.pm,v 1.2 2009/05/11 08:22:29 ak Exp -
 # Copyright (C) 2009,2010,2013 Cubicroot Co. Ltd.
@@ -19,37 +19,35 @@ use base 'Kanadzuchi::Mail::Why';
 # |/__\|/__\|/__\|/__\|/__\|/_______\|/__\|/__\|/__\|/__\|/__\|/__\|/__\|
 #
 # Regular expressions of 'mailboxfull'
-sub exemplaria
-{
-	my $class = shift;
-	return [
-		qr{account is over quota},
-		qr{account is temporarily over quota},
-		qr{dd sorry, your message to .+ cannot be delivered[.] this account is over quota},
-		qr{delivery failed: over quota},
-		qr{disc quota exceeded},
-		qr{exceeded storage allocation},
-		qr{mail file size exceeds the maximum size allowed for mail delivery},
-		qr{mail quota exceeded},
-		qr{mailbox over quota},
-		qr{mailbox full},
-		qr{mailbox is full},
-		qr{maildir over quota},
-		qr{not enough storage space in},
-		qr{would be over the allowed quota},
-		qr{over the allowed quota},
-		qr{quota exceeded},
-		qr{recipient reached disk quota},
-		qr{recipient rejected: mailbox would exceed maximum allowed storage},
-		qr{too much mail data},	# @docomo.ne.jp
-		qr{user has exceeded quota, bouncing mail},
-		qr{user is over quota},
-		qr{user is over the quota},
-		qr{user over quota[.] [(][#]5[.]1[.]1[)]\z},	# qmail-toaster
-		qr{user over quota},
-		qr{was automatically rejected: quota exceeded},
-
-	];
+sub exemplaria {
+    my $class = shift;
+    return [
+        qr/account is over quota/,
+        qr/account is temporarily over quota/,
+        qr/dd sorry, your message to .+ cannot be delivered[.] this account is over quota/,
+        qr/delivery failed: over quota/,
+        qr/disc quota exceeded/,
+        qr/exceeded storage allocation/,
+        qr/mail file size exceeds the maximum size allowed for mail delivery/,
+        qr/mail quota exceeded/,
+        qr/mailbox over quota/,
+        qr/mailbox full/,
+        qr/mailbox is full/,
+        qr/maildir over quota/,
+        qr/not enough storage space in/,
+        qr/would be over the allowed quota/,
+        qr/over the allowed quota/,
+        qr/quota exceeded/,
+        qr/recipient reached disk quota/,
+        qr/recipient rejected: mailbox would exceed maximum allowed storage/,
+        qr/too much mail data/, # @docomo.ne.jp
+        qr/user has exceeded quota, bouncing mail/,
+        qr/user is over quota/,
+        qr/user is over the quota/,
+        qr/user over quota[.] [(][#]5[.]1[.]1[)]\z/,    # qmail-toaster
+        qr/user over quota/,
+        qr/was automatically rejected: quota exceeded/,
+    ];
 }
 
 1;

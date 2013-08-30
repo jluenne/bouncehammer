@@ -1,4 +1,4 @@
-# $Id: Rejected.pm,v 1.2.2.3 2013/04/15 04:20:53 ak Exp $
+# $Id: Rejected.pm,v 1.2.2.4 2013/08/30 05:55:25 ak Exp $
 # Copyright (C) 2009,2010,2013 Cubicroot Co. Ltd.
 # Kanadzuchi::Mail::Why::
                                                        
@@ -20,13 +20,13 @@ use base 'Kanadzuchi::Mail::Why';
 # Regular expressions of 'Rejected'
 sub exemplaria
 {
-	my $class = shift;
-	return [ 
-		# Rejected due to envelope from address
-		qr{address rejected},
-		qr{domain of sender address .+ does not exist},
-		qr{sender rejected},
-	];
+    my $class = shift;
+    return [ 
+        # Rejected due to envelope from address
+        qr/address rejected/,
+        qr/domain of sender address .+ does not exist/,
+        qr/sender rejected/,
+    ];
 }
 
 1;

@@ -1,4 +1,4 @@
-# $Id: Neighbor.pm,v 1.6.2.1 2013/04/15 04:20:53 ak Exp $
+# $Id: Neighbor.pm,v 1.6.2.2 2013/08/29 11:08:34 ak Exp $
 # Copyright (C) 2009-2010,2013 Cubicroot Co. Ltd.
 # Kanadzuchi::Mail::Group::
                                                           
@@ -27,30 +27,32 @@ my $OurDomain = ( -r $Neighbors && -s _ && -T _ ) ? JSON::Syck::LoadFile($Neighb
 # ||__|||__|||__|||__|||__|||_______|||__|||__|||__|||__|||__|||__|||__||
 # |/__\|/__\|/__\|/__\|/__\|/_______\|/__\|/__\|/__\|/__\|/__\|/__\|/__\|
 #
-sub reperit 
-{
-	# +-+-+-+-+-+-+-+
-	# |r|e|p|e|r|i|t|
-	# +-+-+-+-+-+-+-+
-	#
-	# @Description	Detect and load the class for the domain
-	# @Param <str>	(String) Domain part
-	# @Return	(Ref->Hash) Class, Group, Provider name or Empty string
-	my $class = shift;
-	my $dpart = shift || return {};
-	my $mdata = { 'class' => q(), 'group' => q(), 'provider' => q(), };
+sub reperit {
+    # +-+-+-+-+-+-+-+
+    # |r|e|p|e|r|i|t|
+    # +-+-+-+-+-+-+-+
+    #
+    # @Description  Detect and load the class for the domain
+    # @Param <str>  (String) Domain part
+    # @Return       (Ref->Hash) Class, Group, Provider name or Empty string
+    my $class = shift;
+    my $dpart = shift || return {};
+    my $mdata = { 
+        'class' => 'Kanadzuchi::Mail::Bounced::Generic',
+        'group' => q(), 
+        'provider' => q(),
+    };
 
-	foreach my $d ( keys %$OurDomain )
-	{
-		next unless grep { $dpart eq $_ } @{ $OurDomain->{$d} };
+    foreach my $d ( keys %$OurDomain ) {
 
-		$mdata->{'class'} = q|Kanadzuchi::Mail::Bounced::Generic|;
-		$mdata->{'group'} = 'neighbor';
-		$mdata->{'provider'} = $d;
-		last;
-	}
+        next unless grep { $dpart eq $_ } @{ $OurDomain->{ $d } };
 
-	return $mdata;
+        $mdata->{'group'} = 'neighbor';
+        $mdata->{'provider'} = $d;
+        last;
+    }
+
+    return $mdata;
 }
 
 1;

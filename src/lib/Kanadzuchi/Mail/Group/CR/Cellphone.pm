@@ -1,4 +1,4 @@
-# $Id: Cellphone.pm,v 1.1.2.3 2013/04/18 10:56:28 ak Exp $
+# $Id: Cellphone.pm,v 1.1.2.4 2013/08/30 08:51:14 ak Exp $
 # Copyright (C) 2009,2010,2013 Cubicroot Co. Ltd.
 # Kanadzuchi::Mail::Group::CR::
                                                             
@@ -22,25 +22,16 @@ use warnings;
 # Cellular phone domains in Republic of Costa Rica
 # See http://en.wikipedia.org/wiki/List_of_SMS_gateways
 sub communisexemplar { return qr{[.]cr\z}; }
-sub nominisexemplaria
-{
-	# *** NOT TESTED YET ***
-	my $self = shift;
-	return {
-		'ice' => [
-			# ICE; http://www.grupoice.com/
-			qr{\Aice[.]cr\z},
-			qr{\Asms[.]ice[.]cr\z},
-		],
-	};
-}
-
-sub classisnomina
-{
-	my $class = shift;
-	return {
-		'ice'		=> 'Generic',
-	};
+sub nominisexemplaria {
+    # *** NOT TESTED YET ***
+    my $self = shift;
+    return {
+        'ice' => [
+            # ICE; http://www.grupoice.com/
+            qr{\Aice[.]cr\z},
+            qr{\Asms[.]ice[.]cr\z},
+        ],
+    };
 }
 
 1;

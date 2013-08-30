@@ -1,4 +1,4 @@
-# $Id: UserUnknown.pm,v 1.12.2.2 2013/07/16 21:33:47 ak Exp $
+# $Id: UserUnknown.pm,v 1.12.2.4 2013/08/30 05:55:25 ak Exp $
 # -Id: UserUnknown.pm,v 1.1 2009/08/29 07:33:28 ak Exp -
 # -Id: UserUnknown.pm,v 1.2 2009/05/11 08:22:29 ak Exp -
 # Copyright (C) 2009,2010,2013 Cubicroot Co. Ltd.
@@ -19,41 +19,42 @@ use base 'Kanadzuchi::Mail::Why';
 # |/__\|/__\|/__\|/__\|/__\|/_______\|/__\|/__\|/__\|/__\|/__\|/__\|/__\|
 #
 # Regular expressions of 'User Unknown'
-sub exemplaria
-{
-	my $class = shift;
-	return [
-		qr{[#]5[.]1[.]1 bad address},
-		qr{destination server rejected recipients},
-		qr{email address does not exist},
-		qr{invalid mailbox path},
-		qr{invalid recipient:},
-		qr{no such mailbox},
-		qr{no such recipient},
-		qr{no such user here},
-		qr{no such user},
-		qr{<.+> not found},
-		qr{mailbox not present},
-		qr{mailbox unavailable},
-		qr{no .+ in name directory},
-		qr{recipient address rejected: access denied},
-		qr{recipient address rejected: invalid user},
-		qr{recipient address rejected: user .+ does not exist},
-		qr{recipient address rejected: user unknown in[ ].+[ ]table},
-		qr{recipient address rejected: unknown user},
-		qr{recipient is not local},
-		qr{said: 550[-\s]5[.]1[.]1[ ].+[ ]user[ ]unknown[ ]},
-		qr{sorry, user unknown},
-		qr{sorry, no mailbox here by that name},
-		qr{this address no longer accepts mail},
-		qr{this user doesn[']?t have a .+ account},	# Yahoo!
-		qr{undeliverable address},
-		qr{unknown address},
-		qr{unknown recipient},
-		qr{unknown user},
-		qr{user missing home directory},
-		qr{user unknown},
-	];
+sub exemplaria {
+    my $class = shift;
+    return [
+        qr/.+ user unknown/,
+        qr/[#]5[.]1[.]1 bad address/,
+        qr/destination server rejected recipients/,
+        qr/email address does not exist/,
+        qr/invalid mailbox path/,
+        qr/invalid recipient:/,
+        qr/no such mailbox/,
+        qr/no such recipient/,
+        qr/no such user here/,
+        qr/no such user/,
+        qr/<.+> not found/,
+        qr/mailbox not present/,
+        qr/mailbox unavailable/,
+        qr/no .+ in name directory/,
+        qr/recipient address rejected: access denied/,
+        qr/recipient address rejected: invalid user/,
+        qr/recipient address rejected: user .+ does not exist/,
+        qr/recipient address rejected: user unknown in[ ].+[ ]table/,
+        qr/recipient address rejected: unknown user/,
+        qr/recipient is not local/,
+        qr/Requested action not taken: mailbox unavailable/,
+        qr/said: 550[-\s]5[.]1[.]1[ ].+[ ]user[ ]unknown[ ]/,
+        qr/sorry, user unknown/,
+        qr/sorry, no mailbox here by that name/,
+        qr/this address no longer accepts mail/,
+        qr/this user doesn[']?t have a .+ account/, # Yahoo!
+        qr/undeliverable address/,
+        qr/unknown address/,
+        qr/unknown recipient/,
+        qr/unknown user/,
+        qr/user missing home directory/,
+        qr/user unknown/,
+    ];
 }
 
 1;

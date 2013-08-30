@@ -1,4 +1,4 @@
-# $Id: RFC2822.pm,v 1.15.2.2 2013/04/23 09:30:38 ak Exp $
+# $Id: RFC2822.pm,v 1.15.2.3 2013/08/30 23:34:21 ak Exp $
 # -Id: RFC2822.pm,v 1.1 2009/08/29 08:52:03 ak Exp -
 # -Id: RFC2822.pm,v 1.6 2009/05/29 08:22:21 ak Exp -
 # Copyright (C) 2009,2010,2013 Cubicroot Co. Ltd.
@@ -34,16 +34,16 @@ my $Rx = { 'rfc2822' => undef, 'ignored' => undef, 'domain' => undef, };
 #                     %d94-126        ;  characters not including "[",
 #                                     ;  "]", or "\"
 BUILD_REGULAR_EXPRESSIONS: {
-	my $atom = qr{[a-zA-Z0-9_!#\$\%&'*+/=?\^`{}~|\-]+}o;
-	my $quoted_string = qr{"(?:\\[^\r\n]|[^\\"])*"}o;
-	my $domain_literal = qr{\[(?:\\[\x01-\x09\x0B-\x0c\x0e-\x7f]|[\x21-\x5a\x5e-\x7e])*\]}o;
-	my $dot_atom = qr{$atom(?:[.]$atom)*}o;
-	my $local_part = qr{(?:$dot_atom|$quoted_string)}o;
-	my $domain = qr{(?:$dot_atom|$domain_literal)}o;
+    my $atom = qr{[a-zA-Z0-9_!#\$\%&'*+/=?\^`{}~|\-]+}o;
+    my $quoted_string = qr{"(?:\\[^\r\n]|[^\\"])*"}o;
+    my $domain_literal = qr{\[(?:\\[\x01-\x09\x0B-\x0c\x0e-\x7f]|[\x21-\x5a\x5e-\x7e])*\]}o;
+    my $dot_atom = qr{$atom(?:[.]$atom)*}o;
+    my $local_part = qr{(?:$dot_atom|$quoted_string)}o;
+    my $domain = qr{(?:$dot_atom|$domain_literal)}o;
 
-	$Rx->{'rfc2822'} = qr{$local_part[@]$domain}o;
-	$Rx->{'ignored'} = qr{$local_part[.]*[@]$domain}o;
-	$Rx->{'domain'} = qr{$domain}o;
+    $Rx->{'rfc2822'} = qr{$local_part[@]$domain}o;
+    $Rx->{'ignored'} = qr{$local_part[.]*[@]$domain}o;
+    $Rx->{'domain'} = qr{$domain}o;
 }
 
 #  ____ ____ ____ ____ ____ _________ ____ ____ ____ ____ ____ ____ ____ 
@@ -51,122 +51,118 @@ BUILD_REGULAR_EXPRESSIONS: {
 # ||__|||__|||__|||__|||__|||_______|||__|||__|||__|||__|||__|||__|||__||
 # |/__\|/__\|/__\|/__\|/__\|/_______\|/__\|/__\|/__\|/__\|/__\|/__\|/__\|
 #
-sub is_emailaddress
-{
-	# +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-	# |i|s|_|e|m|a|i|l|a|d|d|r|e|s|s|
-	# +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-	#
-	# @Description	Whether address is valid e-mail address or not
-	# @Param <addr>	(String) e-Mail address
-	# @Return	(Integer) 1 = is valid e-mail address
-	#		(Integer) 0 = is not
-	# return(1) if( $_[1] =~ $Rx->{rfc2822} );
-	my $class = shift;
-	my $email = shift || return 0;
-	return 0 if $email =~ m{([\x00-\x1f]|\x1f)};
-	return 1 if $email =~ $Rx->{'ignored'};
-	return 0;
+sub is_emailaddress {
+    # +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    # |i|s|_|e|m|a|i|l|a|d|d|r|e|s|s|
+    # +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    #
+    # @Description  Whether address is valid e-mail address or not
+    # @Param <addr> (String) e-Mail address
+    # @Return       (Integer) 1 = is valid e-mail address
+    #               (Integer) 0 = is not
+    # return(1) if( $_[1] =~ $Rx->{rfc2822} );
+    my $class = shift;
+    my $email = shift || return 0;
+
+    return 0 if $email =~ m/([\x00-\x1f]|\x1f)/;
+    return 1 if $email =~ $Rx->{'ignored'};
+    return 0;
 }
 
-sub is_domainpart
-{
-	# +-+-+-+-+-+-+-+-+-+-+-+-+-+
-	# |i|s|_|d|o|m|a|i|n|p|a|r|t|
-	# +-+-+-+-+-+-+-+-+-+-+-+-+-+
-	#
-	# @Description	Whether domain is valid domain part or not
-	# @Param <addr>	(String) Domain name
-	# @Return	(Integer) 1 = is valid domain part
-	#		(Integer) 0 = is not
-	my $class = shift;
-	my $dpart = shift || return 0;
-	return 0 if $dpart =~ m{([\x00-\x1f]|\x1f)};
-	return 1 if $dpart =~ $Rx->{'domain'};
-	return 0;
+sub is_domainpart {
+    # +-+-+-+-+-+-+-+-+-+-+-+-+-+
+    # |i|s|_|d|o|m|a|i|n|p|a|r|t|
+    # +-+-+-+-+-+-+-+-+-+-+-+-+-+
+    #
+    # @Description  Whether domain is valid domain part or not
+    # @Param <addr> (String) Domain name
+    # @Return       (Integer) 1 = is valid domain part
+    #               (Integer) 0 = is not
+    my $class = shift;
+    my $dpart = shift || return 0;
+
+    return 0 if $dpart =~ m/([\x00-\x1f]|\x1f)/;
+    return 1 if $dpart =~ $Rx->{'domain'};
+    return 0;
 }
 
-sub is_mailerdaemon
-{
-	# +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-	# |i|s|_|m|a|i|l|e|r|d|a|e|m|o|n|
-	# +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-	#
-	# @Description	Whether address is MAILER-DAEMON or not
-	# @Param <addr>	(String) e-Mail address
-	# @Return	(Integer) 1 = is MAILER-DAEMON
-	#		(Integer) 0 = is not
-	my $class = shift;
-	my $email = shift || return 0;
-	my $rxmds = [
-		qr/mailer-daemon[@]/i,
-		qr/[<(]mailer-daemon[)>]/i,
-		qr/\Amailer-daemon\z/i,
-		qr/[ ]?mailer-daemon[ ]/i,
-	];
+sub is_mailerdaemon {
+    # +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    # |i|s|_|m|a|i|l|e|r|d|a|e|m|o|n|
+    # +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    #
+    # @Description  Whether address is MAILER-DAEMON or not
+    # @Param <addr> (String) e-Mail address
+    # @Return       (Integer) 1 = is MAILER-DAEMON
+    #               (Integer) 0 = is not
+    my $class = shift;
+    my $email = shift || return 0;
+    my $rxmds = [
+        qr/mailer-daemon[@]/i,
+        qr/[<(]mailer-daemon[)>]/i,
+        qr/\Amailer-daemon\z/i,
+        qr/[ ]?mailer-daemon[ ]/i,
+    ];
 
-	return 1 if grep { $email =~ $_ } @$rxmds;
-	return 0;
+    return 1 if grep { $email =~ $_ } @$rxmds;
+    return 0;
 }
 
-sub is_subaddress
-{
-	# +-+-+-+-+-+-+-+-+-+-+-+-+-+
-	# |i|s|_|s|u|b|a|d|d|r|e|s|s|
-	# +-+-+-+-+-+-+-+-+-+-+-+-+-+
-	#
-	# @Description	Whether address is sub-address or not
-	# @Param <addr>	(String) e-Mail address
-	# @Return	(Integer) 1 = is sub-address
-	#		(Integer) 0 = is not
-	# @See		http://tools.ietf.org/html/rfc5233
-	my $class = shift;
-	my $email = shift || return 0;
-	my $lpart = [ split('@',$email) ]->[0];
+sub is_subaddress {
+    # +-+-+-+-+-+-+-+-+-+-+-+-+-+
+    # |i|s|_|s|u|b|a|d|d|r|e|s|s|
+    # +-+-+-+-+-+-+-+-+-+-+-+-+-+
+    #
+    # @Description  Whether address is sub-address or not
+    # @Param <addr> (String) e-Mail address
+    # @Return       (Integer) 1 = is sub-address
+    #               (Integer) 0 = is not
+    # @See          http://tools.ietf.org/html/rfc5233
+    my $class = shift;
+    my $email = shift || return 0;
+    my $lpart = [ split( '@', $email ) ]->[0];
 
-	return 0 unless $class->is_emailaddress( $email );
-	return 1 if $lpart =~ m{\A[-_\w]+?[+][^@]+\z};
-	return 0;
+    return 0 unless $class->is_emailaddress( $email );
+    return 1 if $lpart =~ m/\A[-_\w]+?[+][^@]+\z/;
+    return 0;
 }
 
-sub expand_subaddress
-{
-	# +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-	# |e|x|p|a|n|d|_|s|u|b|a|d|d|r|e|s|s|
-	# +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-	#
-	# @Description	Expand sub-address: a+b=example.jp@... -> b@example.jp
-	# @Param <addr>	(String) sub-address
-	# @Return	(String) Expanded e-Mail address
-	#		(String) Empty
-	# @See		http://tools.ietf.org/html/rfc5233
-	my $class = shift;
-	my $email = shift || return q();
-	my $lpart = [ split('@',$email) ]->[0];
-	my $xtemp = q();
-	my $xaddr = q();
+sub expand_subaddress {
+    # +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    # |e|x|p|a|n|d|_|s|u|b|a|d|d|r|e|s|s|
+    # +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    #
+    # @Description  Expand sub-address: a+b=example.jp@... -> b@example.jp
+    # @Param <addr> (String) sub-address
+    # @Return       (String) Expanded e-Mail address
+    #               (String) Empty
+    # @See          http://tools.ietf.org/html/rfc5233
+    my $class = shift;
+    my $email = shift || return q();
+    my $lpart = [ split( '@', $email ) ]->[0];
+    my $xtemp = q();
+    my $xaddr = q();
 
-	return q() unless( $class->is_subaddress($email) );
-	if( $lpart =~ m{\A[-_\w]+?[+](\w[-._\w]+\w)[=](\w[-.\w]+\w)\z} )
-	{
-		$xtemp = $1.'@'.$2;
-		$xaddr = $xtemp if $class->is_emailaddress( $xtemp );
-	}
+    return q() unless $class->is_subaddress( $email );
 
-	return $xaddr;
+    if( $lpart =~ m/\A[-_\w]+?[+](\w[-._\w]+\w)[=](\w[-.\w]+\w)\z/ ) {
+        $xtemp = $1.'@'.$2;
+        $xaddr = $xtemp if $class->is_emailaddress( $xtemp );
+    }
+
+    return $xaddr;
 }
 
-sub cleanup
-{
-	# +-+-+-+-+-+-+-+
-	# |c|l|e|a|n|u|p|
-	# +-+-+-+-+-+-+-+
-	#
-	# @Description	OBSOLETE
-	# @Param <addr>	email address
-	# @Return	(String) email address
-	my $class = shift;
-	return shift;
+sub cleanup {
+    # +-+-+-+-+-+-+-+
+    # |c|l|e|a|n|u|p|
+    # +-+-+-+-+-+-+-+
+    #
+    # @Description  OBSOLETE
+    # @Param <addr> email address
+    # @Return       (String) email address
+    my $class = shift;
+    return shift;
 }
 
 1;

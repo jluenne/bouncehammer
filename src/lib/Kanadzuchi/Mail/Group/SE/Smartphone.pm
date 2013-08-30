@@ -1,4 +1,4 @@
-# $Id: Smartphone.pm,v 1.1.2.3 2013/04/15 04:20:53 ak Exp $
+# $Id: Smartphone.pm,v 1.1.2.4 2013/08/30 08:51:14 ak Exp $
 # -Id: SmartPhone.pm,v 1.1 2009/08/29 07:33:22 ak Exp -
 # Copyright (C) 2011,2013 Cubicroot Co. Ltd.
 # Kanadzuchi::Mail::Group::SE::
@@ -23,33 +23,22 @@ use warnings;
 # Major company's smaprtphone domains in Kingdom of Sweden/Konungariket Sverige
 # http://www.thegremlinhunt.com/2010/01/07/list-of-blackberry-internet-service-e-mail-login-sites/
 sub communisexemplar { return qr{[.]com\z}; }
-sub nominisexemplaria
-{
-	my $class = shift;
-	return {
-		'tele2' => [
-			# Tele2; http://tele2.se/
-			qr{\Atele2se[.]blackberry[.]com\z},
-		],
-		'telenor' => [
-			# Telenor Sverige; http://www.telenor.se/
-			qr{\Atelenor-se[.]blackberry[.]com\z},
-		],
-		'three' => [
-			# 3; http://tre.se/
-			qr{\Atre[.]blackberry[.]com\z},	# ...?
-		],
-	};
-}
-
-sub classisnomina
-{
-	my $class = shift;
-	return {
-		'tele2'		=> 'Generic',
-		'telenor'	=> 'Generic',
-		'three'		=> 'Generic',
-	};
+sub nominisexemplaria {
+    my $class = shift;
+    return {
+        'tele2' => [
+            # Tele2; http://tele2.se/
+            qr{\Atele2se[.]blackberry[.]com\z},
+        ],
+        'telenor' => [
+            # Telenor Sverige; http://www.telenor.se/
+            qr{\Atelenor-se[.]blackberry[.]com\z},
+        ],
+        'three' => [
+            # 3; http://tre.se/
+            qr{\Atre[.]blackberry[.]com\z}, # ...?
+        ],
+    };
 }
 
 1;

@@ -1,4 +1,4 @@
-# $Id: WebMail.pm,v 1.1.2.2 2013/04/15 04:20:53 ak Exp $
+# $Id: WebMail.pm,v 1.1.2.3 2013/08/30 08:51:14 ak Exp $
 # Copyright (C) 2010,2013 Cubicroot Co. Ltd.
 # Kanadzuchi::Mail::Group::RO::
                                                    
@@ -20,28 +20,19 @@ use warnings;
 #
 # Major company's Webmail domains in Romania
 # sub communisexemplar { return qr{[.]ro\z}; }
-sub nominisexemplaria
-{
-	my $class = shift;
-	return {
-		'posta.ro' => [
-			# www.posta.ro - Romanias first free webmail since 1997!
-			# http://www.posta.ro/
-			qr{\A(?:posta|mac|ze)[.]ro\z},
-			qr{\Aroposta[.]com\z},
-			qr{\A(?:adresamea|scrisoare|scrisori)[.]net\z},
-			qr{\A(?:scrisoare|scris|mail|email|freemail|webmail)[.]co[.]ro\z},
-			qr{\A(?:eu|europa|ue|matrix|mobil|net|pimp|write|writeme)[.]co[.]ro\z},
-		],
-	};
-}
-
-sub classisnomina
-{
-	my $class = shift;
-	return {
-		'posta.ro'	=> 'Generic',
-	};
+sub nominisexemplaria {
+    my $class = shift;
+    return {
+        'posta.ro' => [
+            # www.posta.ro - Romanias first free webmail since 1997!
+            # http://www.posta.ro/
+            qr{\A(?:posta|mac|ze)[.]ro\z},
+            qr{\Aroposta[.]com\z},
+            qr{\A(?:adresamea|scrisoare|scrisori)[.]net\z},
+            qr{\A(?:scrisoare|scris|mail|email|freemail|webmail)[.]co[.]ro\z},
+            qr{\A(?:eu|europa|ue|matrix|mobil|net|pimp|write|writeme)[.]co[.]ro\z},
+        ],
+    };
 }
 
 1;

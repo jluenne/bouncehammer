@@ -1,4 +1,4 @@
-# $Id: WebMail.pm,v 1.1.2.2 2013/04/15 04:20:53 ak Exp $
+# $Id: WebMail.pm,v 1.1.2.3 2013/08/30 08:51:14 ak Exp $
 # Copyright (C) 2010,2013 Cubicroot Co. Ltd.
 # Kanadzuchi::Mail::Group::MD::
                                                    
@@ -20,23 +20,14 @@ use warnings;
 #
 # Major company's Webmail domains in Republica Moldova
 sub communisexemplar { return qr{[.]md\z}; }
-sub nominisexemplaria
-{
-	my $class = shift;
-	return {
-		'mail.md' => [
-			# mail.md; https://www.mail.md/
-			qr{\Amail[.]md\z},
-		],
-	};
-}
-
-sub classisnomina
-{
-	my $class = shift;
-	return {
-		'mail.md'	=> 'Generic',
-	};
+sub nominisexemplaria {
+    my $class = shift;
+    return {
+        'mail.md' => [
+            # mail.md; https://www.mail.md/
+            qr{\Amail[.]md\z},
+        ],
+    };
 }
 
 1;

@@ -1,4 +1,4 @@
-# $Id: Bzip2.pm,v 1.3.2.1 2013/04/15 04:20:52 ak Exp $
+# $Id: Bzip2.pm,v 1.3.2.2 2013/08/29 11:02:53 ak Exp $
 # Copyright (C) 2009,2010,2013 Cubicroot Co. Ltd.
 # Kanadzuchi::Archive::
                                     
@@ -25,36 +25,35 @@ use warnings;
 # ||__|||__|||__|||__|||__|||__|||__|||__|||_______|||__|||__|||__|||__|||__|||__|||__||
 # |/__\|/__\|/__\|/__\|/__\|/__\|/__\|/__\|/_______\|/__\|/__\|/__\|/__\|/__\|/__\|/__\|
 # 
-sub compress
-{
-	# +-+-+-+-+-+-+-+-+
-	# |c|o|m|p|r|e|s|s|
-	# +-+-+-+-+-+-+-+-+
-	#
-	# @Description	Compress the file with Bzip2
-	# @Param	<None>
-	# @Return	n = Size of the compressed file 
-	#		0 = Failed to compress or missing argument
-	my $self = shift;
-	my $bzip = undef;
+sub compress {
+    # +-+-+-+-+-+-+-+-+
+    # |c|o|m|p|r|e|s|s|
+    # +-+-+-+-+-+-+-+-+
+    #
+    # @Description  Compress the file with Bzip2
+    # @Param        <None>
+    # @Return       n = Size of the compressed file 
+    #               0 = Failed to compress or missing argument
+    my $self = shift;
+    my $bzip = undef;
 
-	return 0 unless $self->{'input'};
-	return 0 unless -r $self->{'input'};
-	return 0 if( $self->{'override'} == 0 && -e $self->{'output'} );
+    return 0 unless $self->{'input'};
+    return 0 unless -r $self->{'input'};
+    return 0 if( $self->{'override'} == 0 && -e $self->{'output'} );
 
-	eval {
-		use IO::Compress::Bzip2;
+    eval {
+        use IO::Compress::Bzip2;
 
-		$self->{'output'}->remove() if( $self->{'override'} && -e $self->{'output'} );
-		$bzip = IO::Compress::Bzip2->new( $self->{'output'}->stringify(), 'Append' => 0, );
-	};
-	return 0 if $@;
+        $self->{'output'}->remove if( $self->{'override'} && -e $self->{'output'} );
+        $bzip = IO::Compress::Bzip2->new( $self->{'output'}->stringify, 'Append' => 0, );
+    };
+    return 0 if $@;
 
-	$bzip->binmode();
-	$bzip->print( Perl6::Slurp::slurp( $self->{'input'}->stringify() ) );
-	$bzip->close();
-	$self->{'input'}->remove() if $self->{'cleanup'};
-	return $self->{'output'}->stat->size();
+    $bzip->binmode;
+    $bzip->print( Perl6::Slurp::slurp( $self->{'input'}->stringify ) );
+    $bzip->close;
+    $self->{'input'}->remove if $self->{'cleanup'};
+    return $self->{'output'}->stat->size;
 }
 
 1;

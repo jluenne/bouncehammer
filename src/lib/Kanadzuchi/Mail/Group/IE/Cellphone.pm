@@ -1,4 +1,4 @@
-# $Id: Cellphone.pm,v 1.1.2.2 2013/04/15 04:20:53 ak Exp $
+# $Id: Cellphone.pm,v 1.1.2.3 2013/08/30 08:51:14 ak Exp $
 # Copyright (C) 2009-2010,2013 Cubicroot Co. Ltd.
 # Kanadzuchi::Mail::Group::IE::
                                                             
@@ -22,29 +22,20 @@ use warnings;
 # Cellular phone domains in Ireland
 # See http://en.wikipedia.org/wiki/List_of_SMS_gateways
 sub communisexemplar { return qr{[.]ie\z}; }
-sub nominisexemplaria
-{
-	# *** NOT TESTED YET ***
-	my $self = shift;
-	return {
-		'meteor' => [
-			# Meteor Mobile; http://www.meteor.ie/
-			qr{\A(?:sms|mms)[.]mymeteor[.]ie\z},
-		],
-		#'vodafone' => [
-		#	# Vodafone; http://www.vodafone.ie/
-		#	# http://forum.vodafone.ie/index.php?/topic/5367-email-to-sms-gateway/
-		#	qr{\Asms[.]vodafone[.]ie\z},
-		#],
-	};
-}
-
-sub classisnomina
-{
-	my $class = shift;
-	return {
-		'meteor'	=> 'Generic',
-	};
+sub nominisexemplaria {
+    # *** NOT TESTED YET ***
+    my $self = shift;
+    return {
+        'meteor' => [
+            # Meteor Mobile; http://www.meteor.ie/
+            qr{\A(?:sms|mms)[.]mymeteor[.]ie\z},
+        ],
+        #'vodafone' => [
+        #   # Vodafone; http://www.vodafone.ie/
+        #   # http://forum.vodafone.ie/index.php?/topic/5367-email-to-sms-gateway/
+        #   qr{\Asms[.]vodafone[.]ie\z},
+        #],
+    };
 }
 
 1;

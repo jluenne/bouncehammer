@@ -1,4 +1,4 @@
-# $Id: Cellphone.pm,v 1.1.2.2 2013/04/15 04:20:53 ak Exp $
+# $Id: Cellphone.pm,v 1.1.2.3 2013/08/30 08:51:14 ak Exp $
 # Copyright (C) 2009,2010,2013 Cubicroot Co. Ltd.
 # Kanadzuchi::Mail::Group::IL::
                                                             
@@ -21,23 +21,14 @@ use warnings;
 #
 # Cellular phone domains in State of Israel
 # sub communisexemplar { return qr{[.]il\z}; }
-sub nominisexemplaria
-{
-	my $self = shift;
-	return {
-		'spikko' => [
-			# Spikko; http://spikkosms.com/
-			qr{\Aspikkosms[.]com\z},
-		],
-	};
-}
-
-sub classisnomina
-{
-	my $class = shift;
-	return {
-		'spikko'	=> 'Generic',
-	};
+sub nominisexemplaria {
+    my $self = shift;
+    return {
+        'spikko' => [
+            # Spikko; http://spikkosms.com/
+            qr{\Aspikkosms[.]com\z},
+        ],
+    };
 }
 
 1;

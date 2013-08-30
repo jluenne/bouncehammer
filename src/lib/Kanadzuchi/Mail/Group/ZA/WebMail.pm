@@ -1,4 +1,4 @@
-# $Id: WebMail.pm,v 1.3.2.2 2013/04/15 04:20:53 ak Exp $
+# $Id: WebMail.pm,v 1.3.2.3 2013/08/30 08:51:14 ak Exp $
 # Copyright (C) 2010,2013 Cubicroot Co. Ltd.
 # Kanadzuchi::Mail::Group::ZA::
                                                    
@@ -20,30 +20,20 @@ use warnings;
 #
 # Major company's Webmail domains in South Africa/Zuid-Afrika
 sub communisexemplar { return qr{[.]za\z}; }
-sub nominisexemplaria
-{
-	my $class = shift;
-	return {
-		'mighty' => [
-			# http://www.mighty.co.za/
-			qr{\Amighty[.]co[.]za\z},
-		],
-		'webmail.co.za' => [
-			# http://www.webmail.co.za/
-			qr{\A(?:exclusive|executive|home|magic|rave|star|work|web)mail[.]co[.]za\z},
-			qr{\Athe(?:cricket|golf|pub|rugby)[.]co[.]za\z},
-			qr{\A(?:mailbox|websurfer)[.]co[.]za\z},
-		],
-	};
-}
-
-sub classisnomina
-{
-	my $class = shift;
-	return {
-		'mighty'	=> 'Generic',
-		'webmail.co.za'	=> 'Generic',
-	};
+sub nominisexemplaria {
+    my $class = shift;
+    return {
+        'mighty' => [
+            # http://www.mighty.co.za/
+            qr{\Amighty[.]co[.]za\z},
+        ],
+        'webmail.co.za' => [
+            # http://www.webmail.co.za/
+            qr{\A(?:exclusive|executive|home|magic|rave|star|work|web)mail[.]co[.]za\z},
+            qr{\Athe(?:cricket|golf|pub|rugby)[.]co[.]za\z},
+            qr{\A(?:mailbox|websurfer)[.]co[.]za\z},
+        ],
+    };
 }
 
 1;
