@@ -1,4 +1,4 @@
- $Id: RELEASE_NOTES.JA,v 1.52.2.28 2013/07/17 04:24:49 ak Exp $
+ $Id: RELEASE_NOTES.JA,v 1.52.2.29 2013/08/31 00:02:24 ak Exp $
 -----------------------------------------------------------------------
  ##                                      ##  ##                                     
  ##      ####  ##  ## #####   #### ####  ##  ##  ####  ##  ## ##  ##  ####  #####   
@@ -9,7 +9,7 @@
                                                                                     
               BOUNCEHAMMER/RELEASE_NOTES.JA (utf-8/LF)
 -----------------------------------------------------------------------
- Copyright (C) 2009-2011 Cubicroot Co. Ltd. ALL RIGHTS RESERVED.
+ Copyright (C) 2009-2013 Cubicroot Co. Ltd. ALL RIGHTS RESERVED.
  開発: 株式会社キュービックルート (http://cubicroot.jp/)
 -----------------------------------------------------------------------
  オープンソースのバウンスメール解析システム``bounceHammer''のリリース
@@ -24,7 +24,7 @@
   - http://www.facebook.com/bouncehammer
 -----------------------------------------------------------------------
 
-2.7.10p3/2.7.0	2013/07/18
+2.7.10p4/2.7.0	2013/09/02
 
   細かな改善点:
     * SMS, MMSゲートウェイ等の携帯電話用ドメインをアップデート
@@ -36,6 +36,8 @@
       基準に作成したMTA::US::Verizonを使用します。
       Thanks to Scott Gifford.
     * Kanadzuchi/Mail/Why以下のエラーメッセージパターンを追加更新。
+    * @yahoo.ne.jpは'yahoo'に分類されます。
+    * au by KDDI(@ezweb.ne.jp)とYahoo!のバウンスメール解析精度を改善。
 
   修正されたバグ:
     * DBD::SQLiteモジュールが@INCに入っていない場合、次のテストにおいて
@@ -48,6 +50,10 @@
     * lib/Kanadzuchi/MTA/US/Verizon.pm
     * lib/Kanadzuchi/Mail/Why/Suspend.pm
     * t/043_mta-us-verizon.t
+
+  削除されたファイル: 
+    * lib/Kanadzuchi/Mail/Bounced/Yahoo.pm
+
 
 -----------------------------------------------------------------------
 2.7.10/2.7.0	2013/04/19
