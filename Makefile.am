@@ -1,11 +1,11 @@
-# $Id: Makefile.am,v 1.58.2.22 2013/07/17 04:24:49 ak Exp $
+# $Id: Makefile.am,v 1.58.2.23 2013/08/31 00:02:38 ak Exp $
 # -Id: Makefile.am,v 1.14 2009/12/01 10:35:23 ak Exp -
 # -Id: Makefile.am,v 1.14 2009/08/27 06:05:39 ak Exp -
-# Copyright (C) 2009-2011 Cubicroot Co. Ltd.
+# Copyright (C) 2009-2013 Cubicroot Co. Ltd.
 # This is the auto-Makefile for bounceHammer, is processed by automake to create Makefile.in.
 ENGINENAME = Kanadzuchi
 SYSTEMNAME = bounceHammer
-SYSVERSION = 2.7.10p3
+SYSVERSION = 2.7.10p4
 CMD_MODULE = ./Modules.PL
 CMD_IMPLEM = ./Implement.PL
 PATCH_TBOP = ./diff/perl-TB-option-on-filehandle.patch
@@ -116,6 +116,9 @@ uninstall-old-files:
 	rm -f @prefix@/lib/Kanadzuchi/Mail/Bounced/JP/aubyKDDI.pm
 	rm -f @prefix@/lib/Kanadzuchi/Mail/Bounced/JP/NTTDoCoMo.pm
 	rm -f @prefix@/lib/Kanadzuchi/Mail/Bounced/JP/SoftBank.pm
+
+	@echo "Uninstall files which are renamed at ver 2.7.11"
+	rm -f @prefix@/lib/Kanadzuchi/Mail/Bounced/Yahoo.pm
 
 message:
 	@echo "-----------------------------------------------------------------------------"
