@@ -1,4 +1,4 @@
-# $Id: Bounced.pm,v 1.30.2.16 2013/08/29 11:03:52 ak Exp $
+# $Id: Bounced.pm,v 1.30.2.17 2013/10/21 06:33:30 ak Exp $
 # -Id: Returned.pm,v 1.10 2010/02/17 15:32:18 ak Exp -
 # -Id: Returned.pm,v 1.2 2009/08/29 19:01:18 ak Exp -
 # -Id: Returned.pm,v 1.15 2009/08/21 02:44:15 ak Exp -
@@ -255,6 +255,30 @@ sub eatit {
             $bouncemesg->{'diagnosticcode'} = $tempheader->{'diagnosticcode'};
         }
 
+        #  __  __                                     ___    _ 
+        # |  \/  | ___  ___ ___  __ _  __ _  ___     |_ _|__| |
+        # | |\/| |/ _ \/ __/ __|/ _` |/ _` |/ _ \_____| |/ _` |
+        # | |  | |  __/\__ \__ \ (_| | (_| |  __/_____| | (_| |
+        # |_|  |_|\___||___/___/\__,_|\__, |\___|    |___\__,_|
+        #                             |___/                    
+        unless( $bouncemesg->{'messageid'} ) {
+            # The value of Message-Id: header
+            $tempheader->{'messageid'} = $mimeparser->getit('Message-Id') || q();
+            $bouncemesg->{'messageid'} = $tempheader->{'messageid'};
+        }
+
+        #  ____        _     _           _   
+        # / ___| _   _| |__ (_) ___  ___| |_ 
+        # \___ \| | | | '_ \| |/ _ \/ __| __|
+        #  ___) | |_| | |_) | |  __/ (__| |_ 
+        # |____/ \__,_|_.__// |\___|\___|\__|
+        #                 |__/               
+        unless( $bouncemesg->{'subject'} ) {
+            # Subject: header
+            $tempheader->{'subject'} = $mimeparser->getit('Subject') || q();
+            $bouncemesg->{'subject'} = $tempheader->{'subject'};
+        }
+
         # __  __    ____  __  __ _____ ____            
         # \ \/ /   / ___||  \/  |_   _|  _ \     __/\__
         #  \  /____\___ \| |\/| | | | | |_) |____\    /
@@ -320,6 +344,8 @@ sub eatit {
 
         $thisobject = __PACKAGE__->new(
             'listid' => $bouncemesg->{'listid'},
+            'subject' => $bouncemesg->{'subject'},
+            'messageid' => $bouncemesg->{'messageid'},
             'addresser' => $bouncemesg->{'addresser'},
             'recipient' => $bouncemesg->{'recipient'},
             'smtpagent' => $bouncemesg->{'smtpagent'},
@@ -339,7 +365,6 @@ sub eatit {
             next if( $confx->{'skip'}->{'norelaying' } && ( $thisobject->is_norelaying ) );
             next if( $confx->{'skip'}->{'temperror' } && ( $thisobject->is_temperror ) );
         }
-
         push @$mesgpieces, $thisobject;
 
     } continue {
