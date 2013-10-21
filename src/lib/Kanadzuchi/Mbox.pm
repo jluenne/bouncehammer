@@ -1,4 +1,4 @@
-# $Id: Mbox.pm,v 1.28.2.15 2013/08/29 11:02:53 ak Exp $
+# $Id: Mbox.pm,v 1.28.2.16 2013/10/21 06:27:29 ak Exp $
 # -Id: Parser.pm,v 1.10 2009/12/26 19:40:12 ak Exp -
 # -Id: Parser.pm,v 1.1 2009/08/29 08:50:27 ak Exp -
 # -Id: Parser.pm,v 1.4 2009/07/31 09:03:53 ak Exp -
@@ -28,6 +28,8 @@ use warnings;
 use Perl6::Slurp;
 use JSON::Syck;
 use Encode;
+use Kanadzuchi::MIME;
+use Kanadzuchi::String;
 use Kanadzuchi::MTA::Sendmail;
 use Kanadzuchi::MTA::Postfix;
 use Kanadzuchi::MTA::qmail;
@@ -453,18 +455,44 @@ sub parseit {
         $_mail->{'body'} =~ s{^[Tt]o:[ ]*([^\n\r]+)[\n\r][ \t]+([^\n\r]+)}{To: $1 $2}gm;
 
         if( $_mail->{'body'} =~ m{^[Dd]iagnostic-[Cc]ode:[\s]*([^\n\r]+)[\n\r]([\s\t]+.+)}ms ) {
+            # Concatenate ``Diagnostic-Code:'' header
+            my $_x1 = 'Diagnostic-Code: '.$1;
+            my $_x2 = $2; $_x2 =~ y{\r}{\n};
 
-            my $_d1 = 'Diagnostic-Code: '.$1;
-            my $_d2 = $2; $_d2 =~ y{\r}{\n};
-
-            foreach my $e ( split( qq(\n), $_d2 ) ) {
-
+            for my $e ( split( qq(\n), $_x2 ) ) {
                 last unless $e =~ m{\A[\s\t]+};
-                $_d1 .= ' '.$e;
+                $_x1 .= ' '.$e;
             }
 
-            $_d1 =~ y{ }{}s;
-            $_mail->{'body'} =~ s{^[Dd]iagnostic-[Cc]ode:[\s]*[^\n\r]+[\n\r][\s\t]+[^\n\r]+}{$_d1}m;
+            $_x1 =~ y{ }{}s;
+            $_mail->{'body'} =~ s{^[Dd]iagnostic-[Cc]ode:[\s]*[^\n\r]+[\n\r][\s\t]+[^\n\r]+}{$_x1}m;
+        }
+
+        if( $_mail->{'body'} =~ m{^[Ss]ubject:\s*([^\n\r]+)[\n\r]([\s\t]+.+)}ms ) {
+            # Concatenate ``Subject:'' header lines
+            #my $_x1 = 'Subject: '.$1;
+            #my $_x2 = $2; $_x2 =~ y{\r}{\n};
+            my $_x1 = $1;
+            my $_x2 = $2; $_x2 =~ y{\r}{\n};
+            my $_x3 = [];
+
+            if( Kanadzuchi::String->is_8bit( \$_x1 ) || Kanadzuchi::String->is_8bit( \$_x2 ) ) {
+                # The value of ``Subject'' header is including multibyte character,
+                # is not encoded with MIME.
+                $_x1 = 'MULTIBYTE CHARACTERS HAVE BEEN REMOVED';
+
+            } else {
+                # MIME Encoded subject field or ASCII characters only
+                $_x3 = [ $_x1 ];
+                for my $e ( split( qq(\n), $_x2 ) ) {
+                    last unless $e =~ m{\A[\s\t]+};
+                    push @$_x3, $e;
+                }
+                $_x1 = Kanadzuchi::MIME->mimedecode( $_x3 );
+            }
+
+            $_x1 =  sprintf( "Subject: %s", $_x1 );
+            $_mail->{'body'} =~ s{^[Ss]ubject:[\s]*[^\n\r]+[\n\r][\s\t]+[^\n\r]+}{$_x1}m;
         }
 
         # Delete non-required headers
@@ -504,11 +532,13 @@ sub parseit {
         $_mail->{'body'} =~ s{^[Ff]orward-[Pp]ath:[ ]*(.+)$}{<<<<: Forward-Path: $1}m;
         $_mail->{'body'} =~ s{^[Ll]ast-[Aa]ttempt-[Dd]ate:[ ]*(.+)$}{<<<<: Last-Attempt-Date: $1}m;
         $_mail->{'body'} =~ s{^[Ll]ist-[Ii]d:[ ]*(.+)$}{<<<<: List-Id: $1}m;
+        $_mail->{'body'} =~ s{^[Mm]essage-[Ii]d:[ ]*(.+)$}{<<<<: Message-Id: $1}m;
         $_mail->{'body'} =~ s{^[Oo]riginal-[Rr]ecipient:[ ]*[Rr][Ff][Cc]822;[ ]*(.+)$}{<<<<: Original-Recipient: $1}m;
         $_mail->{'body'} =~ s{^[Rr]eply-[Tt]o:[ ]*(.+)$}{<<<<: Reply-To: $1}m;
         $_mail->{'body'} =~ s{^[Rr]eturn-[Pp]ath:[ ]*(.+)$}{<<<<: Return-Path: $1}gm;
         $_mail->{'body'} =~ s{^[Rr]everse-[Pp]ath:[ ]*(.+)$}{<<<<: Reverse-Path: $1}m;
         $_mail->{'body'} =~ s{^[Ss]tatus:[ ]*(\d[.]\d[.]\d+).*$}{<<<<: Status: $1}gm;
+        $_mail->{'body'} =~ s{^[Ss]ubject:[ ]*(.+)$}{<<<<: Subject: $1}gm;
         $_mail->{'body'} =~ s{^[Tt]o:[ ]*(.+)$}{<<<<: To: $1}m;
         $_mail->{'body'} =~ s{^[Xx]-[Aa]ctual-[Rr]ecipient:[ ]*[Rf][Ff][Cc]822;[ ]*(.+)$}{<<<<: X-Actual-Recipient: $1}m;
         $_mail->{'body'} =~ s{^[Xx]-[Aa]ctual-[Rr]ecipient:[ ]*(.+)$}{<<<<: X-Actual-Recipient: $1}m;
