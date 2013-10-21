@@ -163,8 +163,8 @@ top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 @WEBUI_FALSE@SUBDIRS = Archive Config Mail MIME MTA BdDR UI Statistics
 
-# $Id: Makefile.am,v 1.20.2.1 2011/06/20 03:43:39 ak Exp $
-# Copyright (C) 2009,2010 Cubicroot Co. Ltd.
+# $Id: Makefile.am,v 1.20.2.2 2013/10/21 06:28:42 ak Exp $
+# Copyright (C) 2009,2010,2013 Cubicroot Co. Ltd.
 # This is the auto-Makefile for bounceHammer/src/lib/Kanadzuchi,
 # is processed by automake to create Makefile.in.
 @WEBUI_TRUE@SUBDIRS = API Archive Config Mail MIME MTA BdDR UI Statistics
@@ -174,7 +174,7 @@ instdir = @libdir@/Kanadzuchi
 pkgdata_DATA = API.pm Address.pm Archive.pm Exceptions.pm Log.pm Mail.pm \
 	Metadata.pm BdDR.pm RFC3463.pm RFC2606.pm RFC2822.pm ISO3166.pm \
 	Statistics.pm String.pm Time.pm UI.pm Iterator.pm MTA.pm Crypt.pm \
-	MDA.pm
+	MDA.pm MIME.pm
 
 all: all-recursive
 
