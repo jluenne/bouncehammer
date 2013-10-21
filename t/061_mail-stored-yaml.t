@@ -1,4 +1,4 @@
-# $Id: 061_mail-stored-yaml.t,v 1.11.2.2 2013/08/30 23:05:12 ak Exp $
+# $Id: 061_mail-stored-yaml.t,v 1.11.2.3 2013/10/21 06:37:07 ak Exp $
 #  ____ ____ ____ ____ ____ ____ ____ ____ ____ 
 # ||L |||i |||b |||r |||a |||r |||i |||e |||s ||
 # ||__|||__|||__|||__|||__|||__|||__|||__|||__||
@@ -343,4 +343,4 @@ SKIP: {
 }
 
 __DATA__
-- { "bounced": 166222661, "addresser": "postmaster@example.jp", "recipient": "very-very-big-message-to-you@gmail.com", "senderdomain": "example.jp", "destination": "gmail.com", "reason": "mesgtoobig", "hostgroup": "webmail", "provider": "google", "description": { "deliverystatus": "5.3.4", "timezoneoffset": "+0900", "diagnosticcode": "Test record", "smtpagent": "Sendmail", "listid": "" }, "token": "aeaaeb939a918caaef3be00f19b66506" }
+- { "bounced": 166222661, "addresser": "postmaster@example.jp", "recipient": "very-very-big-message-to-you@gmail.com", "senderdomain": "example.jp", "destination": "gmail.com", "reason": "mesgtoobig", "hostgroup": "webmail", "provider": "google", "description": { "deliverystatus": "5.3.4", "timezoneoffset": "+0900", "diagnosticcode": "Test record", "smtpagent": "Sendmail", "listid": "", "subject": "TEST", "messageid": "<0000@example.org>" }, "token": "aeaaeb939a918caaef3be00f19b66506" }
