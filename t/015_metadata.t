@@ -1,4 +1,4 @@
-# $Id: 015_metadata.t,v 1.9.2.2 2013/08/30 23:05:12 ak Exp $
+# $Id: 015_metadata.t,v 1.9.2.3 2013/10/21 06:34:21 ak Exp $
 #  ____ ____ ____ ____ ____ ____ ____ ____ ____ 
 # ||L |||i |||b |||r |||a |||r |||i |||e |||s ||
 # ||__|||__|||__|||__|||__|||__|||__|||__|||__||
@@ -108,4 +108,4 @@ TO_OBJECT: {
 
 done_testing();
 __DATA__
-{ "bounced": 166222661, "addresser": "postmaster@example.jp", "recipient": "very-very-big-message-to-you@gmail.com", "senderdomain": "example.jp", "destination": "gmail.com", "reason": "mesgtoobig", "hostgroup": "webmail", "description": { "deliverystatus": "5.3.4", "timezoneoffset": "+0900", "diagnosticcode": "Test record", "smtpagent": "Sendmail", "listid": "list.example.org" }, "token": "aeaaeb939a918caaef3be00f19b66506" }
+{ "bounced": 166222661, "addresser": "postmaster@example.jp", "recipient": "very-very-big-message-to-you@gmail.com", "senderdomain": "example.jp", "destination": "gmail.com", "reason": "mesgtoobig", "hostgroup": "webmail", "description": { "deliverystatus": "5.3.4", "timezoneoffset": "+0900", "diagnosticcode": "Test record", "smtpagent": "Sendmail", "listid": "list.example.org", "subject", "TEST", "messageid": "<0000@example.org>" }, "token": "aeaaeb939a918caaef3be00f19b66506" }
