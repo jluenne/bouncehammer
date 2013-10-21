@@ -52,7 +52,7 @@ Received: from USER-PC97 ([192.0.2.97])
 Message-ID: <AA406E7E18714AB2927DAACC24B47C4A@USER-PC97>
 From: "User1, For Example" <user1@example.jp>
 To: <domain-does-not-exist@example.gov>
-Subject: TEST
+Subject: =?utf-8?B?44Kt44K444OI44Op?=
 Date: Thu, 18 Sep 2008 17:53:55 +0900
 MIME-Version: 1.0
 Content-Type: text/plain;
@@ -129,7 +129,7 @@ Message-Id: <E9E9449A-4918-4B8B-8589-435230D67AC7@example.jp>
 Content-Type: text/plain; charset=US-ASCII; format=flowed
 To: recipient-address-does-not-exist@docomo.ne.jp
 From: "User2, For Example" <user2@example.jp>
-Subject: TEST
+Subject: =?utf-8?B?44Kt44K444OI44Op?=
 Date: Tue, 28 Apr 2009 08:17:45 +0900
 X-Mailer: Apple Mail (2.753.1)
 X-Virus-Scanned: ClamAV version 0.94.2, clamav-milter version 0.94.2 on 192.0.2.252
@@ -356,10 +356,10 @@ Content-Description: Notification
 Content-Type: text/plain; charset=iso-2022-jp
 Content-Transfer-Encoding: 7bit
 
-$B<!$N$"$F@h$X$N%a%C%;!<%8$O%(%i!<$N$?$aAw?.$G$-$^$;$s$G$7$?!#(B
+次のあて先へのメッセージはエラーのため送信できませんでした。
 
-$BAw?.@h%a!<%k%"%I%l%9$,8+$D$+$j$^$;$s$G$7$?!#(B
-$B%a!<%k%"%I%l%9$r$43NG'$N>e!":FAw?.$7$F$/$@$5$$!#(B
+送信先メールアドレスが見つかりませんでした。
+メールアドレスをご確認の上、再送信してください。
 
 The user(s) account is disabled.
 
@@ -565,7 +565,7 @@ Status:
 Content-Type: text/plain;charset=ISO-2022-JP
 Content-Transfer-Encoding: 7bit
 
-$B;XDj$5$l$?Aw?.@h$O%(%i!<$N$?$a$*FO$1$G$-$^$;$s$G$7$?!#(B
+指定された送信先はエラーのためお届けできませんでした。
 --dsn_3515f7bf_7322_4156_955a_79f259d066b4
 Content-Type: message/delivery-status
 
@@ -586,7 +586,7 @@ Received: from outgoing-smtp-4.example.co.jp ([192.0.2.4])
 X-BMTA-TYPE-ISP: 
 X-Mailer: Apple Mail (2.752.2)
 Date: Thu, 5 Feb 2009 18:39:26 +0900
-Subject: TEST
+Subject: =?utf-8?B?44Ko44Op44O8?=
 From: user <user@example.co.jp>
 To: the-recipient-does-not-exist-on-the-host@k.vodafone.ne.jp
 Content-Type: text/plain;charset=US-ASCII;format=flowed
@@ -690,8 +690,8 @@ Status: RO
 Content-Transfer-Encoding: 7bit
 Content-Type: text/plain; charset="iso-2022-jp"
 
-$BAw?.@h$N%5!<%P!<%a!<%k%\%C%/%9$,0lGU$G(B
-$B$*FO$1$G$-$^$;$s$G$7$?!#(B
+送信先のサーバーメールボックスが一杯で
+お届けできませんでした。
 <this-destination-mailbox-is-full@d.vodafone.ne.jp>
 
 --===========================_ _= 1083374(27238)1219921820
@@ -2046,19 +2046,19 @@ Content-Transfer-Encoding: 7bit
 Content-Type: text/plain;
 	charset="ISO-2022-JP"
 
-$B$3$N%a!<%k$KE:IU$5$l$F$$$k%a%C%;!<%8$O!"Aw?.$G$-$^$;$s$G$7$?!#(B
+このメールに添付されているメッセージは、送信できませんでした。
 
-$B08@h$,$_$D$+$j$^$;$s$G$7$?!#(B
-$B2<5-%a!<%k%"%I%l%908$K%a!<%k$rAw?.$9$k$3$H$,$G$-$^$;$s$G$7$?!#(B
+宛先がみつかりませんでした。
+下記メールアドレス宛にメールを送信することができませんでした。
 user unknown
 The following recipients did not receive this message
 
 <this-recipient-address-is-not-mopera-user@mopera.ne.jp>
 
-$B!c$4Cm0U!d(B
-$B!&K\%a!<%k$K$OJV?.$G$-$^$;$s!#(B
+＜ご注意＞
+・本メールには返信できません。
 
-$B3t<02q<R(BNTT$B%I%3%b(B
+株式会社NTTドコモ
 
 --===========================_ _= 3641052(17287)1240887063
 Content-Type: message/delivery-status
