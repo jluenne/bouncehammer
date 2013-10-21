@@ -1,4 +1,4 @@
-# $Id: 052_mail-bounced.t,v 1.8.2.4 2013/08/30 23:05:12 ak Exp $
+# $Id: 052_mail-bounced.t,v 1.8.2.5 2013/10/21 06:36:13 ak Exp $
 #  ____ ____ ____ ____ ____ ____ ____ ____ ____ 
 # ||L |||i |||b |||r |||a |||r |||i |||e |||s ||
 # ||__|||__|||__|||__|||__|||__|||__|||__|||__||
@@ -184,6 +184,32 @@ CALL_PARSER: {
 
                 foreach my $li ( $_p->description->{'listid'}, $_p->listid ) {
                     is( $li, q(), '->listid is empty' );
+                }
+            }
+
+            MESSAGEID: {
+                is( $_p->description->{'messageid'}, $_p->messageid, '->description->messageid == messageid' );
+
+                foreach my $mi ( $_p->description->{'messageid'}, $_p->messageid ) {
+                    if( length $mi ) {
+                        ok( $mi, $mi );
+                        like( $mi, qr/\A[<].+[>]\z/ );
+
+                    } else {
+                        is( $mi, q() );
+                    }
+                }
+            }
+
+            SUBJECT: {
+                is( $_p->description->{'subject'}, $_p->subject, '->description->subject == subject' );
+
+                foreach my $sj ( $_p->description->{'subject'}, $_p->subject ) {
+                    if( length $sj ) {
+                        ok( $sj, $sj );
+                    } else {
+                        is( $sj, q() );
+                    }
                 }
             }
         }
