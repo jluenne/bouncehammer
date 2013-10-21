@@ -1,4 +1,4 @@
-$Id: INSTALL,v 1.4.2.3 2013/04/16 09:08:26 ak Exp $
+$Id: INSTALL,v 1.4.2.4 2013/10/21 06:39:05 ak Exp $
 -------------------------------------------------------------------------------
   To install bounceHammer, cd to the directory that contains this file and type
   the following commands:
@@ -48,10 +48,10 @@ $Id: INSTALL,v 1.4.2.3 2013/04/16 09:08:26 ak Exp $
  4. Build: configure and make
 
    * Available configure options
-     --prefix <dir>		Install directory, Default is /usr/local/bouncehammer
-     --with-perl <path>		Path to perl interpreter, If you have multiple perl.
+     --prefix <dir>             Install directory, Default is /usr/local/bouncehammer
+     --with-perl <path>         Path to perl interpreter, If you have multiple perl.
      --with-perl-extlib <path>  Directory which hold required perl modules of bounceHammer
-     --disable-webui=<yes|no>	Disable WebUI, Default is no.
+     --disable-webui=<yes|no>   Disable WebUI, Default is no.
 
   e.g.)
    # export PERL5LIB=/usr/local/bouncehammer/lib/perl5
