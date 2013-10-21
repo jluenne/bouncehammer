@@ -1,4 +1,4 @@
-# $Id: Mbox.pm,v 1.28.2.16 2013/10/21 06:27:29 ak Exp $
+# $Id: Mbox.pm,v 1.28.2.17 2013/10/21 09:35:46 ak Exp $
 # -Id: Parser.pm,v 1.10 2009/12/26 19:40:12 ak Exp -
 # -Id: Parser.pm,v 1.1 2009/08/29 08:50:27 ak Exp -
 # -Id: Parser.pm,v 1.4 2009/07/31 09:03:53 ak Exp -
@@ -470,8 +470,6 @@ sub parseit {
 
         if( $_mail->{'body'} =~ m{^[Ss]ubject:\s*([^\n\r]+)[\n\r]([\s\t]+.+)}ms ) {
             # Concatenate ``Subject:'' header lines
-            #my $_x1 = 'Subject: '.$1;
-            #my $_x2 = $2; $_x2 =~ y{\r}{\n};
             my $_x1 = $1;
             my $_x2 = $2; $_x2 =~ y{\r}{\n};
             my $_x3 = [];
@@ -493,6 +491,24 @@ sub parseit {
 
             $_x1 =  sprintf( "Subject: %s", $_x1 );
             $_mail->{'body'} =~ s{^[Ss]ubject:[\s]*[^\n\r]+[\n\r][\s\t]+[^\n\r]+}{$_x1}m;
+
+        } elsif( $_mail->{'body'} =~ m{^[Ss]ubject:\s*(.+)}m ) {
+            # Subject: header is a single line.
+            my $_x1 = $1;
+            my $_x2 = [];
+            if( Kanadzuchi::String->is_8bit( \$_x1 ) ) {
+                # The value of ``Subject'' header is including multibyte character,
+                # is not encoded with MIME.
+                $_x1 = 'MULTIBYTE CHARACTERS HAVE BEEN REMOVED';
+
+            } else {
+                # MIME Encoded subject field or ASCII characters only
+                $_x2 = [ $_x1 ];
+                $_x1 = Kanadzuchi::MIME->mimedecode( $_x2 );
+            }
+
+            $_x1 =  sprintf( "Subject: %s", $_x1 );
+            $_mail->{'body'} =~ s{^[Ss]ubject:\s*.+}{$_x1}m;
         }
 
         # Delete non-required headers
