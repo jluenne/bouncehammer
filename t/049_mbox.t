@@ -1,4 +1,4 @@
-# $Id: 049_mbox.t,v 1.1.2.2 2013/08/30 23:05:12 ak Exp $
+# $Id: 049_mbox.t,v 1.1.2.3 2013/10/21 06:35:31 ak Exp $
 #  ____ ____ ____ ____ ____ ____ ____ ____ ____ 
 # ||L |||i |||b |||r |||a |||r |||i |||e |||s ||
 # ||__|||__|||__|||__|||__|||__|||__|||__|||__||
@@ -49,7 +49,7 @@ PREPROCESS: {
 }
 
 PARSE_EACH_MAILBOX: foreach my $f ( 
-    'single-message.eml', 'double-messages.eml', '17-messages.eml' ) {
+    'make-test-01.eml', 'make-test-02.eml', '17-messages.eml' ) {
 
     my $object = new Kanadzuchi::Mbox( 'file' => $T->example->stringify.'/'.$f );
     my $classx = $T->class;
