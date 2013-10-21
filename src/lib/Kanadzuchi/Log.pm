@@ -1,4 +1,4 @@
-# $Id: Log.pm,v 1.21.2.4 2013/08/29 11:02:53 ak Exp $
+# $Id: Log.pm,v 1.21.2.5 2013/10/21 06:25:06 ak Exp $
 # -Id: Log.pm,v 1.2 2009/10/06 06:21:47 ak Exp -
 # -Id: Log.pm,v 1.11 2009/07/16 09:05:33 ak Exp -
 # Copyright (C) 2009-2013 Cubicroot Co. Ltd.
@@ -59,10 +59,10 @@ $OutputFormat->{'json'} .= qq|"description": %s, "token": "%s" }|;
 $OutputFormat->{'yaml'} .= qq|- |.$OutputFormat->{'json'};
 
 # Dump with CSV format
-$OutputFormat->{'csv'} .= qq|%d,%s,%s,%s,%s,%s,%s,%s,%d,%s,%s,%s,%s,%s,%s|;
+$OutputFormat->{'csv'} .= qq|%d,"%s","%s","%s","%s","%s","%s","%s",%d,"%s","%s","%s","%s","%s","%s","%s","%s"|;
 $OutputHeader->{'csv'} .= q|bounced,addresser,recipient,senderdomain,destination,reason,|;
 $OutputHeader->{'csv'} .= q|hostgroup,provider,frequency,deliverystatus,timezoneoffset,|;
-$OutputHeader->{'csv'} .= q|diagnosticcode,mta,listid,token|.qq|\n|;
+$OutputHeader->{'csv'} .= q|diagnosticcode,mta,listid,subject,messageid,token|.qq|\n|;
 
 #  ____ ____ ____ ____ ____ _________ ____ ____ ____ ____ ____ ____ ____ 
 # ||C |||l |||a |||s |||s |||       |||M |||e |||t |||h |||o |||d |||s ||
@@ -173,8 +173,9 @@ sub dumper {
         if( defined $atab ) {
             $atab->{'num'}++;
             $damn->{'datestring'} = $_e->bounced->ymd('/').' '.$_e->bounced->hms(':');
-            $atab->{'tab'}->addRow( $atab->{'num'}, $damn->{'datestring'}, $damn->{'addresser'},
-                                    $damn->{'recipient'}, $damn->{'deliverystatus'}, $damn->{'reason'} );
+            $atab->{'tab'}->addRow( 
+                $atab->{'num'}, $damn->{'datestring'}, $damn->{'addresser'},
+                $damn->{'recipient'}, $damn->{'deliverystatus'}, $damn->{'reason'} );
         } else {
 
             if( $self->{'format'} eq 'csv' ) {
@@ -186,7 +187,7 @@ sub dumper {
                             $damn->{'hostgroup'}, $damn->{'provider'}, $damn->{'frequency'}, 
                             $damn->{'deliverystatus'}, $damn->{'timezoneoffset'},
                             $damn->{'diagnosticcode'}, $damn->{'smtpagent'}, $damn->{'listid'},
-                            $damn->{'token'} );
+                            $damn->{'subject'}, $damn->{'messageid'}, $damn->{'token'} );
 
             } else {
                 $data .= sprintf( $OutputFormat->{ $self->{'format'} },
