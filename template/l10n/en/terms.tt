@@ -1,4 +1,4 @@
-[%# $Id: terms.tt,v 1.4.2.2 2011/10/12 03:29:07 ak Exp $ -%]
+[%# $Id: terms.tt,v 1.4.2.3 2013/10/21 09:36:19 ak Exp $ -%]
 [%# Terms in English -%]
 [%- SET tt_term = { 
 		'addresser'	=> 'Sender Address',
@@ -9,12 +9,15 @@
 		'freq'		=> 'Freq.',
 		'frequency'	=> 'Frequency',
 		'hostgroup'	=> 'Host Group',
+		'listid'	=> 'List-Id',
 		'mastertable'	=> 'MasterTable',
+		'messageid'	=> 'Message-Id',
 		'mtamodule'	=> 'MTA Module',
 		'provider'	=> 'Provider',
 		'recipient'	=> 'Recipient Address',
 		'reason'	=> 'Reason',
 		'senderdomain'	=> 'Sender Domain',
+		'subject'		=> 'Subject',
 		'thanks'	=> 'Thank you for using bounceHammer',
 		'token'		=> 'Message Token',
 		'updated'	=> 'Updated at',

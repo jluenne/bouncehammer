@@ -1,4 +1,4 @@
-[%# $Id: terms.tt,v 1.4.2.2 2011/10/12 03:29:07 ak Exp $ -%]
+[%# $Id: terms.tt,v 1.4.2.3 2013/10/21 09:36:19 ak Exp $ -%]
 [%# Terms in English -%]
 [%- SET tt_term = { 
 		'addresser'	=> '発信者アドレス',
@@ -9,12 +9,15 @@
 		'freq'		=> '回数',
 		'frequency'	=> '差戻回数',
 		'hostgroup'	=> '宛先分類',
+		'listid'	=> 'リスト名',
 		'mastertable'	=> 'マスターテーブル',
+		'messageid'	=> 'Message-Id',
 		'mtamodule'	=> 'MTAモジュール',
 		'provider'	=> '宛先所属',
 		'recipient'	=> '受信者アドレス',
 		'reason'	=> '差戻理由',
 		'senderdomain'	=> '発信者ドメイン',
+		'subject'	=> '件名',
 		'thanks'	=> 'bounceHammerをお使い頂きありがとうございます',
 		'token'		=> 'トークン',
 		'updated'	=> '更新日時',
