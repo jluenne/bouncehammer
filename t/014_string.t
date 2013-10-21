@@ -1,4 +1,4 @@
-# $Id: 014_string.t,v 1.6.2.1 2013/08/30 23:05:12 ak Exp $
+# $Id: 014_string.t,v 1.6.2.2 2013/10/21 06:32:48 ak Exp $
 #  ____ ____ ____ ____ ____ ____ ____ ____ ____ 
 # ||L |||i |||b |||r |||a |||r |||i |||e |||s ||
 # ||__|||__|||__|||__|||__|||__|||__|||__|||__||
@@ -7,6 +7,7 @@
 use lib qw(./t/lib ./dist/lib ./src/lib);
 use strict;
 use warnings;
+use utf8;
 use Kanadzuchi::Test;
 use Kanadzuchi::String;
 use Test::More;
@@ -19,7 +20,7 @@ no warnings 'once';
 #
 my $T = new Kanadzuchi::Test(
     'class' => 'Kanadzuchi::String',
-    'methods' => [ 'token', 'is_validtoken' ],
+    'methods' => [ 'token', 'is_validtoken', 'is_8bit' ],
     'instance' => undef, );
 
 #  ____ ____ ____ ____ _________ ____ ____ ____ ____ ____ 
@@ -58,6 +59,18 @@ MESSAGE_TOKEN: {
         ok( length $d, '->token('.$e.') = '.$argv );
         ok( $c->is_validtoken( $d ), '->is_validtoken() = 1' );
     }
+}
+
+EIGHTBIT_VALUE: {
+    my $c = $T->class;
+    my $d = '猫';
+
+    is( $c->is_8bit( \$d ), 1 );
+    is( $c->is_8bit( \'cat' ), 0 );
+
+    is( $c->is_8bit( $d ), undef );
+    is( $c->is_8bit( 'cat' ), undef );
+    is( $c->is_8bit(), undef );
 }
 
 done_testing();
