@@ -1,4 +1,4 @@
-# $Id: String.pm,v 1.7.2.2 2013/08/30 05:56:10 ak Exp $
+# $Id: String.pm,v 1.7.2.3 2013/10/21 06:32:24 ak Exp $
 # Copyright (C) 2009,2010,2013 Cubicroot Co. Ltd.
 # Kanadzuchi::
 
@@ -53,6 +53,24 @@ sub is_validtoken {
     my $token = shift || return 0;
 
     return 1 if $token =~ m/\A[0-9a-f]{32}\z/;
+    return 0;
+}
+
+sub is_8bit {
+    # +-+-+-+-+-+-+-+
+    # |i|s|_|8|b|i|t|
+    # +-+-+-+-+-+-+-+
+    #
+    # @Description  8bit text or not
+    # @Param <ref>  (Ref->Scalar) String
+    # @Return       0 = ASCII Characters only
+    #               1 = Including 8bit character
+    my $class = shift;
+    my $argvs = shift || return undef;
+
+    return undef unless ref $argvs;
+    return undef unless ref $argvs eq 'SCALAR';
+    return 1 unless $$argvs =~ m/\A[\x00-\x7f]+\z/;
     return 0;
 }
 
