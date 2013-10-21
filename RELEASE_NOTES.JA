@@ -1,4 +1,4 @@
- $Id: RELEASE_NOTES.JA,v 1.52.2.29 2013/08/31 00:02:24 ak Exp $
+ $Id: RELEASE_NOTES.JA,v 1.52.2.30 2013/10/21 07:00:15 ak Exp $
 -----------------------------------------------------------------------
  ##                                      ##  ##                                     
  ##      ####  ##  ## #####   #### ####  ##  ##  ####  ##  ## ##  ##  ####  #####   
@@ -24,9 +24,12 @@
   - http://www.facebook.com/bouncehammer
 -----------------------------------------------------------------------
 
-2.7.10p4/2.7.0	2013/09/02
+2.7.11/2.7.0	2013/10/22
 
   細かな改善点:
+    * mailboxparserが出力する解析済データの"description"に補助項目とし
+      て"subject(Subjectヘッダの値)"と"messageid(Message-Idヘッダの値)"
+      が追加されました。
     * SMS, MMSゲートウェイ等の携帯電話用ドメインをアップデート
     * DNS関係のエラーで Gmailから返ってくるバウンスメールを解析出来るよ
       うになりました。
@@ -47,8 +50,10 @@
       い問題を修正しました。
   
   新しいファイル:
+    * lib/Kanadzcuhi/MIME.pm
     * lib/Kanadzuchi/MTA/US/Verizon.pm
     * lib/Kanadzuchi/Mail/Why/Suspend.pm
+    * t/027_mime.t
     * t/043_mta-us-verizon.t
 
   削除されたファイル: 
