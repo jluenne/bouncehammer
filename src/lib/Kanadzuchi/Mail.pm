@@ -1,4 +1,4 @@
-# $Id: Mail.pm,v 1.33.2.5 2013/08/29 11:02:53 ak Exp $
+# $Id: Mail.pm,v 1.33.2.6 2013/10/21 06:28:19 ak Exp $
 # -Id: Message.pm,v 1.1 2009/08/29 07:32:59 ak Exp -
 # -Id: BounceMessage.pm,v 1.13 2009/08/21 02:43:14 ak Exp -
 # Copyright (C) 2009-2013 Cubicroot Co. Ltd.
@@ -42,11 +42,13 @@ __PACKAGE__->mk_accessors(
     'listid',           # (String) List-Id header of each ML
     'token',            # (String) Message token/MD5 Hex digest
     'reason',           # (String) Reason of rejection, bounce
+    'subject',          # (String) UTF-8 Subject
     'bounced',          # (Time::Piece) Date: in the original message
     'provider',         # (String) Provider name
     'hostgroup',        # (String) Host group name
     'addresser',        # (K::Address) From: in the original message
     'recipient',        # (K::Address) Final-Recipient:, To: in the original message
+    'messageid',        # (String) Message-Id
     'frequency',        # (Integer) Frequency of bounce
     'smtpagent',        # (String) SMTP Agent, MTA
     'description',      # (Ref->Hash) Description
@@ -214,7 +216,10 @@ sub new {
 
     PARSE_DESCRIPTION: {
 
-        my $descr = [ qw(deliverystatus diagnosticcode timezoneoffset smtpagent listid) ];
+        my $descr = [ 
+            'deliverystatus', 'diagnosticcode', 'timezoneoffset', 'smtpagent',
+            'listid', 'subject', 'messageid',
+        ];
 
         if( defined $argvs->{'description'} ) {
 
@@ -267,6 +272,8 @@ sub new {
                 'diagnosticcode' => $argvs->{'diagnosticcode'} || q(),
                 'timezoneoffset' => $argvs->{'timezoneoffset'} || '+0000',
                 'smtpagent'      => $argvs->{'smtpagent'} || q(),
+                'messageid'      => $argvs->{'messageid'} || q(),
+                'subject'        => $argvs->{'subject'} || q(),
                 'listid'         => $argvs->{'listid'} || q(),
             };
         }
@@ -377,6 +384,8 @@ sub damn {
     $damn->{'description'} = ${ Kanadzuchi::Metadata->to_string( $self->{'description'} ) };
 
     $damn->{'listid'} = $self->{'description'}->{'listid'} || q();
+    $damn->{'subject'} = $self->{'description'}->{'subject'} || q();
+    $damn->{'messageid'} = $self->{'description'}->{'messageid'} || q();
     $damn->{'smtpagent'} = $self->{'description'}->{'smtpagent'} || q();
     $damn->{'diagnosticcode'} = $self->{'description'}->{'diagnosticcode'} || q();
     $damn->{'deliverystatus'} = $self->{'description'}->{'deliverystatus'} || q();
