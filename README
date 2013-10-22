@@ -1,4 +1,4 @@
- $Id: README,v 1.4.2.2 2013/04/16 09:08:26 ak Exp $
+ $Id: README,v 1.4.2.3 2013/10/22 20:04:06 ak Exp $
 -----------------------------------------------------------------------
  Copyright (C) 2009-2013 Cubicroot Co. Ltd. ALL RIGHTS RESERVED.
  Developed by Cubicroot Co. Ltd. (http://cubicroot.jp/)
@@ -14,13 +14,11 @@
   - http://bouncehammer.jp/
 ------------------------------------------------------------------------
 
-ARTISTIC -------------- Artistic License
 AUTHORS --------------- Author of bounceHammer
-GNU-GPL --------------- GNU General Public License version 2
 INSTALL --------------- How to install bounceHammer
 Implement.PL ---------- Check -T, -B operation on file handle
 KNOWNBUGS ------------- Known bugs in bounceHammer
-LICENSE --------------- About license
+LICENSE --------------- Artistic License or GNU-GPLv2
 Makefile.am ----------- Makefile
 Makefile.in ----------- Makefile
 Modules.PL* ----------- Check depended perl modules
