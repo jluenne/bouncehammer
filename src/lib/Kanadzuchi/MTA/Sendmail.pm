@@ -1,4 +1,4 @@
-# $Id: Sendmail.pm,v 1.6.2.8 2013/08/30 05:55:02 ak Exp $
+# $Id: Sendmail.pm,v 1.6.2.9 2014/02/18 06:15:51 ak Exp $
 # Copyright (C) 2009-2013 Cubicroot Co. Ltd.
 # Kanadzuchi::MTA::
                                                           
@@ -67,7 +67,7 @@ sub reperit {
 
             next if( $xsmtp && $pstat );
 
-            if( not length( $xsmtp ) && $el =~ m/\A(?:[>]{3}[ ])+([A-Z]{4})[ ]?/ ) {
+            if( ! length( $xsmtp ) && $el =~ m/\A(?:[>]{3}[ ])+([A-Z]{4})[ ]?/ ) {
                 # ----- Transcript of session follows -----
                 # ... while talking to mta.example.org.:
                 # >>> DATA
