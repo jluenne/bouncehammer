@@ -1,4 +1,4 @@
-# $Id: Bounced.pm,v 1.30.2.17 2013/10/21 06:33:30 ak Exp $
+# $Id: Bounced.pm,v 1.30.2.18 2014/02/18 06:15:15 ak Exp $
 # -Id: Returned.pm,v 1.10 2010/02/17 15:32:18 ak Exp -
 # -Id: Returned.pm,v 1.2 2009/08/29 19:01:18 ak Exp -
 # -Id: Returned.pm,v 1.15 2009/08/21 02:44:15 ak Exp -
@@ -96,9 +96,9 @@ sub eatit {
             #  Final-Recipient: RFC822; @example.jp ... local-part?
             @$tempemails = grep( m{\A[^@].*[@].+\z},
                             $mimeparser->getit('X-SMTP-Recipient'),
-                            $mimeparser->getit('X-Actual-Recipient'),
                             $mimeparser->getit('Final-Recipient'),
-                            $mimeparser->getit('Original-Recipient') );
+                            $mimeparser->getit('Original-Recipient') ),
+                            $mimeparser->getit('X-Actual-Recipient');
 
             @$tempemails = grep( m{\A[^@].*[@].+\z}, 
                             $mimeparser->getit('To'),
