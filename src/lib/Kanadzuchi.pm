@@ -1,8 +1,8 @@
-# $Id: Kanadzuchi.pm,v 1.33.2.28 2013/10/21 06:45:45 ak Exp $
+# $Id: Kanadzuchi.pm,v 1.33.2.29 2014/02/23 12:49:46 ak Exp $
 # -Id: TheHammer.pm,v 1.4 2009/09/01 23:19:41 ak Exp -
 # -Id: Herculaneum.pm,v 1.13 2009/08/27 05:09:23 ak Exp -
 # -Id: Version.pm,v 1.35 2009/08/27 05:09:29 ak Exp -
-# Copyright (C) 2009-2013 Cubicroot Co. Ltd.
+# Copyright (C) 2009-2014 Cubicroot Co. Ltd.
 
  ##  ##                          ##                     ##      ##    
  ## ##   ####  #####   ####      ## ###### ##  ##  #### ##            
@@ -49,7 +49,7 @@ __PACKAGE__->mk_accessors(
 # ||__|||__|||__|||__|||__|||__|||_______|||__|||__|||__|||__||
 # |/__\|/__\|/__\|/__\|/__\|/__\|/_______\|/__\|/__\|/__\|/__\|
 #
-our $VERSION = '2.7.11';
+our $VERSION = '2.7.11p1';
 our $SYSNAME = 'bounceHammer';
 our $SYSCONF = '__KANADZUCHIROOT__/etc/bouncehammer.cf';
 
