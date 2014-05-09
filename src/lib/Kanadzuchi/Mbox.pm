@@ -1,4 +1,4 @@
-# $Id: Mbox.pm,v 1.28.2.17 2013/10/21 09:35:46 ak Exp $
+# $Id: Mbox.pm,v 1.28.2.18 2014/05/09 08:37:44 ak Exp $
 # -Id: Parser.pm,v 1.10 2009/12/26 19:40:12 ak Exp -
 # -Id: Parser.pm,v 1.1 2009/08/29 08:50:27 ak Exp -
 # -Id: Parser.pm,v 1.4 2009/07/31 09:03:53 ak Exp -
@@ -548,7 +548,7 @@ sub parseit {
         $_mail->{'body'} =~ s{^[Ff]orward-[Pp]ath:[ ]*(.+)$}{<<<<: Forward-Path: $1}m;
         $_mail->{'body'} =~ s{^[Ll]ast-[Aa]ttempt-[Dd]ate:[ ]*(.+)$}{<<<<: Last-Attempt-Date: $1}m;
         $_mail->{'body'} =~ s{^[Ll]ist-[Ii]d:[ ]*(.+)$}{<<<<: List-Id: $1}m;
-        $_mail->{'body'} =~ s{^[Mm]essage-[Ii]d:[ ]*(.+)$}{<<<<: Message-Id: $1}m;
+        $_mail->{'body'} =~ s{^[Mm]essage-[Ii][Dd]:[ ]*(.+)$}{<<<<: Message-Id: $1}m;
         $_mail->{'body'} =~ s{^[Oo]riginal-[Rr]ecipient:[ ]*[Rr][Ff][Cc]822;[ ]*(.+)$}{<<<<: Original-Recipient: $1}m;
         $_mail->{'body'} =~ s{^[Rr]eply-[Tt]o:[ ]*(.+)$}{<<<<: Reply-To: $1}m;
         $_mail->{'body'} =~ s{^[Rr]eturn-[Pp]ath:[ ]*(.+)$}{<<<<: Return-Path: $1}gm;
