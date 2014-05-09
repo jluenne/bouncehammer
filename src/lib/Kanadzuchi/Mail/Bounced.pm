@@ -1,4 +1,4 @@
-# $Id: Bounced.pm,v 1.30.2.18 2014/02/18 06:15:15 ak Exp $
+# $Id: Bounced.pm,v 1.30.2.19 2014/03/01 12:38:06 ak Exp $
 # -Id: Returned.pm,v 1.10 2010/02/17 15:32:18 ak Exp -
 # -Id: Returned.pm,v 1.2 2009/08/29 19:01:18 ak Exp -
 # -Id: Returned.pm,v 1.15 2009/08/21 02:44:15 ak Exp -
@@ -751,7 +751,7 @@ sub is_somethingelse {
     return 1 if $self->{'reason'};
 
     foreach my $c ( 'temporary', 'permanent' ) {
-        $else = Kanadzuchi::RFC3463->causa( $stat ) || q();
+        $else = Kanadzuchi::RFC3463->causa( $stat, $c ) || q();
         last if $else;
     }
 
