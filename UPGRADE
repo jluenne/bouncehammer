@@ -1,11 +1,11 @@
                      BOUNCEHAMMER/UPGRADE
 -----------------------------------------------------------------------
- $Id: UPGRADE,v 1.5.2.15 2014/02/23 12:51:09 ak Exp $
+ $Id: UPGRADE,v 1.5.2.16 2014/05/20 08:25:02 ak Exp $
  Copyright (C) 2009-2014 Cubicroot Co. Ltd. ALL RIGHTS RESERVED.
 -----------------------------------------------------------------------
 
 -----------------------------------------------------------------------
-* 2.7.x => 2.7.[1-11]	2013/10/22
+* 2.7.x => 2.7.[1-12]	2014/05/21
 
   1. Run ./configure script with the same options (if you need)
   2. make && make test && make install

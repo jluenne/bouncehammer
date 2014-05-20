@@ -1,4 +1,4 @@
- $Id: RELEASE_NOTES.JA,v 1.52.2.31 2014/02/23 12:51:46 ak Exp $
+ $Id: RELEASE_NOTES.JA,v 1.52.2.33 2014/05/20 08:24:38 ak Exp $
 -----------------------------------------------------------------------
  ##                                      ##  ##                                     
  ##      ####  ##  ## #####   #### ####  ##  ##  ####  ##  ## ##  ##  ####  #####   
@@ -24,7 +24,7 @@
   - http://www.facebook.com/bouncehammer
 -----------------------------------------------------------------------
 
-2.7.11p1/2.7.0  2014/02/23
+2.7.12/2.7.0	2014/05/21
 
   修正されたバグ:
     * Issue #5 メール解析時の警告: "Use of uninitialized value ..." に
@@ -32,6 +32,10 @@
     * Issue #7 $LANG環境変数が"C"以外の時に"make test"が失敗する問題を
       修正しました。Thanks to @LIMAddict.
     * Kanadzuchi::RFC3463のgetdsn()メソッドの小さなバグを修正。
+    * Kanadzuchi/Mail/Bounced.pmのis_somethingelseで小さなバグを修正。
+    * lib/Kanadzuchi/Mbox.pmでヘッダ名を書き換えるメソッドを修正しまし
+      た。ThunderbirdにおけるMessage-Idヘッダは"Message-ID"である事へ
+      の対応。Thanks to @crazyhacks68k.
 
 -----------------------------------------------------------------------
 2.7.11/2.7.0	2013/10/22
