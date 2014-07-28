@@ -1,7 +1,7 @@
-# $Id: UserUnknown.pm,v 1.12.2.4 2013/08/30 05:55:25 ak Exp $
+# $Id: UserUnknown.pm,v 1.12.2.5 2014/07/28 05:24:40 ak Exp $
 # -Id: UserUnknown.pm,v 1.1 2009/08/29 07:33:28 ak Exp -
 # -Id: UserUnknown.pm,v 1.2 2009/05/11 08:22:29 ak Exp -
-# Copyright (C) 2009,2010,2013 Cubicroot Co. Ltd.
+# Copyright (C) 2009,2010,2013,2014 Cubicroot Co. Ltd.
 # Kanadzuchi::Mail::Why::
                                                                                 
  ##  ##                      ##  ##         ##                                  
@@ -46,6 +46,7 @@ sub exemplaria {
         qr/said: 550[-\s]5[.]1[.]1[ ].+[ ]user[ ]unknown[ ]/,
         qr/sorry, user unknown/,
         qr/sorry, no mailbox here by that name/,
+        qr/the email account that you tried to reach does not exist/,
         qr/this address no longer accepts mail/,
         qr/this user doesn[']?t have a .+ account/, # Yahoo!
         qr/undeliverable address/,

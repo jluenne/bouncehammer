@@ -1,7 +1,7 @@
-# $Id: ExceedLimit.pm,v 1.8.2.2 2013/08/30 05:55:25 ak Exp $
+# $Id: ExceedLimit.pm,v 1.8.2.3 2014/07/28 05:24:40 ak Exp $
 # -Id: ExceedLimit.pm,v 1.1 2009/08/29 07:33:28 ak Exp -
 # -Id: ExceedLimit.pm,v 1.1 2009/05/04 05:17:05 ak Exp -
-# Copyright (C) 2009,2010,2013 Cubicroot Co. Ltd.
+# Copyright (C) 2009,2010,2013,2014 Cubicroot Co. Ltd.
 # Kanadzuchi::Mail::Why::
                                                                      
  ######                              ## ##      ##          ## ##    
@@ -21,7 +21,10 @@ use base 'Kanadzuchi::Mail::Why';
 # Regular expressions of 'Excced Limit'
 sub exemplaria {
     my $class = shift;
-    return [ ];
+    return [
+        qr/daily sending quota exceeded/,
+        qr/your message exceeded Google's message size limits/,
+    ];
 }
 
 1;

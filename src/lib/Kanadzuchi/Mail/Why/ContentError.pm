@@ -1,5 +1,5 @@
-# $Id: ContentError.pm,v 1.2.2.7 2013/08/30 05:55:25 ak Exp $
-# Copyright (C) 2009,2010,2013 Cubicroot Co. Ltd.
+# $Id: ContentError.pm,v 1.2.2.8 2014/07/28 05:24:40 ak Exp $
+# Copyright (C) 2009,2010,2013,2014 Cubicroot Co. Ltd.
 # Kanadzuchi::Mail::Why::
                                                                                     
   ####                 ##                 ##   ######                               
@@ -29,6 +29,8 @@ sub exemplaria {
         qr/blocked by spamAssassin/,        # rejected by SpamAssassin
         qr/domain .+ is a dead domain/,
         qr/mail appears to be unsolicited/, # rejected due to spam
+        qr/mail message is malformed/,
+        qr/message exceeded 50 hops/,
         qr/message filtered/,
         qr/message filtered[.] please see the faqs section on spam/,
         qr/message rejected due to suspected spam content/,
@@ -36,6 +38,7 @@ sub exemplaria {
         qr/message mime complexity exceeds the policy maximum/,
         qr/message refused by mailmarshal spamprofiler/,
         qr/our filters rate at and above .+ percent probability of being spam/,
+        qr/our system has detected that this message is likely unsolicited mail/,
         qr/rejected: spamassassin score /,
         qr/rejected due to spam content/,   # rejected due to spam
         qr/routing loop detected -- too many received: headers/,

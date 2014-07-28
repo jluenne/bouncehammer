@@ -1,7 +1,7 @@
-# $Id: Filtered.pm,v 1.8.2.6 2013/08/28 11:48:47 ak Exp $
+# $Id: Filtered.pm,v 1.8.2.7 2014/07/28 05:24:40 ak Exp $
 # -Id: Filtered.pm,v 1.1 2009/08/29 07:33:28 ak Exp -
 # -Id: Filtered.pm,v 1.2 2009/05/11 08:22:29 ak Exp -
-# Copyright (C) 2009,2010,2013 Cubicroot Co. Ltd.
+# Copyright (C) 2009,2010,2013,2014 Cubicroot Co. Ltd.
 # Kanadzuchi::Mail::Why::
                                                    
  ###### ##  ###   ##                           ##  
@@ -26,6 +26,7 @@ sub exemplaria {
         qr/due to extended inactivity new mail is not currently being accepted for this mailbox/,
         qr|http://postmaster[.]facebook[.]com/.+refused due to recipient preferences|,  # Facebook
         qr/permanent failure for one or more recipients [(].+:blocked[)]/,
+        qr/the user or domain that you are sending to [(]or from[)] has a policy/,
         qr/user not found:/,    # Filter on MAIL.RU
         qr/user reject/,
         qr/we failed to deliver mail because the following address recipient id refuse to receive mail/,    # Willcom

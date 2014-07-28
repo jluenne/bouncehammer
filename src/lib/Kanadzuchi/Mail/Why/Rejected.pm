@@ -1,5 +1,5 @@
-# $Id: Rejected.pm,v 1.2.2.4 2013/08/30 05:55:25 ak Exp $
-# Copyright (C) 2009,2010,2013 Cubicroot Co. Ltd.
+# $Id: Rejected.pm,v 1.2.2.5 2014/07/28 05:24:40 ak Exp $
+# Copyright (C) 2009,2010,2013,2014 Cubicroot Co. Ltd.
 # Kanadzuchi::Mail::Why::
                                                        
  #####           ##                 ##             ##  
@@ -25,7 +25,9 @@ sub exemplaria
         # Rejected due to envelope from address
         qr/address rejected/,
         qr/domain of sender address .+ does not exist/,
+        qr/mail Sending denied/,
         qr/sender rejected/,
+        qr/unauthenticated email is not accepted from this domain/,
     ];
 }
 

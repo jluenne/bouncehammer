@@ -1,5 +1,5 @@
-# $Id: SystemError.pm,v 1.1.2.3 2013/08/30 05:55:25 ak Exp $
-# Copyright (C) 2009,2010,2013 Cubicroot Co. Ltd.
+# $Id: SystemError.pm,v 1.1.2.4 2014/07/28 05:24:40 ak Exp $
+# Copyright (C) 2009,2010,2013,2014 Cubicroot Co. Ltd.
 # Kanadzuchi::Mail::Why::
 
   #####                  ##                ######                               
@@ -21,6 +21,7 @@ use base 'Kanadzuchi::Mail::Why';
 sub exemplaria {
     my $class = shift;
     return [
+        qr/cannot authenticate due to temporary system problem/,
         qr/local error in processing/,
         qr/mail system configuration error/,
         qr/maximum forwarding loop count exceeded/,
