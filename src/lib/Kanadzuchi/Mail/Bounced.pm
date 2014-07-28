@@ -1,4 +1,4 @@
-# $Id: Bounced.pm,v 1.30.2.19 2014/03/01 12:38:06 ak Exp $
+# $Id: Bounced.pm,v 1.30.2.20 2014/07/28 05:26:07 ak Exp $
 # -Id: Returned.pm,v 1.10 2010/02/17 15:32:18 ak Exp -
 # -Id: Returned.pm,v 1.2 2009/08/29 19:01:18 ak Exp -
 # -Id: Returned.pm,v 1.15 2009/08/21 02:44:15 ak Exp -
@@ -535,28 +535,33 @@ sub is_filtered {
 
     } else {
 
-        my $reason = Kanadzuchi::RFC3463->causa( $stat );
+        require Kanadzuchi::Mail::Why::Suspend; 
+        unless( Kanadzuchi::Mail::Why::Suspend->textumhabet( $self->{'diagnosticcode'} ) ) {
+            # The reason is not "filtered" if it matched with pattern in 
+            # "Kanadzuchi::Mail::Why::Suspend"
+            my $reason = Kanadzuchi::RFC3463->causa( $stat );
 
-        if( $reason eq $subj ) {
-            $isfi = 1;
+            if( $reason eq $subj ) {
+                $isfi = 1;
 
-        } elsif( $reason eq 'suspend' ) {
-            $isfi = 0;
+            } elsif( $reason eq 'suspend' ) {
+                $isfi = 0;
 
-        } else {
+            } else {
 
-            if( $self->{'smtpcommand'} ne 'RCPT' || $self->{'smtpcommand'} ne 'MAIL' ) {
+                if( $self->{'smtpcommand'} ne 'RCPT' || $self->{'smtpcommand'} ne 'MAIL' ) {
 
-                my $uclass = 'Kanadzuchi::Mail::Why::UserUnknown';
-                my $fclass = 'Kanadzuchi::Mail::Why::Filtered';
+                    my $uclass = 'Kanadzuchi::Mail::Why::UserUnknown';
+                    my $fclass = 'Kanadzuchi::Mail::Why::Filtered';
 
-                eval { 
-                    require Kanadzuchi::Mail::Why::UserUnknown;
-                    require Kanadzuchi::Mail::Why::Filtered;
-                };
+                    eval { 
+                        require Kanadzuchi::Mail::Why::UserUnknown;
+                        require Kanadzuchi::Mail::Why::Filtered;
+                    };
 
-                $isfi = 1 if( $fclass->textumhabet( $self->{'diagnosticcode'} )
-                                || $uclass->textumhabet($self->{'diagnosticcode'} ) );
+                    $isfi = 1 if( $fclass->textumhabet( $self->{'diagnosticcode'} )
+                                    || $uclass->textumhabet($self->{'diagnosticcode'} ) );
+                }
             }
         }
     }
@@ -755,7 +760,7 @@ sub is_somethingelse {
         last if $else;
     }
 
-    if( $else eq 'undefined' || $else eq 'userunknown' || ! $else ) {
+    if( $else =~ m/\A(?:undefined|userunknown|filtered)\z/ || ! $else ) {
 
         eval { 
             use Kanadzuchi::Mail::Why::MailboxFull;
