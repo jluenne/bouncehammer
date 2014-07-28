@@ -1,4 +1,4 @@
- $Id: RELEASE_NOTES,v 1.76.2.35 2014/05/20 08:24:38 ak Exp $
+ $Id: RELEASE_NOTES,v 1.76.2.36 2014/07/28 05:26:19 ak Exp $
  -Id: RELEASE_NOTES,v 1.12 2009/12/01 10:35:23 ak Exp -
  -Id: RELEASE_NOTES,v 1.34 2009/08/27 05:09:04 ak Exp -
 -----------------------------------------------------------------------
@@ -28,6 +28,14 @@
   - http://www.facebook.com/bouncehammer
 -----------------------------------------------------------------------
 
+2.7.12p1/2.7.0  2014/07/25
+
+  Assorted improvements and code cleanup:
+    * Improved precision of analysis for bounced mails from GoogleApps,
+      backported from Maikugi:  the next version of bouncehammer's core
+      module.
+
+-----------------------------------------------------------------------
 2.7.12/2.7.0	2014/05/21
 
   Fixed bugs:
