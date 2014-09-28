@@ -440,7 +440,7 @@ if( $Cmd->operation & ( $Cmd->option->{'concatenate'} + $Cmd->option->{'merge'} 
 
                 $_cacheofdata .= ${ Kanadzuchi::Metadata->to_string( $dataoftheday ) };
 
-                if( length $_eachlogbuff + length $_cacheofdata ) {
+                if( length( $_eachlogbuff ) + length( $_cacheofdata ) ) {
 
                     print( $_handleoftmp $_cacheofdata );
                     print( $_handleoftmp $_eachlogbuff );
