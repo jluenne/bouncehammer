@@ -42,7 +42,7 @@ sub exemplaria {
         qr/recipient address rejected: user unknown in[ ].+[ ]table/,
         qr/recipient address rejected: unknown user/,
         qr/recipient is not local/,
-        qr/Requested action not taken: mailbox unavailable/,
+        qr/requested action not taken: mailbox unavailable/,
         qr/said: 550[-\s]5[.]1[.]1[ ].+[ ]user[ ]unknown[ ]/,
         qr/sorry, user unknown/,
         qr/sorry, no mailbox here by that name/,
