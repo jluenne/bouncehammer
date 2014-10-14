@@ -4,16 +4,16 @@
 # -Id: Returned.pm,v 1.15 2009/08/21 02:44:15 ak Exp -
 # Copyright (C) 2009-2013 Cubicroot Co. Ltd.
 # Kanadzuchi::Mail::
-                                                 
- #####                                       ##  
- ##  ##  ####  ##  ## #####   #### ####      ##  
- #####  ##  ## ##  ## ##  ## ##   ##  ##  #####  
- ##  ## ##  ## ##  ## ##  ## ##   ###### ##  ##  
- ##  ## ##  ## ##  ## ##  ## ##   ##     ##  ##  
- #####   ####   ##### ##  ##  #### ####   #####  
+
+ #####                                       ##
+ ##  ##  ####  ##  ## #####   #### ####      ##
+ #####  ##  ## ##  ## ##  ## ##   ##  ##  #####
+ ##  ## ##  ## ##  ## ##  ## ##   ###### ##  ##
+ ##  ## ##  ## ##  ## ##  ## ##   ##     ##  ##
+ #####   ####   ##### ##  ##  #### ####   #####
 package Kanadzuchi::Mail::Bounced;
 
-#  ____ ____ ____ ____ ____ ____ ____ ____ ____ 
+#  ____ ____ ____ ____ ____ ____ ____ ____ ____
 # ||L |||i |||b |||r |||a |||r |||i |||e |||s ||
 # ||__|||__|||__|||__|||__|||__|||__|||__|||__||
 # |/__\|/__\|/__\|/__\|/__\|/__\|/__\|/__\|/__\|
@@ -31,7 +31,7 @@ use Digest::MD5;
 use Time::Piece;
 use Encode;
 
-#  ____ ____ ____ ____ ____ ____ ____ ____ ____ 
+#  ____ ____ ____ ____ ____ ____ ____ ____ ____
 # ||A |||c |||c |||e |||s |||s |||o |||r |||s ||
 # ||__|||__|||__|||__|||__|||__|||__|||__|||__||
 # |/__\|/__\|/__\|/__\|/__\|/__\|/__\|/__\|/__\|
@@ -40,7 +40,7 @@ __PACKAGE__->mk_accessors(
     'smtpcommand',      # (String) SMTP Command which returns error
 );
 
-#  ____ ____ ____ ____ ____ _________ ____ ____ ____ ____ ____ ____ ____ 
+#  ____ ____ ____ ____ ____ _________ ____ ____ ____ ____ ____ ____ ____
 # ||C |||l |||a |||s |||s |||       |||M |||e |||t |||h |||o |||d |||s ||
 # ||__|||__|||__|||__|||__|||_______|||__|||__|||__|||__|||__|||__|||__||
 # |/__\|/__\|/__\|/__\|/__\|/_______\|/__\|/__\|/__\|/__\|/__\|/__\|/__\|
@@ -85,12 +85,12 @@ sub eatit {
         $bouncemesg = {};
         $callb->();
 
-        #  ____  _____ ____ ___ ____ ___ _____ _   _ _____ 
+        #  ____  _____ ____ ___ ____ ___ _____ _   _ _____
         # |  _ \| ____/ ___|_ _|  _ \_ _| ____| \ | |_   _|
-        # | |_) |  _|| |    | || |_) | ||  _| |  \| | | |  
-        # |  _ <| |__| |___ | ||  __/| || |___| |\  | | |  
-        # |_| \_\_____\____|___|_|  |___|_____|_| \_| |_|  
-        # 
+        # | |_) |  _|| |    | || |_) | ||  _| |  \| | | |
+        # |  _ <| |__| |___ | ||  __/| || |___| |\  | | |
+        # |_| \_\_____\____|___|_|  |___|_____|_| \_| |_|
+        #
         unless( $bouncemesg->{'recipient'} ) {
             # Directly access to the values, more faster
             #  Final-Recipient: RFC822; @example.jp ... local-part?
@@ -100,7 +100,7 @@ sub eatit {
                             $mimeparser->getit('Original-Recipient') ),
                             $mimeparser->getit('X-Actual-Recipient');
 
-            @$tempemails = grep( m{\A[^@].*[@].+\z}, 
+            @$tempemails = grep( m{\A[^@].*[@].+\z},
                             $mimeparser->getit('To'),
                             $mimeparser->getit('Delivered-To'),
                             $mimeparser->getit('Forward-Path') ) unless @$tempemails;
@@ -125,33 +125,33 @@ sub eatit {
                 }
             }
 
-            $tempheader->{'recipient'} ||= $tempheader->{'expanded'} 
+            $tempheader->{'recipient'} ||= $tempheader->{'expanded'}
                                         ? Kanadzuchi::Address->new( $tempheader->{'expanded'} )
                                         : q();
             next(MIMEPARSER) unless $tempheader->{'recipient'};
             $bouncemesg->{'recipient'} = $tempheader->{'recipient'};
         }
 
-        #     _    ____  ____  ____  _____ ____ ____  _____ ____  
-        #    / \  |  _ \|  _ \|  _ \| ____/ ___/ ___|| ____|  _ \ 
+        #     _    ____  ____  ____  _____ ____ ____  _____ ____
+        #    / \  |  _ \|  _ \|  _ \| ____/ ___/ ___|| ____|  _ \
         #   / _ \ | | | | | | | |_) |  _| \___ \___ \|  _| | |_) |
-        #  / ___ \| |_| | |_| |  _ <| |___ ___) |__) | |___|  _ < 
+        #  / ___ \| |_| | |_| |  _ <| |___ ___) |__) | |___|  _ <
         # /_/   \_\____/|____/|_| \_\_____|____/____/|_____|_| \_\
-        # 
+        #
         # From, Reply-To, Return-Path, and Sender
         unless( $bouncemesg->{'addresser'} ) {
 
             my( $_a, $_e, $_m );
 
             # Directly access to the values, more faster
-            @$tempemails = grep( m{\A[^@].*[@].+\z}, 
+            @$tempemails = grep( m{\A[^@].*[@].+\z},
                             $mimeparser->getit('From'),
                             $mimeparser->getit('Return-Path'),
                             $mimeparser->getit('Reply-To') );
 
             unless( @$tempemails ) {
                 # There is neither From: nor Reply-To: header.
-                @$tempemails = grep( m{\A[^@].*[@].+\z}, 
+                @$tempemails = grep( m{\A[^@].*[@].+\z},
                                 $mimeparser->getit('Errors-To'),
                                 $mimeparser->getit('Reverse-Path'),
                                 $mimeparser->getit('X-Postfix-Sender'),
@@ -192,11 +192,11 @@ sub eatit {
             $bouncemesg->{'addresser'} = $tempheader->{'addresser'};
         }
 
-        #  ____ _____  _  _____ _   _ ____  
-        # / ___|_   _|/ \|_   _| | | / ___| 
-        # \___ \ | | / _ \ | | | | | \___ \ 
+        #  ____ _____  _  _____ _   _ ____
+        # / ___|_   _|/ \|_   _| | | / ___|
+        # \___ \ | | / _ \ | | | | | \___ \
         #  ___) || |/ ___ \| | | |_| |___) |
-        # |____/ |_/_/   \_\_|  \___/|____/ 
+        # |____/ |_/_/   \_\_|  \___/|____/
         #
         unless( $bouncemesg->{'deliverystatus'} ) {
 
@@ -228,10 +228,10 @@ sub eatit {
             $bouncemesg->{'deliverystatus'} = $tempheader->{'deliverystatus'};
         }
 
-        #  ____ ___    _    ____ _   _  ___  ____ _____ ___ ____ 
+        #  ____ ___    _    ____ _   _  ___  ____ _____ ___ ____
         # |  _ \_ _|  / \  / ___| \ | |/ _ \/ ___|_   _|_ _/ ___|
-        # | | | | |  / _ \| |  _|  \| | | | \___ \ | |  | | |    
-        # | |_| | | / ___ \ |_| | |\  | |_| |___) || |  | | |___ 
+        # | | | | |  / _ \| |  _|  \| | | | \___ \ | |  | | |
+        # | |_| | | / ___ \ |_| | |\  | |_| |___) || |  | | |___
         # |____/___/_/   \_\____|_| \_|\___/|____/ |_| |___\____|
         #
         unless( $bouncemesg->{'diagnosticcode'} ) {
@@ -255,45 +255,45 @@ sub eatit {
             $bouncemesg->{'diagnosticcode'} = $tempheader->{'diagnosticcode'};
         }
 
-        #  __  __                                     ___    _ 
+        #  __  __                                     ___    _
         # |  \/  | ___  ___ ___  __ _  __ _  ___     |_ _|__| |
         # | |\/| |/ _ \/ __/ __|/ _` |/ _` |/ _ \_____| |/ _` |
         # | |  | |  __/\__ \__ \ (_| | (_| |  __/_____| | (_| |
         # |_|  |_|\___||___/___/\__,_|\__, |\___|    |___\__,_|
-        #                             |___/                    
+        #                             |___/
         unless( $bouncemesg->{'messageid'} ) {
             # The value of Message-Id: header
             $tempheader->{'messageid'} = $mimeparser->getit('Message-Id') || q();
             $bouncemesg->{'messageid'} = $tempheader->{'messageid'};
         }
 
-        #  ____        _     _           _   
-        # / ___| _   _| |__ (_) ___  ___| |_ 
+        #  ____        _     _           _
+        # / ___| _   _| |__ (_) ___  ___| |_
         # \___ \| | | | '_ \| |/ _ \/ __| __|
-        #  ___) | |_| | |_) | |  __/ (__| |_ 
+        #  ___) | |_| | |_) | |  __/ (__| |_
         # |____/ \__,_|_.__// |\___|\___|\__|
-        #                 |__/               
+        #                 |__/
         unless( $bouncemesg->{'subject'} ) {
             # Subject: header
             $tempheader->{'subject'} = $mimeparser->getit('Subject') || q();
             $bouncemesg->{'subject'} = $tempheader->{'subject'};
         }
 
-        # __  __    ____  __  __ _____ ____            
+        # __  __    ____  __  __ _____ ____
         # \ \/ /   / ___||  \/  |_   _|  _ \     __/\__
         #  \  /____\___ \| |\/| | | | | |_) |____\    /
         #  /  \_____|__) | |  | | | | |  __/_____/_  _\
-        # /_/\_\   |____/|_|  |_| |_| |_|          \/  
-        #                                              
-        $bouncemesg->{'smtpcommand'} = 
+        # /_/\_\   |____/|_|  |_| |_| |_|          \/
+        #
+        $bouncemesg->{'smtpcommand'} =
             ( $mimeparser->getit('X-SMTP-Command') || q() ) unless $bouncemesg->{'smtpcommand'};
-        $bouncemesg->{'smtpagent'} = 
+        $bouncemesg->{'smtpagent'} =
             ( $mimeparser->getit('X-SMTP-Agent' ) || q()) unless $bouncemesg->{'smtpagent'};
 
-        #  ____    _  _____ _____ 
+        #  ____    _  _____ _____
         # |  _ \  / \|_   _| ____|
-        # | | | |/ _ \ | | |  _|  
-        # | |_| / ___ \| | | |___ 
+        # | | | |/ _ \ | | |  _|
+        # | |_| / ___ \| | | |___
         # |____/_/   \_\_| |_____|
         #
         # Arrival-Date, Last-Attempt-Date, and Date
@@ -326,11 +326,11 @@ sub eatit {
             $bouncemesg->{'listid'} = Kanadzuchi::Address->canonify( $tempheader->{'listid'} );
         }
 
-        #   ___  ____      _ _____ ____ _____ 
+        #   ___  ____      _ _____ ____ _____
         #  / _ \| __ )    | | ____/ ___|_   _|
-        # | | | |  _ \ _  | |  _|| |     | |  
-        # | |_| | |_) | |_| | |__| |___  | |  
-        #  \___/|____/ \___/|_____\____| |_|  
+        # | | | |  _ \ _  | |  _|| |     | |
+        # | |_| | |_) | |_| | |__| |___  | |
+        #  \___/|____/ \___/|_____\____| |_|
         #
         # Set hash values to the object.
         # Keys: rcpt,send,date, and stat are required to processing.
@@ -383,7 +383,7 @@ sub eatit {
     return Kanadzuchi::Iterator->new( $mesgpieces );
 }
 
-#  ____ ____ ____ ____ ____ ____ ____ ____ _________ ____ ____ ____ ____ ____ ____ ____ 
+#  ____ ____ ____ ____ ____ ____ ____ ____ _________ ____ ____ ____ ____ ____ ____ ____
 # ||I |||n |||s |||t |||a |||n |||c |||e |||       |||M |||e |||t |||h |||o |||d |||s ||
 # ||__|||__|||__|||__|||__|||__|||__|||__|||_______|||__|||__|||__|||__|||__|||__|||__||
 # |/__\|/__\|/__\|/__\|/__\|/__\|/__\|/__\|/_______\|/__\|/__\|/__\|/__\|/__\|/__\|/__\|
@@ -408,7 +408,7 @@ sub tellmewhy {
     elsif( $self->is_toobigmesg  ){ $rwhy = 'mesgtoobig'; }
     elsif( $self->is_exceedlimit ){ $rwhy = 'exceedlimit'; }
     elsif( $self->is_onhold      ){ $rwhy = 'onhold'; }
-    else { 
+    else {
         $rwhy = $self->is_somethingelse ? $self->{'reason'} : 'undefined';
     }
     return $rwhy;
@@ -440,9 +440,9 @@ sub is_userunknown {
         my $reason = Kanadzuchi::RFC3463->causa( $stat );
 
         eval {
-            require Kanadzuchi::Mail::Why::UserUnknown; 
-            require Kanadzuchi::Mail::Why::RelayingDenied; 
-            require Kanadzuchi::Mail::Why::NotAccept; 
+            require Kanadzuchi::Mail::Why::UserUnknown;
+            require Kanadzuchi::Mail::Why::RelayingDenied;
+            require Kanadzuchi::Mail::Why::NotAccept;
         };
 
         if( $reason eq $subj ) {
@@ -461,18 +461,15 @@ sub is_userunknown {
             $isuu = 0;
 
         } else {
-            if( $self->{'smtpcommand'} eq 'RCPT' ) {
+            if( substr( $stat, 0, 1 ) == 5 ) {
+                $isuu = 1 if $uclass->textumhabet( $dicode );
 
-                if( substr( $stat, 0, 1 ) == 5 ) {
-                    $isuu = 1 if $uclass->textumhabet( $dicode );
-
-                } elsif( substr( $stat, 0, 1 ) == 4 ) {
-                    # Postfix Virtual Mail box
-                    # Status: 4.4.7
-                    # Diagnostic-Code: SMTP; 450 4.1.1 <***@example.jp>:
-                    #   Recipient address rejected: User unknown in virtual mailbox table
-                    $isuu = 1 if $uclass->textumhabet( $dicode );
-                }
+            } elsif( substr( $stat, 0, 1 ) == 4 ) {
+                # Postfix Virtual Mail box
+                # Status: 4.4.7
+                # Diagnostic-Code: SMTP; 450 4.1.1 <***@example.jp>:
+                #   Recipient address rejected: User unknown in virtual mailbox table
+                $isuu = 1 if $uclass->textumhabet( $dicode );
             }
         }
     }
@@ -487,7 +484,7 @@ sub is_hostunknown {
     #
     # @Description  Whether the host is unknown or not
     # @Param        <None>
-    # @Return       (Integer) 1 = is unknown host 
+    # @Return       (Integer) 1 = is unknown host
     #               (Integer) 0 = is not unknown host.
     # @See          http://www.ietf.org/rfc/rfc2822.txt
     my $self = shift;
@@ -535,9 +532,9 @@ sub is_filtered {
 
     } else {
 
-        require Kanadzuchi::Mail::Why::Suspend; 
+        require Kanadzuchi::Mail::Why::Suspend;
         unless( Kanadzuchi::Mail::Why::Suspend->textumhabet( $self->{'diagnosticcode'} ) ) {
-            # The reason is not "filtered" if it matched with pattern in 
+            # The reason is not "filtered" if it matched with pattern in
             # "Kanadzuchi::Mail::Why::Suspend"
             my $reason = Kanadzuchi::RFC3463->causa( $stat );
 
@@ -554,7 +551,7 @@ sub is_filtered {
                     my $uclass = 'Kanadzuchi::Mail::Why::UserUnknown';
                     my $fclass = 'Kanadzuchi::Mail::Why::Filtered';
 
-                    eval { 
+                    eval {
                         require Kanadzuchi::Mail::Why::UserUnknown;
                         require Kanadzuchi::Mail::Why::Filtered;
                     };
@@ -762,7 +759,7 @@ sub is_somethingelse {
 
     if( $else =~ m/\A(?:undefined|userunknown|filtered)\z/ || ! $else ) {
 
-        eval { 
+        eval {
             use Kanadzuchi::Mail::Why::MailboxFull;
             use Kanadzuchi::Mail::Why::ContentError;
             use Kanadzuchi::Mail::Why::SecurityError;
@@ -775,13 +772,13 @@ sub is_somethingelse {
 
         my $dicode = $self->{'diagnosticcode'};
         my $eclass = q();
-        my $wclass = { 
-            'mailboxfull' => 'MailboxFull', 
-            'securityerr' => 'SecurityError', 
-            'systemerror' => 'SystemError', 
-            'suspend'     => 'Suspend', 
-            'expired'     => 'Expired', 
-            'contenterr'  => 'ContentError', 
+        my $wclass = {
+            'mailboxfull' => 'MailboxFull',
+            'securityerr' => 'SecurityError',
+            'systemerror' => 'SystemError',
+            'suspend'     => 'Suspend',
+            'expired'     => 'Expired',
+            'contenterr'  => 'ContentError',
             'notaccept'   => 'NotAccept',
             'mailererror' => 'MailerError',
         };
