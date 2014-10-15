@@ -321,6 +321,22 @@ sub eatit {
             }
         }
 
+        # custom headers
+        unless( defined $bouncemesg->{'x-bps1'}) {
+              $tempheader->{'x-bps1'} = $mimeparser->getit('X-BPS1')
+              || $_entity->{'head'}->{'x-bps1'}
+              || q();
+              $bouncemesg->{'x-bps1'} = $tempheader->{'x-bps1'};
+        }
+
+        unless( defined $bouncemesg->{'x-bps2'}) {
+              $tempheader->{'x-bps2'} = $mimeparser->getit('X-BPS2')
+              || $_entity->{'head'}->{'x-bps2'}
+              || q();
+              $bouncemesg->{'x-bps2'} = $tempheader->{'x-bps2'};
+        }
+
+
         unless( defined $bouncemesg->{'listid'} ) {
             $tempheader->{'listid'} = $mimeparser->getit('List-Id') || q();
             $bouncemesg->{'listid'} = Kanadzuchi::Address->canonify( $tempheader->{'listid'} );
@@ -354,6 +370,9 @@ sub eatit {
             'diagnosticcode' => $bouncemesg->{'diagnosticcode'},
             'timezoneoffset' => $bouncemesg->{'timezoneoffset'},
             'bounced' => int( $tempstring->epoch - $tempoffset ),
+            # custom headers
+            'x-bps1' => $bouncemesg->{'x-bps1'},
+            'x-bps2' => $bouncemesg->{'x-bps2'},
         );
 
         $thisobject->{'reason'} = $thisobject->tellmewhy;

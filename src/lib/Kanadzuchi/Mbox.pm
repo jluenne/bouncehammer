@@ -4,20 +4,20 @@
 # -Id: Parser.pm,v 1.4 2009/07/31 09:03:53 ak Exp -
 # Copyright (C) 2009-2013 Cubicroot Co. Ltd.
 # Kanadzuchi::
-                             
- ##  ## ##                   
- ###### ##      #### ##  ##  
- ###### #####  ##  ## ####   
- ##  ## ##  ## ##  ##  ##    
- ##  ## ##  ## ##  ## ####   
- ##  ## #####   #### ##  ##  
+
+ ##  ## ##
+ ###### ##      #### ##  ##
+ ###### #####  ##  ## ####
+ ##  ## ##  ## ##  ##  ##
+ ##  ## ##  ## ##  ## ####
+ ##  ## #####   #### ##  ##
 package Kanadzuchi::Mbox;
 
 # See also
 #  * http://en.wikipedia.org/wiki/Comparison_of_mail_servers
 #  * http://en.wikipedia.org/wiki/List_of_mail_servers
 
-#  ____ ____ ____ ____ ____ ____ ____ ____ ____ 
+#  ____ ____ ____ ____ ____ ____ ____ ____ ____
 # ||L |||i |||b |||r |||a |||r |||i |||e |||s ||
 # ||__|||__|||__|||__|||__|||__|||__|||__|||__||
 # |/__\|/__\|/__\|/__\|/__\|/__\|/__\|/__\|/__\|
@@ -38,7 +38,7 @@ use Kanadzuchi::MTA::Courier;
 use Kanadzuchi::MTA::OpenSMTPD;
 use Kanadzuchi::MTA::FeedbackLoop;
 
-#  ____ ____ ____ ____ ____ ____ ____ ____ ____ 
+#  ____ ____ ____ ____ ____ ____ ____ ____ ____
 # ||A |||c |||c |||e |||s |||s |||o |||r |||s ||
 # ||__|||__|||__|||__|||__|||__|||__|||__|||__||
 # |/__\|/__\|/__\|/__\|/__\|/__\|/__\|/__\|/__\|
@@ -52,19 +52,19 @@ __PACKAGE__->mk_accessors(
     'nmesgs',   # (Integer) The number of parsed messages
 );
 
-#  ____ ____ ____ ____ ____ ____ ____ ____ 
+#  ____ ____ ____ ____ ____ ____ ____ ____
 # ||C |||o |||n |||s |||t |||a |||n |||t ||
 # ||__|||__|||__|||__|||__|||__|||__|||__||
 # |/__\|/__\|/__\|/__\|/__\|/__\|/__\|/__\|
 #
 sub ENDOF() { qq(\n__THE_END_OF_THE_EMAIL__\n); }
 my $TransferAgents = __PACKAGE__->postulat;
-my $MostFamousMTAs = [ 
+my $MostFamousMTAs = [
     'Sendmail', 'Postfix', 'qmail', 'Exim', 'Courier',
     'OpenSMTPD', 'FeedbackLoop'
 ];
 
-#  ____ ____ ____ ____ ____ _________ ____ ____ ____ ____ ____ ____ ____ 
+#  ____ ____ ____ ____ ____ _________ ____ ____ ____ ____ ____ ____ ____
 # ||C |||l |||a |||s |||s |||       |||M |||e |||t |||h |||o |||d |||s ||
 # ||__|||__|||__|||__|||__|||_______|||__|||__|||__|||__|||__|||__|||__||
 # |/__\|/__\|/__\|/__\|/__\|/_______\|/__\|/__\|/__\|/__\|/__\|/__\|/__\|
@@ -106,7 +106,7 @@ sub postulat {
     #     Mbox::<CCTLD or ISO3166>::*.pm
     #   * The key 'agents' is EMPTY: Does NOT load any moduels in Kanadzuchi::
     #     Mbox::<CCTLD or ISO3166>::*.pm
-    #   * The key 'agents' has a value: Load only the module of its name in 
+    #   * The key 'agents' has a value: Load only the module of its name in
     #     Kanadzuch::Mbox::<CCTLD or ISO3166>::<its name>.pm
     my $class = shift;
 
@@ -121,7 +121,7 @@ sub postulat {
     my $acclassname = q();
 
     EACH_COUNTRY: foreach my $code ( @$iso3166list ) {
-        # etc/avalable-countries does not exist, load all of modules in 
+        # etc/avalable-countries does not exist, load all of modules in
         # Kanadzuchi/MTA/??/*.pm
         my $directory = $libmboxroot.'/'.$code;
         my $mtaoption = []; # Require files in this array
@@ -134,7 +134,7 @@ sub postulat {
             $mtaoption = $countryconf->{ lc $code }->{'agents'};
 
             # agents: []
-            #   * The key 'agents' is EMPTY: Does NOT load any moduels in 
+            #   * The key 'agents' is EMPTY: Does NOT load any moduels in
             #     Kanadzuchi::MTA::<CCTLD or ISO3166>::*.pm
             next(EACH_COUNTRY) unless scalar @$mtaoption;
 
@@ -207,22 +207,22 @@ sub breakit {
     my $theheadpart = $thismessage->{'head'};
 
     # For Code Refactoring IN THE FUTURE.
-    # my $contenttype = [   
+    # my $contenttype = [
     #   qr{\Amultipart/(?:report|mixed)},
     #   qr{\Amessage/(?:delivery-status|rfc822)},
     #   qr{\Atext/rfc822-headers},
     # ];
 
     # Check whether or not the message is a bounce mail.
-    #  _____             _     _____                                _          _ 
+    #  _____             _     _____                                _          _
     # |  ___|_      ____| |_  |  ___|__  _ ____      ____ _ _ __ __| | ___  __| |
     # | |_  \ \ /\ / / _` (_) | |_ / _ \| '__\ \ /\ / / _` | '__/ _` |/ _ \/ _` |
     # |  _|  \ V  V / (_| |_  |  _| (_) | |   \ V  V / (_| | | | (_| |  __/ (_| |
     # |_|     \_/\_/ \__,_(_) |_|  \___/|_|    \_/\_/ \__,_|_|  \__,_|\___|\__,_|
-    #                                                                            
+    #
     # Pre-Process eMail body if it is a forwarded bounce message.
     #  Get forwarded text if a subject begins from 'fwd:' or 'fw:'
-    # 
+    #
     if( lc( $theheadpart->{'subject'} ) =~ m{\A\s*fwd?:} ) {
         # Break quoted strings, quote symbols(>)
         $$thebodypart =~ s{\A.+?[>]}{>}s;
@@ -230,14 +230,14 @@ sub breakit {
         $$thebodypart =~ s{^[>]$}{}gm;
     }
 
-    #  ____  _                  _               _   _____                          _   
-    # / ___|| |_ __ _ _ __   __| | __ _ _ __ __| | |  ___|__  _ __ _ __ ___   __ _| |_ 
+    #  ____  _                  _               _   _____                          _
+    # / ___|| |_ __ _ _ __   __| | __ _ _ __ __| | |  ___|__  _ __ _ __ ___   __ _| |_
     # \___ \| __/ _` | '_ \ / _` |/ _` | '__/ _` | | |_ / _ \| '__| '_ ` _ \ / _` | __|
-    #  ___) | || (_| | | | | (_| | (_| | | | (_| | |  _| (_) | |  | | | | | | (_| | |_ 
+    #  ___) | || (_| | | | | (_| | (_| | | | (_| | |  _| (_) | |  | | | | | | (_| | |_
     # |____/ \__\__,_|_| |_|\__,_|\__,_|_|  \__,_| |_|  \___/|_|  |_| |_| |_|\__,_|\__|
-    #                                                                                  
+    #
     # Pre-Process eMail headers of standard bounce message
-    #return $$thebodypart if( $theheadpart->{'content-type'} && 
+    #return $$thebodypart if( $theheadpart->{'content-type'} &&
     #           grep { $theheadpart->{'content-type'} =~ $_ } @$contenttype );
     #
     my $parserclass = q();      # (String) Package|Class name
@@ -284,7 +284,7 @@ sub breakit {
     return $pseudofield.$$thebodypart;
 }
 
-#  ____ ____ ____ ____ ____ ____ ____ ____ _________ ____ ____ ____ ____ ____ ____ ____ 
+#  ____ ____ ____ ____ ____ ____ ____ ____ _________ ____ ____ ____ ____ ____ ____ ____
 # ||I |||n |||s |||t |||a |||n |||c |||e |||       |||M |||e |||t |||h |||o |||d |||s ||
 # ||__|||__|||__|||__|||__|||__|||__|||__|||_______|||__|||__|||__|||__|||__|||__|||__||
 # |/__\|/__\|/__\|/__\|/__\|/__\|/__\|/__\|/_______\|/__\|/__\|/__\|/__\|/__\|/__\|/__\|
@@ -361,9 +361,11 @@ sub parseit {
     my $seek = 0;
 
     my $agentclasses = [ map { 'Kanadzuchi::MTA::'.$_ } @$MostFamousMTAs ];
-    my $emailheaders = [ 
+    my $emailheaders = [
         'From', 'To', 'Date', 'Subject', 'Content-Type',
         'Reply-To', 'Message-Id',
+        # custom headers
+        'X-BPS1', 'X-BPS2',
     ];
     my $agentheaders = [];
 
@@ -400,15 +402,18 @@ sub parseit {
 
         # 1. Set the content in UNIX From_ Line
         $_mail->{'from'} = $_from;
-        $_mail->{'head'} = { 
+        $_mail->{'head'} = {
             'to' => q(),
             'from' => q(),
             'date' => q(),
             'subject' => q(),
             'reply-to' => q(),
-            'received' => [], 
+            'received' => [],
             'message-id' => q(),
             'content-type' => q(),
+            # custom headers
+            'x-bps1' => q(),
+            'x-bps2' => q(),
         };
 
         # 2. Parse email headers
@@ -566,6 +571,9 @@ sub parseit {
         $_mail->{'body'} =~ s{^[Xx]-SMTP-Status:[ ]*(.+)$}{<<<<: X-SMTP-Status: $1}m;
         $_mail->{'body'} =~ s{^[Xx]-SMTP-Recipient:[ ]*(.+)$}{<<<<: X-SMTP-Recipient: $1}m;
         $_mail->{'body'} =~ s{^[Xx]-SMTP-Charset:[ ]*(.+)$}{<<<<: X-SMTP-Charset: $1}m;
+        # custom headers
+        $_mail->{'body'} =~ s{^[Xx]-BPS1:[ ]*(.+)$}{<<<<: X-BPS1: $1}m;
+        $_mail->{'body'} =~ s{^[Xx]-BPS2:[ ]*(.+)$}{<<<<: X-BPS2: $1}m;
 
         $_mail->{'body'} =~ s{^\w.+[\r\n]}{}gm;         # Delete non-required headers
         $_mail->{'body'} =~ s{^<<<<:\s}{}gm;            # Delete the mark

@@ -4,15 +4,15 @@
 # Copyright (C) 2009-2013 Cubicroot Co. Ltd.
 # Kanadzuchi::
 
- ##  ##           ##  ###    
- ######   ####         ##    
- ######      ##  ###   ##    
- ##  ##   #####   ##   ##    
- ##  ##  ##  ##   ##   ##    
+ ##  ##           ##  ###
+ ######   ####         ##
+ ######      ##  ###   ##
+ ##  ##   #####   ##   ##
+ ##  ##  ##  ##   ##   ##
  ##  ##   #####  #### ####
 package Kanadzuchi::Mail;
 
-#  ____ ____ ____ ____ ____ ____ ____ ____ ____ 
+#  ____ ____ ____ ____ ____ ____ ____ ____ ____
 # ||L |||i |||b |||r |||a |||r |||i |||e |||s ||
 # ||__|||__|||__|||__|||__|||__|||__|||__|||__||
 # |/__\|/__\|/__\|/__\|/__\|/__\|/__\|/__\|/__\|
@@ -33,7 +33,7 @@ use Kanadzuchi::Mail::Group::Cellphone;
 use Kanadzuchi::Mail::Bounced::Generic;
 use Time::Piece;
 
-#  ____ ____ ____ ____ ____ ____ ____ ____ ____ 
+#  ____ ____ ____ ____ ____ ____ ____ ____ ____
 # ||A |||c |||c |||e |||s |||s |||o |||r |||s ||
 # ||__|||__|||__|||__|||__|||__|||__|||__|||__||
 # |/__\|/__\|/__\|/__\|/__\|/__\|/__\|/__\|/__\|
@@ -57,9 +57,12 @@ __PACKAGE__->mk_accessors(
     'diagnosticcode',   # (String) Diagnostic-Code:
     'deliverystatus',   # (String) Delivery Status(DSN)
     'timezoneoffset',   # (Integer) Time zone offset(seconds)
+    # custom headers
+    'x-bps1',           # (String) X-BPS1 Header
+    'x-bps2',           # (String) X-BPS2 Header
 );
 
-#  ____ ____ ____ ____ ____ ____ _________ ____ ____ ____ ____ 
+#  ____ ____ ____ ____ ____ ____ _________ ____ ____ ____ ____
 # ||G |||l |||o |||b |||a |||l |||       |||v |||a |||r |||s ||
 # ||__|||__|||__|||__|||__|||__|||_______|||__|||__|||__|||__||
 # |/__\|/__\|/__\|/__\|/__\|/__\|/_______\|/__\|/__\|/__\|/__\|
@@ -112,7 +115,7 @@ my $DomainCache = {};
 my $DomainParts = { 'addresser' => 'senderdomain', 'recipient' => 'destination' };
 my $LoadedGroup = Kanadzuchi::Mail::Group->postulat;
 
-#  ____ ____ ____ ____ ____ _________ ____ ____ ____ ____ ____ ____ ____ 
+#  ____ ____ ____ ____ ____ _________ ____ ____ ____ ____ ____ ____ ____
 # ||C |||l |||a |||s |||s |||       |||M |||e |||t |||h |||o |||d |||s ||
 # ||__|||__|||__|||__|||__|||_______|||__|||__|||__|||__|||__|||__|||__||
 # |/__\|/__\|/__\|/__\|/__\|/_______\|/__\|/__\|/__\|/__\|/__\|/__\|/__\|
@@ -126,7 +129,7 @@ sub new {
     # @Param        <None>
     # @Return       (K::Mail::*) Object
     my $class = shift;
-    my $argvs = { @_ }; 
+    my $argvs = { @_ };
 
     ADDRESSER_AND_RECIPIENT: foreach my $x ( keys %$DomainParts ) {
         next unless defined $argvs->{ $x };
@@ -216,32 +219,34 @@ sub new {
 
     PARSE_DESCRIPTION: {
 
-        my $descr = [ 
+        my $descr = [
             'deliverystatus', 'diagnosticcode', 'timezoneoffset', 'smtpagent',
             'listid', 'subject', 'messageid',
+            # custom headers
+            'x-bps1', 'x-bps2',
         ];
 
         if( defined $argvs->{'description'} ) {
 
             if( ref( $argvs->{'description'} ) eq 'HASH' ) {
-                #  ____                        _       _   _    _    ____  _   _ 
+                #  ____                        _       _   _    _    ____  _   _
                 # |  _ \  ___  ___  ___ _ __  (_)___  | | | |  / \  / ___|| | | |
                 # | | | |/ _ \/ __|/ __| '__| | / __| | |_| | / _ \ \___ \| |_| |
                 # | |_| |  __/\__ \ (__| |    | \__ \ |  _  |/ ___ \ ___) |  _  |
                 # |____/ \___||___/\___|_|    |_|___/ |_| |_/_/   \_\____/|_| |_|
-                #                                                                
+                #
                 # 'description' is not empty, Build 'description' as hash reference.
                 foreach my $x ( @$descr ) {
                     next if defined $argvs->{ $x };
                     $argvs->{ $x } = $argvs->{'description'}->{ $x };
                 }
             } elsif( $argvs->{'description'} =~ m{\A\s*["]*[{].+[}]["]*\s*\z} ) {
-                #  ____                        _           _ ____   ___  _   _ 
+                #  ____                        _           _ ____   ___  _   _
                 # |  _ \  ___  ___  ___ _ __  (_)___      | / ___| / _ \| \ | |
                 # | | | |/ _ \/ __|/ __| '__| | / __|  _  | \___ \| | | |  \| |
                 # | |_| |  __/\__ \ (__| |    | \__ \ | |_| |___) | |_| | |\  |
                 # |____/ \___||___/\___|_|    |_|___/  \___/|____/ \___/|_| \_|
-                #                                                              
+                #
                 # 'description' is a string (JSON|YAML)?
                 # Set values into 3 variables if it is empty and build 'description'
                 # as a hash reference.
@@ -260,12 +265,12 @@ sub new {
                 ;
             }
         } else {
-            #  ____                        _       _____                 _         
-            # |  _ \  ___  ___  ___ _ __  (_)___  | ____|_ __ ___  _ __ | |_ _   _ 
+            #  ____                        _       _____                 _
+            # |  _ \  ___  ___  ___ _ __  (_)___  | ____|_ __ ___  _ __ | |_ _   _
             # | | | |/ _ \/ __|/ __| '__| | / __| |  _| | '_ ` _ \| '_ \| __| | | |
             # | |_| |  __/\__ \ (__| |    | \__ \ | |___| | | | | | |_) | |_| |_| |
             # |____/ \___||___/\___|_|    |_|___/ |_____|_| |_| |_| .__/ \__|\__, |
-            #                                                     |_|        |___/ 
+            #                                                     |_|        |___/
             # Empty 'description', Set value into it from 3 variables.
             $argvs->{'description'} = {
                 'deliverystatus' => $argvs->{'deliverystatus'} || q(),
@@ -275,6 +280,9 @@ sub new {
                 'messageid'      => $argvs->{'messageid'} || q(),
                 'subject'        => $argvs->{'subject'} || q(),
                 'listid'         => $argvs->{'listid'} || q(),
+                # custom headers
+                'x-bps1'         => $argvs->{'x-bps1'} || q(),
+                'x-bps2'         => $argvs->{'x-bps2'} || q(),
             };
         }
     }
@@ -287,6 +295,9 @@ sub new {
         $argvs->{'timezoneoffset'} = '+0000' unless $argvs->{'timezoneoffset'};
         $argvs->{'diagnosticcode'} = q() unless defined $argvs->{'diagnosticcode'};
         $argvs->{'deliverystatus'} = q() unless defined $argvs->{'deliverystatus'};
+        # custom headers
+        $argvs->{'x-bps1'} = q() unless defined $argvs->{'x-bps1'};
+        $argvs->{'x-bps2'} = q() unless defined $argvs->{'x-bps2'};
     }
     return $class->SUPER::new( $argvs );
 }
@@ -324,7 +335,7 @@ sub id2rname {
     return [ keys %$ReasonWhy ] if $theid eq '@';
     return q() unless $theid;
     return q() unless $theid =~ m{\A\d+\z};
-    return [ grep { $ReasonWhy->{ $_ } == $theid } keys %$ReasonWhy ]->[0] || q(); 
+    return [ grep { $ReasonWhy->{ $_ } == $theid } keys %$ReasonWhy ]->[0] || q();
 }
 
 sub gname2id {
@@ -349,7 +360,7 @@ sub rname2id {
     # +-+-+-+-+-+-+-+-+
     #
     # @Description  The reason -> reason ID
-    # @Param <str>  (String) The reason 
+    # @Param <str>  (String) The reason
     # @Return       (Integer|Ref->Array) n = reason ID(s)
     #               (Integer) 0 = Does not exist
     my $class = shift;
@@ -359,7 +370,7 @@ sub rname2id {
     return $ReasonWhy->{ $rname } || 0;
 }
 
-#  ____ ____ ____ ____ ____ ____ ____ ____ _________ ____ ____ ____ ____ ____ ____ ____ 
+#  ____ ____ ____ ____ ____ ____ ____ ____ _________ ____ ____ ____ ____ ____ ____ ____
 # ||I |||n |||s |||t |||a |||n |||c |||e |||       |||M |||e |||t |||h |||o |||d |||s ||
 # ||__|||__|||__|||__|||__|||__|||__|||__|||_______|||__|||__|||__|||__|||__|||__|||__||
 # |/__\|/__\|/__\|/__\|/__\|/__\|/__\|/__\|/_______\|/__\|/__\|/__\|/__\|/__\|/__\|/__\|
@@ -390,6 +401,9 @@ sub damn {
     $damn->{'diagnosticcode'} = $self->{'description'}->{'diagnosticcode'} || q();
     $damn->{'deliverystatus'} = $self->{'description'}->{'deliverystatus'} || q();
     $damn->{'timezoneoffset'} = $self->{'description'}->{'timezoneoffset'} || '+0000';
+    # custom headers
+    $damn->{'x-bps1'} = $self->{'description'}->{'x-bps1'} || q();
+    $damn->{'x-bps2'} = $self->{'description'}->{'x-bps2'} || q();
 
     return $damn;
 }
